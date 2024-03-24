@@ -1,0 +1,108 @@
+.ssss_item {
+    display: flex;
+    flex-direction: column;
+    padding: 0 15px;
+    position: relative;
+    ._wrap:hover img {
+        transform: scale(1.1);
+    }
+
+    .item_img {
+        border-top-left-radius: 50%;
+        border-top-right-radius: 50%;
+        overflow: hidden;
+    }
+
+    .item_img_square {
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .in_img {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 20px 40px !important;
+        z-index: 2;
+
+        h3 {
+            color: var(--white);
+        }
+    }
+    .img_box {
+        position: relative;
+        --space: 30px;
+
+        .dell {
+            background-color: var(--white);
+            position: absolute;
+            padding: 0 15px;
+            border-radius: 5px;
+            top: 20px;
+            left: 20px;
+            z-index: 3;
+        }
+    }
+    .backgrond_linear::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        background: linear-gradient(to top, #161921 0%, rgba(22, 25, 33, 0) 100%);
+        z-index: 1;
+    }
+}
+
+.bottom_img {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--white);
+    padding: 15px 20px;
+    gap: 10px;
+    box-shadow: 0px 5px 15px rgba(22, 25, 33, 0.08);
+    .item_icon {
+        margin-right: 10px;
+    }
+    .bottom_left {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    .item_name {
+        font-size: 18px;
+        font-family: 'PlayfairDisplay';
+        cursor: pointer;
+        &:hover {
+            color: var(--primary-color);
+        }
+    }
+    .item_trip {
+        font-size: 16px;
+        color: var(--primary-color);
+    }
+    .item_trip_small {
+        font-family: 'Roboto';
+        font-size: 16px;
+        font-weight: 400;
+        color: var(--text-p-color);
+    }
+}
+.large {
+    padding: 0 12px;
+
+    .transparent {
+        background-color: transparent;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    h3 {
+        font-size: 25px !important;
+    }
+}
+.sell_off {
+    font-size: 20px !important;
+    font-weight: 600;
+}

@@ -1,0 +1,35 @@
+.input_container {
+    display: flex;
+    position: relative;
+    width: 100%;
+    .input {
+        flex: 1;
+        border-radius: 5px;
+        height: 55px;
+        border: none;
+        background-color: var(--white);
+        padding: 0 20px 0 20px;
+        padding-right: 45px;
+        color: var(--black);
+        border: 1px solid transparent;
+        transition: 0.3s ease-in-out;
+        font-size: 16px;
+        width: 100%;
+
+        &:focus {
+            border-color: var(--primary-color) !important;
+        }
+    }
+}
+.icon {
+    position: absolute;
+    font-size: 16px;
+}
+.left {
+    top: 14px;
+    left: 20px;
+}
+.right {
+    top: 14px;
+    right: 20px;
+}

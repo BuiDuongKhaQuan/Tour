@@ -1,0 +1,23 @@
+.wrapper {
+    position: relative;
+    textarea {
+        border: none;
+        width: 100% !important;
+        min-height: 115px;
+        border-radius: 5px;
+        padding: 15px;
+        font-size: 16px;
+        outline: none;
+        border: 1px solid transparent;
+        transition: 0.3s ease-in-out;
+        &:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+    }
+    .icon {
+        position: absolute;
+        top: 14px;
+        right: 20px;
+    }
+}

@@ -1,0 +1,106 @@
+.wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    user-select: none;
+    min-width: 50px;
+    font-size: 1.4rem;
+    background-color: var(--white);
+    border: 1px solid transparent;
+    font-weight: 600;
+    transition: ease-out 0.3s;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+
+    &.disabled {
+        pointer-events: none;
+        opacity: 0.5;
+    }
+    &:hover {
+        color: var(--white);
+        background-color: var(--primary-color) !important;
+        border-color: var(--primary-color) !important;
+    }
+}
+
+.square {
+    width: 50px;
+    height: 50px;
+    background-color: var(--smoke-color);
+}
+
+.icon + .title,
+.title + .icon {
+    margin-left: 8px;
+}
+
+.icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.primary {
+    background-color: var(--primary-color);
+    color: var(--white);
+
+    &:hover {
+        color: var(--white);
+    }
+    &::before {
+        transition: 0.5s all ease;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        right: 50%;
+        bottom: 0;
+        opacity: 0;
+        content: '';
+        background-color: #1b4d31;
+    }
+    &:hover:before {
+        transition: 0.5s all ease;
+        left: 0;
+        right: 0;
+        opacity: 1;
+        z-index: -1;
+        border-radius: 4px;
+    }
+}
+
+.outline {
+    border-color: var(--primary);
+    color: var(--primary);
+
+    &:hover {
+        background-color: rgba(254, 44, 85, 0.06);
+    }
+}
+.upload {
+    color: var(--black);
+    border-color: rgba(22, 24, 35, 0.12);
+    padding: 9px 12px;
+    &:hover {
+        background-color: rgba(22, 24, 35, 0.03);
+    }
+}
+.small {
+    min-width: 88px;
+    padding: 4px 16px;
+}
+.large {
+    padding: 20px 30px;
+    min-width: 140px;
+}
+.circle {
+    width: 55px;
+    height: 55px;
+    border: 0.5px solid var(--text-color);
+    border-radius: 50%;
+    padding: 0;
+    min-width: 0;
+    box-shadow: inset 100% 0 0 0 0 var(--primary-color);
+    background-color: transparent;
+}

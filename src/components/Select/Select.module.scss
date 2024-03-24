@@ -1,0 +1,13 @@
+.select {
+    height: 56px;
+    padding-left: 10px;
+    cursor: pointer;
+    box-shadow: 0 0 0 0px var(--primary-color);
+    outline: none;
+    &:hover {
+        border-color: var(--primary-color);
+    }
+}
+.select-wrapper {
+    width: 100%;
+}

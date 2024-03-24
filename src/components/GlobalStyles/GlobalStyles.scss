@@ -1,0 +1,159 @@
+@import 'normalize.css';
+
+:root {
+    --black: #000;
+    --white: #fff;
+    --text-p-color: #687179;
+    --body-color: #fafbfc;
+    --text-color: #333;
+    --smoke-color: #f5f5f5;
+    --primary-color: #3cb371;
+    --font-family: 'Roboto', sans-serif;
+    --title-color: #161921;
+    //Dafault layout
+    --dafault-layout-header-height: 100px;
+    --dafault-layout-with: 1760px;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    font-size: 1.6rem;
+    line-height: 1.5;
+    text-rendering: optimizeSpeed;
+    color: var(--text-color);
+    overflow-x: hidden;
+}
+img,
+svg {
+    vertical-align: middle;
+}
+
+p {
+    font-family: 'Roboto', sans-serif;
+}
+
+h2 {
+    font-family: 'PlayfairDisplay', sans-serif;
+    font-size: 45px;
+}
+//Scrollbar css
+// html *::-webkit-scrollbar {
+//     border-radius: 0;
+//     width: 8px;
+// }
+// html *::-webkit-scrollbar-thumb {
+//     border-radius: 4px;
+//     background-color: rgba(22, 24, 35, 0.06);
+// }
+
+button,
+input,
+[tabindex] {
+    outline: none;
+    border: none;
+}
+
+a {
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+//Font emmbedded
+
+@font-face {
+    font-family: DancingScript;
+    src: url('/assets/fonts/DancingScript-VariableFont_wght.ttf');
+}
+
+@font-face {
+    font-family: PlayfairDisplay;
+    src: url('/assets/fonts/PlayfairDisplay-VariableFont_wght.ttf');
+}
+
+@font-face {
+    font-family: Roboto;
+    src: url('/assets/fonts/Roboto-Regular.ttf');
+}
+//custom tippy
+
+.tippy-box {
+    background-color: rgba(84, 84, 84, 0.92);
+    font-size: 1.6rem;
+    border-radius: 8px;
+    .tippy-arrow {
+        color: rgba(84, 84, 84, 0.92);
+    }
+}
+
+//custom tabbar
+.MuiTabs-indicator {
+    background-color: var(--primary-color) !important;
+}
+.css-1vw5i9y-MuiButtonBase-root-MuiTab-root {
+    font-size: 15px !important;
+}
+
+//custom modal
+.ReactModal__Overlay {
+    z-index: 999;
+    background-color: rgba(0, 0, 0, 0.432) !important;
+}
+//custom table
+.css-i4bv87-MuiSvgIcon-root {
+    font-size: 25px !important;
+    &:hover {
+        color: var(--primary-color);
+    }
+}
+.css-10gei56 {
+    padding-bottom: 47px;
+}
+.css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input.css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input.css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input {
+    font-size: 15px !important;
+    margin-top: 7px;
+}
+.css-10w330c-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected {
+    font-size: 15px !important;
+    background-color: var(--primary-color) !important;
+    color: var(--white) !important;
+}
+
+.css-g2z002-MuiSvgIcon-root-MuiPaginationItem-icon {
+    font-size: 25px !important;
+}
+
+.css-skcgp8-MuiButtonBase-root-MuiMenuItem-root {
+    &:hover {
+        background-color: var(--primary-color) !important;
+    }
+}
+.css-423ilt-MuiButtonBase-root-MuiMenuItem-root {
+    &:hover {
+        background-color: var(--primary-color) !important;
+    }
+}
+.css-1kq5d21-MuiStack-root,
+.css-cdprif-MuiButtonBase-root-MuiButton-root,
+.css-12yjm75-MuiInputBase-input-MuiOutlinedInput-input,
+.css-423ilt-MuiButtonBase-root-MuiMenuItem-root,
+.css-skcgp8-MuiButtonBase-root-MuiMenuItem-root,
+.css-10w330c-MuiButtonBase-root-MuiPaginationItem-root,
+.css-ja5taz-MuiTooltip-tooltip,
+.css-dahkp-MuiButtonBase-root-MuiMenuItem-root,
+.css-uqq6zz-MuiFormLabel-root-MuiInputLabel-root,
+.css-929hxt-MuiInputBase-input-MuiInput-input {
+    font-size: 1.5rem !important;
+}
+.css-1e6y48t-MuiButtonBase-root-MuiButton-root {
+    font-size: 1.1rem;
+}

@@ -1,0 +1,27 @@
+.breadcumb {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+}
+.container {
+    padding: 120px 0;
+    text-align: center;
+    color: var(--white);
+    text-transform: capitalize;
+}
+.breadcumb_menu {
+    padding: 20px 0;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+}
+.bread_item {
+    color: var(--white);
+    transition: 0.3s ease-in-out;
+    &:hover {
+        color: var(--primary-color);
+    }
+}

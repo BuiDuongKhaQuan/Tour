@@ -1,0 +1,21 @@
+.image_wrap {
+    border: none;
+    vertical-align: middle;
+    overflow: hidden;
+    img {
+        transition: transform 0.5s;
+        background-size: cover;
+        width: 100%;
+    }
+}
+.circle {
+    border-radius: 50%;
+}
+.animation {
+    &:hover img {
+        transform: scale(1.1);
+    }
+}
+.pointer {
+    cursor: pointer;
+}

@@ -1,0 +1,212 @@
+.information_cate {
+    padding: 0 15px 0 30px;
+    .background_item {
+        padding: 40px;
+        background-color: var(--smoke-color);
+        margin-bottom: 40px;
+        border-radius: 10px;
+    }
+    .tour_search {
+        position: relative;
+        .search-form {
+            .icon {
+                top: 0;
+                right: 0;
+                border-radius: 0 5px 5px 0;
+                &:hover {
+                    background-color: var(--black);
+                }
+                &:hover::before {
+                    border-radius: 0 5px 5px 0;
+                }
+            }
+        }
+    }
+    .tour_categories {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .cate_btn {
+            justify-content: space-between;
+            padding: 15px;
+            color: var(--text-p-color);
+            font-size: 16px;
+            font-weight: 400;
+        }
+    }
+    .minute_deals {
+        display: flex;
+        flex-direction: column;
+
+        .deal_list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .deal_item {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 10px;
+            &:hover img {
+                transform: scale(1.1);
+            }
+            .deal_img {
+                border-radius: 10px;
+            }
+        }
+        .deal_title {
+            h2 {
+                font-size: 16px;
+                margin-bottom: 10px;
+                font-weight: 800;
+                cursor: pointer;
+                transition: 0.5s ease;
+                &:hover {
+                    color: var(--primary-color);
+                }
+            }
+            span {
+                font-size: 14px;
+                .deal_price {
+                    color: var(--primary-color);
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+    .adventure {
+        background-color: var(--black);
+        position: relative;
+        z-index: 2;
+        overflow: hidden;
+        text-align: center;
+        &::before {
+            content: '';
+            position: absolute;
+            left: calc(50% - 152px);
+            top: -170px;
+            width: 304px;
+            height: 304px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid var(--primary-color);
+            border-radius: 50%;
+        }
+        &::after {
+            content: '';
+            height: calc(100% - 50px);
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background-color: var(--primary-color);
+            clip-path: polygon(0 calc(100% - 50px), 100% 0, 100% 100%, 0% 100%);
+            z-index: -1;
+        }
+        .offer-banner {
+            text-align: center;
+            position: relative;
+        }
+        .banner-logo {
+            margin-bottom: 60px;
+            margin-top: -25px;
+            img {
+                width: 195px;
+            }
+        }
+        .banner-subtitle {
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            display: block;
+            color: var(--white);
+        }
+        .banner-title {
+            color: var(--white);
+            max-width: 280px;
+            margin: 0 auto 40px auto;
+        }
+        .offer {
+            background: linear-gradient(98.44deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.8) 100%);
+            backdrop-filter: blur(10px);
+            padding: 30px 30px 60px 30px;
+            border-radius: 10px;
+        }
+        .offer-title {
+            margin-bottom: 3px;
+            text-transform: uppercase;
+            font-size: 20px;
+            line-height: 1.5;
+        }
+        .text-theme {
+            color: var(--primary-color) !important;
+            text-transform: uppercase;
+        }
+        .offer-text {
+            margin-bottom: -0.3em;
+        }
+        .ot-btn {
+            margin-top: -30px;
+            background-color: var(--title-color);
+            text-transform: uppercase;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+            vertical-align: middle;
+            display: inline-block;
+            border: none;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1;
+            padding: 21px 29px;
+            min-width: 160px;
+            border-radius: 5px;
+        }
+    }
+}
+.book_tour_search {
+    background-color: var(--smoke-color);
+    margin-bottom: 40px;
+    border-radius: 10px;
+    .search-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 30px;
+
+        .search-form_item {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            .form_item_select {
+                width: 100%;
+            }
+        }
+
+        .input-date {
+            padding-right: 20px;
+        }
+    }
+    .tour_search-top {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 30px;
+        background-color: var(--primary-color);
+        border-radius: 10px 10px 0 0;
+        color: var(--white);
+        h2 {
+            font-size: 20px;
+        }
+    }
+}
+@media (max-width: 1200px) {
+    .information_cate {
+        width: 1000%;
+    }
+}
