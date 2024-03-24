@@ -1,0 +1,28 @@
+.des_detail_container {
+    padding: 100px 85px;
+}
+.des_detail_top {
+    padding: 0 15px;
+    h2,
+    p {
+        margin-bottom: 40px;
+    }
+    p {
+        color: var(--text-p-color);
+    }
+    .h3 {
+        font-size: 35px;
+        margin-bottom: 20px;
+    }
+    .h3:last-of-type {
+        margin-top: 20px;
+    }
+}
+.tour_list {
+    width: 100%;
+}
+
+.des_detail_top {
+}
+.tour_list {
+}
