@@ -1,0 +1,76 @@
+.container {
+    margin: 0 85px;
+    .row {
+        display: flex;
+        flex-direction: row;
+        margin: 120px 0;
+        .avatar {
+            padding: 40px;
+            width: 35%;
+            display: flex;
+            flex-direction: column;
+            border-radius: 15px;
+            background-color: var(--smoke-color);
+            .avatar-wrap {
+                position: relative;
+                padding: 35px;
+                .camera-icon {
+                    font-size: 30px;
+                    background-color: var(--primary-color);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    color: var(--white);
+                    border-radius: 50%;
+                    width: 50px;
+                    height: 50px;
+                    position: absolute;
+                    right: 55px;
+                    bottom: 60px;
+                    cursor: pointer;
+                }
+            }
+            h2 {
+                text-transform: capitalize;
+                text-align: center;
+                font-size: 30px;
+                padding: 15px;
+            }
+        }
+        .tabs {
+            background-color: var(--smoke-color);
+            overflow: hidden;
+            margin-left: 20px;
+            width: 65%;
+            border-radius: 15px;
+            .app-bar {
+                background-color: transparent;
+                color: var(--black);
+                font-size: 30px !important;
+            }
+        }
+        .information {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 50%;
+
+            .infor-select {
+                font-size: 16px;
+            }
+            .btn-submit {
+                z-index: 0;
+            }
+        }
+        .list {
+            display: flex;
+            flex-direction: row;
+            overflow-y: scroll;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            max-height: 440px;
+            row-gap: 30px;
+        }
+    }
+}
