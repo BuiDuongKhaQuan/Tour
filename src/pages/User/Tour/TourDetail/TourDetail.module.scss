@@ -1,0 +1,90 @@
+.tour_information {
+    background-color: var(--smoke-color);
+    border-radius: 10px;
+    margin-bottom: 40px;
+    padding: 35px 40px;
+    h2 {
+        margin-bottom: 20px;
+        font-size: 30px;
+    }
+    .information_list {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .information_item {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+            .information-icon {
+                color: var(--primary-color);
+                padding: 6px;
+                border-radius: 50%;
+                border: 1px solid #e4e4e4;
+                background-color: var(--white);
+                text-align: center;
+                margin: 0 auto;
+            }
+            span {
+                font-family: 'PlayfairDisplay';
+                color: var(--black);
+                font-size: 20px;
+                font-weight: 500;
+            }
+            p {
+                color: var(--text-p-color);
+            }
+        }
+    }
+}
+.tour_review {
+    background-color: var(--smoke-color);
+    padding: 40px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    .p-title {
+        color: var(--text-p-color);
+    }
+    h2 {
+        font-size: 30px;
+        font-weight: 700;
+        margin-bottom: -15px;
+    }
+    .start-wrapper {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        font-size: 16px;
+    }
+    .rating_form {
+        display: flex;
+        gap: 15px;
+        flex-direction: column;
+    }
+    .rating_input {
+        display: flex;
+        flex-direction: row;
+        gap: 15px;
+        .rating_input_item {
+            width: 100%;
+        }
+        input {
+            border: 1px solid transparent;
+            border-radius: 5px;
+            &:focus {
+                border-color: var(--primary-color);
+            }
+        }
+    }
+    .rating_check {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+    .rating_btn {
+        width: 160px;
+    }
+}

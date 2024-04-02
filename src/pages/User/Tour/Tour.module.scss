@@ -1,0 +1,17 @@
+.side-bar {
+    padding-left: 15px !important;
+}
+.tour_row {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    margin-bottom: 50px;
+    row-gap: 20px;
+    & > * {
+        flex-basis: calc(50% - 10px);
+        margin: 5px;
+    }
+}
+.pagination_ {
+    margin-bottom: 50px;
+}
