@@ -1,0 +1,18 @@
+.err_wrapper {
+    margin: 0 85px;
+    text-align: center;
+    padding: 120px;
+    .img {
+        margin-bottom: 50px;
+    }
+    .error-content {
+        margin: 0 240px;
+    }
+    .error-title {
+        margin-bottom: 25px;
+    }
+    .error-text {
+        margin-bottom: 35px;
+        color: var(--text-p-color);
+    }
+}
