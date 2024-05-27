@@ -8,6 +8,9 @@
     text-align: center;
     color: var(--white);
     text-transform: capitalize;
+    .title {
+        font-size: 34px !important;
+    }
 }
 .breadcumb_menu {
     padding: 20px 0;
@@ -23,5 +26,13 @@
     transition: 0.3s ease-in-out;
     &:hover {
         color: var(--primary-color);
+    }
+}
+@media (max-width: 570px) {
+    .container {
+        padding: 70px 0 !important;
+    }
+    .breadcumb_menu {
+        padding: 5px 0 !important;
     }
 }

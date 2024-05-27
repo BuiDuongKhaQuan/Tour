@@ -54,7 +54,15 @@
         z-index: 1;
     }
 }
-
+.overflow_text {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1; /* Số dòng tối đa */
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    line-height: 1.5em; /* Chiều cao của một dòng */
+    max-height: 3em; /* 2 dòng * chiều cao của một dòng */
+}
 .bottom_img {
     display: flex;
     justify-content: space-between;
@@ -62,7 +70,6 @@
     background-color: var(--white);
     padding: 15px 20px;
     gap: 10px;
-    box-shadow: 0px 5px 15px rgba(22, 25, 33, 0.08);
     .item_icon {
         margin-right: 10px;
     }
@@ -74,6 +81,7 @@
     .item_name {
         font-size: 18px;
         font-family: 'PlayfairDisplay';
+
         cursor: pointer;
         &:hover {
             color: var(--primary-color);

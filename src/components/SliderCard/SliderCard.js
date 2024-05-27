@@ -98,7 +98,8 @@ const SliderCard = forwardRef(
 
         return (
             <Slider ref={sliderRef} {...settings} {...sliderProps}>
-                {children || slides.map((reslut, index) => <CardItem {...passProps} data={reslut} key={index} />)}
+                {children ||
+                    slides.map((reslut, index) => <CardItem destination {...passProps} data={reslut} key={index} />)}
             </Slider>
         );
     },
