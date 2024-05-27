@@ -157,3 +157,10 @@ a {
 .css-1e6y48t-MuiButtonBase-root-MuiButton-root {
     font-size: 1.1rem;
 }
+
+@media (max-width: 770px) {
+    h2 {
+        font-size: 34px !important;
+        text-align: center;
+    }
+}
