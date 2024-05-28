@@ -15,3 +15,8 @@
 .pagination_ {
     margin-bottom: 50px;
 }
+@media (max-width: 570px) {
+    .tour_row > * {
+        flex-basis: calc(100% - 10px) !important;
+    }
+}

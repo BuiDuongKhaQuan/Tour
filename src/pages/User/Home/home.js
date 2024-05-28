@@ -17,10 +17,11 @@ import {
     Tag,
 } from '@phosphor-icons/react';
 import SupTitle from '~/components/SupTitle';
-import SliderCard, { TourCardItem } from '~/components/SliderCard';
+import SliderCard, { CardItem, TourCardItem } from '~/components/SliderCard';
 import { Link } from 'react-router-dom';
 import Image from '~/components/Image';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { getDestinationsLimit, getToursLimit } from '~/utils/httpRequest';
 
 const cx = classNames.bind(styles);
 
@@ -169,29 +170,6 @@ function Home() {
         },
     ];
 
-    const DATA_DESTINATION = [
-        {
-            name: 'Switzerland',
-            trip: '6+',
-            img: images.dest_2_1,
-        },
-        {
-            name: 'Barcelona',
-            trip: '8+',
-            img: images.dest_2_2,
-        },
-        {
-            name: 'Amsterdam',
-            trip: '6+',
-            img: images.dest_2_3,
-        },
-        {
-            name: 'Budapest City',
-            trip: '5+',
-            img: images.dest_2_4,
-        },
-    ];
-
     const DATA_OFFERS = [
         {
             name: 'Switzerland',
@@ -245,45 +223,6 @@ function Home() {
         { trip: '12+ Trips', position: { right: '13%', bottom: '25%' } },
     ];
 
-    const DATA_TOURS = [
-        {
-            name: 'Bali One Life Adventure',
-            img: images.tour_1_1,
-            position: 'Lasvegus, USA',
-            persion: '52+',
-            day: '07',
-            price: '350',
-            review: 5,
-        },
-        {
-            name: 'Places To Travel November',
-            img: images.tour_1_2,
-            position: ' Barcelona, Spain',
-            persion: '100+',
-            day: '13',
-            price: '350',
-            review: 5,
-        },
-        {
-            name: 'Brooklyn Beach Resort Tour',
-            img: images.tour_1_3,
-            position: ' Madrid, Spain',
-            persion: '50+',
-            day: '10',
-            price: '650',
-            review: 5,
-        },
-        {
-            name: 'Brooklyn Christmas Lights',
-            img: images.tour_1_4,
-            position: ' Lasvegus, USA',
-            persion: '312+',
-            day: '15',
-            price: '450',
-            review: 5,
-        },
-    ];
-
     const DATA_TEAM = [
         {
             name: 'Quan Bui',
@@ -319,7 +258,31 @@ function Home() {
             time: '15 July, 2023',
         },
     ];
+    const [tours, setTours] = useState([]);
+    const [destinations, setDestinations] = useState([]);
+    useEffect(() => {
+        const fetchTours = async () => {
+            try {
+                const response = await getToursLimit(0, 8);
+                setTours(response.tours);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchTours();
+    }, []);
 
+    useEffect(() => {
+        const fetchDestinations = async () => {
+            try {
+                const response = await getDestinationsLimit(0, 8);
+                setDestinations(response.destinations);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchDestinations();
+    }, []);
     const ServiceItem = ({ data, content }) =>
         data.map((result, index) => (
             <div className={cx('container_service')} key={index}>
@@ -358,11 +321,17 @@ function Home() {
     const TourItem = ({ data }) => (
         <SliderCard slidesToShowOn1024={2} slidesToShow={4} slidesToShowOn1200={3} slidesToShowOn1450={4}>
             {data.map((reslut, index) => (
-                <TourCardItem data={reslut} key={index} />
+                <TourCardItem data={reslut} homeTour key={index} />
             ))}
         </SliderCard>
     );
-
+    const Categories = ({ data }) => (
+        <SliderCard animation slidesToShow={6} slidesToShowOn770={2}>
+            {data.map((reslut, index) => (
+                <CardItem categories data={reslut} window key={index} />
+            ))}
+        </SliderCard>
+    );
     const sliderRef1 = useRef(null);
     const nextSlide1 = () => {
         sliderRef1.current.slickNext(); // Gọi hàm slickNext() từ ref
@@ -502,7 +471,7 @@ function Home() {
                 <SupTitle left right primary small title={'Categories'} />
                 <h2>Browse By Destination Category</h2>
                 <div className={cx('_row')}>
-                    <SliderCard animation window slides={DATA_SLIDER} slidesToShow={6} slidesToShowOn770={2} />
+                    <Categories data={destinations} />
                 </div>
             </div>
             <div className={cx('aboutus')}>
@@ -534,7 +503,7 @@ function Home() {
                 </div>
                 <div className={cx('about_right')}>
                     <div className={cx('right_img1')}>
-                        <img src={images.about_2_1} alt="Img" />
+                        <img className={cx('img1')} src={images.about_2_1} alt="Img" />
                         <div className={cx('right_img2')}>
                             <img className={cx('img2')} src={images.about_2_2} alt="Img" />
                         </div>
@@ -557,7 +526,7 @@ function Home() {
                         slidesToShowOn1450={4}
                         iconLeftName={<MapPin size={30} weight="fill" color="#3cb371" />}
                         slidesToShow={4}
-                        slides={DATA_DESTINATION}
+                        slides={destinations}
                     />
                 </div>
             </div>
@@ -649,7 +618,7 @@ function Home() {
                         </Button>
                     </div>
                     <div className={cx('featured_tour')}>
-                        <TourItem data={DATA_TOURS} />
+                        <TourItem data={tours} />
                     </div>
                 </div>
             </div>

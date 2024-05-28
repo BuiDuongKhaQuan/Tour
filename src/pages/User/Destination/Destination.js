@@ -1,115 +1,84 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Destination.module.scss';
 import Breadcumb from '~/components/Breadcumb';
-import images from '~/assets/images';
 import Select from '~/components/Select';
 import { MapPin } from '@phosphor-icons/react';
 import Pagination from '~/components/Pagination';
 import { CardItem } from '~/components/SliderCard';
+import { getDestinationsLimit, getDestinationsSize } from '~/utils/httpRequest';
 
 const cx = classNames.bind(styles);
 
+const DATA_SELECT = {
+    id: 1,
+    title: 'Default Sorting',
+    items: [
+        {
+            value: '1',
+            label: 'Default Sorting',
+        },
+        {
+            value: '2',
+            label: 'Sort by popularity',
+        },
+        {
+            value: '3',
+            label: 'Sort by average rating',
+        },
+        {
+            value: '4',
+            label: 'Sort by latest',
+        },
+        {
+            value: '5',
+            label: 'Sort by price: low to high',
+        },
+        {
+            value: '6',
+            label: 'Sort by price: high to low',
+        },
+    ],
+};
+
 export default function Destination() {
-    const DATA_SELECT = {
-        id: 1,
-        title: 'Default Sorting',
-        items: [
-            {
-                value: '1',
-                label: 'Default Sorting',
-            },
-            {
-                value: '2',
-                label: 'Sort by popularity',
-            },
-            {
-                value: '3',
-                label: 'Sort by average rating',
-            },
-            {
-                value: '4',
-                label: 'Sort by latest',
-            },
-            {
-                value: '5',
-                label: 'Sort by price: low to high',
-            },
-            {
-                value: '6',
-                label: 'Sort by price: high to low',
-            },
-        ],
-    };
-    const DATA_DESTINATION = [
-        {
-            name: 'Switzerland',
-            trip: '6+',
-            img: images.dest_2_1,
-        },
-        {
-            name: 'Barcelona',
-            trip: '8+',
-            img: images.dest_2_2,
-        },
-        {
-            name: 'Amsterdam',
-            trip: '6+',
-            img: images.dest_2_3,
-        },
-        {
-            name: 'Budapest City',
-            trip: '5+',
-            img: images.dest_2_4,
-        },
-        {
-            name: 'Switzerland',
-            trip: '6+',
-            img: images.dest_2_1,
-        },
-        {
-            name: 'Barcelona',
-            trip: '8+',
-            img: images.dest_2_2,
-        },
-        {
-            name: 'Amsterdam',
-            trip: '6+',
-            img: images.dest_2_3,
-        },
-        {
-            name: 'Budapest City',
-            trip: '5+',
-            img: images.dest_2_4,
-        },
-    ];
-
+    const [destinations, setDestinations] = useState([]);
+    const [destinationsSize, setDestinationsSize] = useState(0);
     const [itemOffset, setItemOffset] = useState(0);
-    const endOffset = itemOffset + 4;
-    console.log(`Loading items from ${itemOffset} to ${endOffset}`);
-    const currentItems = DATA_DESTINATION.slice(itemOffset, endOffset);
-    const pageCount = Math.ceil(DATA_DESTINATION.length / 4);
 
+    useEffect(() => {
+        const fetchDestinations = async () => {
+            try {
+                const response = await getDestinationsLimit(itemOffset, 8);
+                const size = await getDestinationsSize();
+                setDestinations(response.destinations);
+                setDestinationsSize(size);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchDestinations();
+    }, [itemOffset]);
+    const pageCount = Math.ceil(destinationsSize / 8);
     const handlePageClick = (event) => {
-        const newOffset = (event.selected * 4) % DATA_DESTINATION.length;
-        console.log(`User requested page number ${event.selected}, which is offset ${newOffset}`);
+        const newOffset = event.selected * 8;
         setItemOffset(newOffset);
     };
-
     return (
         <div className={cx('destination_wrapper')}>
             <Breadcumb />
             <div className={cx('destination_container')}>
                 <div className={cx('dest_sort_bar')}>
-                    <p>Showing 8 out of 24 destination</p>
+                    <p>Showing 8 out of {destinationsSize} destination</p>
                     <Select data={DATA_SELECT} />
                 </div>
                 <div className={cx('content')}>
-                    {currentItems.map((result, index) => (
+                    {destinations.map((result, index) => (
                         <CardItem
                             key={index}
                             data={result}
                             animation
+                            destination
                             large
                             tripSmall
                             iconLeftName={<MapPin size={30} weight="fill" color="#3cb371" />}

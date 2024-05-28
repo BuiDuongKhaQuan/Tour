@@ -1,115 +1,145 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './SideBar.module.scss';
 import Input from '~/components/Input';
 import Button from '~/components/Button';
 import { ArrowRight, EnvelopeSimple, MagnifyingGlass, Phone, User } from '@phosphor-icons/react';
 import H2Decoration from '~/components/H2Decoration';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import routes from '~/config/routes';
 import images from '~/assets/images';
 import Image from '~/components/Image';
 import Select from '~/components/Select';
 import TextArea from '~/components/TextArea';
+import { book } from '~/utils/httpRequest';
 
 const cx = classNames.bind(styles);
 
+const DATA_CATE = [
+    {
+        title: 'Hill Tracking(8)',
+        to: '/index',
+    },
+    {
+        title: 'Adventure(5)',
+        to: '/index',
+    },
+    {
+        title: 'Village Beauty(6)',
+        to: '/index',
+    },
+    {
+        title: 'Night View(8)',
+        to: '/index',
+    },
+    {
+        title: 'Religious Place(7)',
+        to: '/index',
+    },
+    {
+        title: 'Lake View(3)',
+        to: '/index',
+    },
+    {
+        title: 'Sea Area(5)',
+        to: '/index',
+    },
+    {
+        title: 'Resourt(4)',
+        to: '/index',
+    },
+];
+const DATA_DEAL = [
+    { title: 'Brooklyn Christmas Lights', img: images.cat_1_1, price: 250 },
+    { title: 'Brooklyn Christmas Lights', img: images.cat_1_1, price: 250 },
+    { title: 'Brooklyn Christmas Lights', img: images.cat_1_1, price: 250 },
+];
+const DATA_SELECT = [
+    {
+        id: 1,
+        title: 'Ticket Types',
+        items: [
+            {
+                value: '1',
+                label: 'Basic Ticket',
+            },
+            {
+                value: '2',
+                label: 'Standard Ticket',
+            },
+            {
+                value: '3',
+                label: 'Vip Ticket',
+            },
+        ],
+    },
+    {
+        id: 2,
+        title: 'Adult',
+        items: [
+            {
+                value: '1',
+                label: '1 person',
+            },
+            {
+                value: '2',
+                label: '2 person',
+            },
+            {
+                value: '3',
+                label: '3 person',
+            },
+        ],
+    },
+    {
+        id: 3,
+        title: 'Child',
+        items: [
+            {
+                value: '1',
+                label: '1 person',
+            },
+            {
+                value: '2',
+                label: '2 person',
+            },
+            {
+                value: '3',
+                label: '3 person',
+            },
+        ],
+    },
+];
 export default function SideBar({ search, bookTour, className }) {
-    const DATA_CATE = [
-        {
-            title: 'Hill Tracking(8)',
-            to: '/index',
-        },
-        {
-            title: 'Adventure(5)',
-            to: '/index',
-        },
-        {
-            title: 'Village Beauty(6)',
-            to: '/index',
-        },
-        {
-            title: 'Night View(8)',
-            to: '/index',
-        },
-        {
-            title: 'Religious Place(7)',
-            to: '/index',
-        },
-        {
-            title: 'Lake View(3)',
-            to: '/index',
-        },
-        {
-            title: 'Sea Area(5)',
-            to: '/index',
-        },
-        {
-            title: 'Resourt(4)',
-            to: '/index',
-        },
-    ];
-    const DATA_DEAL = [
-        { title: 'Brooklyn Christmas Lights', img: images.cat_1_1, price: 250 },
-        { title: 'Brooklyn Christmas Lights', img: images.cat_1_1, price: 250 },
-        { title: 'Brooklyn Christmas Lights', img: images.cat_1_1, price: 250 },
-    ];
-    const DATA_SELECT = [
-        {
-            id: 1,
-            title: 'Ticket Types',
-            items: [
-                {
-                    value: 'bassic',
-                    label: 'Basic Ticket',
-                },
-                {
-                    value: 'standard',
-                    label: 'Standard Ticket',
-                },
-                {
-                    value: 'vip',
-                    label: 'Vip Ticket',
-                },
-            ],
-        },
-        {
-            id: 2,
-            title: 'Adult',
-            items: [
-                {
-                    value: '1',
-                    label: '1 person',
-                },
-                {
-                    value: '2',
-                    label: '2 person',
-                },
-                {
-                    value: '3',
-                    label: '3 person',
-                },
-            ],
-        },
-        {
-            id: 3,
-            title: 'Child',
-            items: [
-                {
-                    value: '1',
-                    label: '1 person',
-                },
-                {
-                    value: '2',
-                    label: '2 person',
-                },
-                {
-                    value: '3',
-                    label: '3 person',
-                },
-            ],
-        },
-    ];
+    const { id } = useParams();
+    const user = JSON.parse(localStorage.getItem('user'));
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        id_ticket: '',
+        person_quantity: '',
+        child_quantity: '',
+        date: '',
+        message: '',
+    });
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    const handleSelectChange = (name, data) => {
+        console.log(data.value);
+        setFormData({ ...formData, [name]: data.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log('Form Data:', formData);
+
+        const tourBooked = await book({ ...formData, id_user: user.id, id_tour: id });
+        console.log(tourBooked);
+    };
     return (
         <div className={cx('information_cate', className)}>
             {search && (
@@ -134,19 +164,64 @@ export default function SideBar({ search, bookTour, className }) {
                         <h2>Book This Tour</h2>
                         <p>$250.00 per person</p>
                     </div>
-                    <form className={cx('search-form')}>
-                        <Input placeholder={'Your Name'} rightIcon={<User weight="bold" />} />
-                        <Input placeholder={'Your Email'} rightIcon={<EnvelopeSimple weight="bold" />} type={'email'} />
-                        <Input placeholder={'Phone Number'} rightIcon={<Phone weight="bold" />} type={'number'} />
-                        <Select data={DATA_SELECT[0]} />
+                    <form className={cx('search-form')} onSubmit={handleSubmit}>
+                        <Input
+                            placeholder="Your Name"
+                            rightIcon={<User weight="bold" />}
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                        />
+                        <Input
+                            placeholder="Your Email"
+                            rightIcon={<EnvelopeSimple weight="bold" />}
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                        />
+                        <Input
+                            placeholder="Phone Number"
+                            rightIcon={<Phone weight="bold" />}
+                            type="number"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleChange}
+                        />
+                        <Select
+                            data={DATA_SELECT[0]}
+                            selectedOption={formData.select1}
+                            setSelectedOption={(option) => handleSelectChange('id_ticket', option)}
+                        />
                         <div className={cx('search-form_item')}>
-                            {DATA_SELECT.slice(1, 3).map((result, index) => (
-                                <Select className={cx('form_item_select')} data={result} key={index} />
-                            ))}
+                            <Select
+                                className={cx('form_item_select')}
+                                data={DATA_SELECT[1]}
+                                selectedOption={formData.person_quantity}
+                                setSelectedOption={(option) => handleSelectChange('person_quantity', option)}
+                            />
+                            <Select
+                                className={cx('form_item_select')}
+                                data={DATA_SELECT[2]}
+                                selectedOption={formData.child_quantity}
+                                setSelectedOption={(option) => handleSelectChange('child_quantity', option)}
+                            />
                         </div>
-                        <Input placeholder={'mm/dd/yyyy'} type={'date'} classNameInput={cx('input-date')} />
-                        <TextArea placeholder={'Your Message'} />
-                        <Button primary large>
+                        <Input
+                            placeholder="mm/dd/yyyy"
+                            type="date"
+                            classNameInput={cx('input-date')}
+                            name="date"
+                            value={formData.date}
+                            onChange={handleChange}
+                        />
+                        <TextArea
+                            placeholder="Your Message"
+                            name="message"
+                            value={formData.message}
+                            onChange={handleChange}
+                        />
+                        <Button primary large type="submit">
                             Book Now
                         </Button>
                     </form>
