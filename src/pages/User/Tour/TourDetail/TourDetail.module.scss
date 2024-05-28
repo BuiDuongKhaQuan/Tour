@@ -88,3 +88,18 @@
         width: 160px;
     }
 }
+@media (max-width: 570px) {
+    .information_list {
+        flex-wrap: wrap;
+    }
+    .information_list > * {
+        flex-basis: calc(50% - 10px);
+        margin: 5px;
+    }
+    .information_item {
+        flex-direction: column !important;
+        .information_ {
+            text-align: center;
+        }
+    }
+}
