@@ -1,69 +1,50 @@
 import React from 'react';
 import classNames from 'classnames/bind';
 import styles from './BlogDetail.module.scss';
-import Input from '~/components/Input';
-import {
-    AirplaneTakeoff,
-    Calendar,
-    Camera,
-    CurrencyCircleDollar,
-    MapPin,
-    Subtitles,
-    Users,
-    UsersThree,
-} from '@phosphor-icons/react';
-import Button from '~/components/Button';
-import Image from '~/components/Image';
 import images from '~/assets/images';
-import TextArea from '~/components/TextArea';
+import { Calendar, Tag, User } from '@phosphor-icons/react';
+import Image from '~/components/Image';
+import LayoutWithSideBar from '../../LayoutWithSideBar';
 
 const cx = classNames.bind(styles);
 
 export default function BlogDetail() {
-    return (
-        <div className={cx('wrapper')}>
-            <form className={cx('form')}>
-                <h2>Information</h2>
-                <div className={cx('container')}>
-                    <div className={cx('avatar')}>
-                        <Image animation className={cx('avatar-img')} src={images.tour_1_1} alt={'avatar'} />
-                        <Button className={cx('avater-btn')} circle leftIcon={<Camera size={32} weight="duotone" />} />
-                    </div>
-                    <div className={cx('infor')}>
-                        <div className={cx('input_list')}>
-                            <Input
-                                classNameInput={cx('input')}
-                                rightIcon={<Subtitles size={20} weight="bold" />}
-                                placeholder={'Blog Title'}
-                                type="text"
-                            />
-                        </div>
-                        <div className={cx('input_list')}>
-                            <Input
-                                classNameInput={cx('input', 'input_date')}
-                                // rightIcon={<Calendar size={20} weight="bold" />}
-                                placeholder={'Day'}
-                                type="date"
-                            />
-                            <Input
-                                classNameInput={cx('input')}
-                                rightIcon={<Users size={20} weight="bold" />}
-                                placeholder={'User'}
-                            />
-                        </div>
-                        <TextArea className={cx('text_area')} placeholder={'Content'} />
-                        <div className={cx('input_list')}>
-                            <Button primary large className={cx('btn')}>
-                                Submit
-                            </Button>
+    const DATA_BLOG = {
+        img: images.tour_1_1,
+        time: '21 June, 2024',
+        user: 'admin',
+        content:
+            'Phosfluorescently unleash highly efficient experiences for team driven scenarios. Conveniently enhance cross-unit communities with accurate testing procedures. Dynamically embrace team building expertise. Proactively monetize parallel solutions.',
+        title: 'Get Tips For Making the Most of Your Summer',
+    };
 
-                            <Button primary large className={cx('btn')}>
-                                Delete
-                            </Button>
-                        </div>
-                    </div>
+    const BlogContent = () => (
+        <div className={cx('blog_wrapper')}>
+            <Image pointer animation src={DATA_BLOG.img} alt={DATA_BLOG.title} />
+            <div className={cx('blog_content')}>
+                <div className={cx('blog_infor')}>
+                    <span className={cx('infor_item')}>
+                        <User className={cx('infor_item_icon')} weight="fill" />
+                        {DATA_BLOG.user}
+                    </span>
+                    <span className={cx('infor_item')}>
+                        <Calendar className={cx('infor_item_icon')} weight="f   ill" />
+                        {DATA_BLOG.time}
+                    </span>
+                    <span className={cx('infor_item')}>
+                        <Tag className={cx('infor_item_icon')} weight="fill" />
+                        Travel
+                    </span>
                 </div>
-            </form>
+                <h2>{DATA_BLOG.title}</h2>
+                <div className={cx('main_content')}></div>
+            </div>
         </div>
+    );
+
+    return (
+        <LayoutWithSideBar searchBar>
+            <BlogContent />
+        </LayoutWithSideBar>
     );
 }

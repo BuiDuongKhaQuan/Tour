@@ -7,13 +7,15 @@ import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
-export default function TourCardItem({ data, homeTour }) {
+export default function TourCardItem({ data, homeTour, profileTour }) {
+    const width = homeTour ? '405px' : profileTour ? '' : undefined;
+    const home_tour = homeTour ? 'home-tour' : profileTour ? 'home-tour' : undefined;
     return (
         <div>
             <div className={cx('tours_item')}>
                 <div className={cx('tour_img')}>
                     <Image
-                        width={homeTour && '405px'}
+                        width={width}
                         height={homeTour ? '205px' : '273px'}
                         animation
                         src={data.imgs ? data.imgs[0] : ''}
@@ -23,7 +25,7 @@ export default function TourCardItem({ data, homeTour }) {
                         <HeartStraight size={20} weight="bold" color="#ffffff" />
                     </span>
                 </div>
-                <div className={cx('tour_information', homeTour && 'home-tour')}>
+                <div className={cx('tour_information', home_tour)}>
                     <div className={cx('location_re')}>
                         <div className={cx('location')}>
                             <MapPin size={20} weight="bold" color="#3cb371" />

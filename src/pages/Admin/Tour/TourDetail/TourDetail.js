@@ -1,15 +1,20 @@
-import React from 'react';
-import classNames from 'classnames/bind';
-import styles from './TourDetail.module.scss';
-import Input from '~/components/Input';
 import { AirplaneTakeoff, Calendar, Camera, CurrencyCircleDollar, MapPin, UsersThree } from '@phosphor-icons/react';
+import classNames from 'classnames/bind';
+import { useState } from 'react';
+import images from '~/assets/images';
 import Button from '~/components/Button';
 import Image from '~/components/Image';
-import images from '~/assets/images';
-
+import Input from '~/components/Input';
+import QuillEditor from '~/components/QuillEditor';
+import styles from './TourDetail.module.scss';
 const cx = classNames.bind(styles);
 
 export default function TourDetail() {
+    const [editorValue, setEditorValue] = useState('');
+
+    const handleEditorChange = (content) => {
+        setEditorValue(content);
+    };
     return (
         <div className={cx('wrapper')}>
             <form className={cx('form')}>
@@ -51,6 +56,9 @@ export default function TourDetail() {
                                 rightIcon={<CurrencyCircleDollar size={20} weight="bold" />}
                                 placeholder={'Price'}
                             />
+                        </div>
+                        <div>
+                            <QuillEditor onEditorChange={handleEditorChange} />
                         </div>
                         <div className={cx('input_list')}>
                             <Button primary large className={cx('btn')}>

@@ -92,6 +92,9 @@
         .fanpage_button {
             background-color: #1e2c46;
             border-color: #1e2c46;
+            &:not(:last-child) {
+                margin-right: 10px;
+            }
         }
     }
 }
@@ -219,5 +222,22 @@
     .container {
         flex-wrap: wrap;
         flex-direction: column !important;
+    }
+}
+@media (max-width: 570px) {
+    .recent_item {
+        h2 {
+            font-size: 16px !important;
+            text-align: left !important;
+        }
+    }
+    .title {
+        text-align: left !important;
+    }
+    .container {
+        padding: 100px 0 !important;
+    }
+    .copyright {
+        padding: 20px 15px !important;
     }
 }
