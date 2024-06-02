@@ -47,6 +47,7 @@ export default function SideBar({
             onFormDataChange(formData);
         }
     }, [formData, onFormDataChange]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });

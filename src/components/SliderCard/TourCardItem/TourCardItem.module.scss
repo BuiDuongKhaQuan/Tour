@@ -26,10 +26,23 @@
 }
 .tour_information {
     padding: 25px 25px 0 25px;
+    min-width: 405px;
+    min-height: 223px;
     h3 {
         margin: 12px 0;
         font-family: 'PlayfairDisplay';
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Số dòng tối đa */
+        -webkit-box-orient: vertical;
+        text-overflow: ellipsis;
+        line-height: 1.5em; /* Chiều cao của một dòng */
+        max-height: 3em; /* 2 dòng * chiều cao của một dòng */
     }
+}
+.home-tour {
+    min-width: auto;
+    min-height: auto;
 }
 .location_re {
     display: flex;

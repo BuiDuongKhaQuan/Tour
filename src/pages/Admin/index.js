@@ -1,0 +1,11 @@
+export { default as AdminHome } from '~/pages/Admin/Home';
+export { default as AdminTour } from '~/pages/Admin/Tour';
+export { default as AdminTourDetail } from '~/pages/Admin/Tour/TourDetail';
+export { default as AdminAccount } from '~/pages/Admin/Account';
+export { default as AdminAccountDetail } from '~/pages/Admin/Account/Profile';
+export { default as AdminDestination } from '~/pages/Admin/Destination';
+export { default as AdminDestinationDetail } from '~/pages/Admin/Destination/DestinationDetail';
+export { default as AdminBlog } from '~/pages/Admin/Blog';
+export { default as AdminBlogDetail } from '~/pages/Admin/Blog/BlogDetail';
+export { default as AdminContact } from '~/pages/Admin/Contact';
+export { default as AdminContactDetail } from '~/pages/Admin/Contact/ContactDetail';

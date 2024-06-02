@@ -4,25 +4,32 @@ import styles from './TourCardItem.module.scss';
 import Image from '~/components/Image';
 import { ArrowUpRight, Clock, HeartStraight, MapPin, Star, Users } from '@phosphor-icons/react';
 import { Link } from 'react-router-dom';
-import routes from '~/config/routes';
 
 const cx = classNames.bind(styles);
 
-export default function TourCardItem({ data }) {
+export default function TourCardItem({ data, homeTour, profileTour }) {
+    const width = homeTour ? '405px' : profileTour ? '' : undefined;
+    const home_tour = homeTour ? 'home-tour' : profileTour ? 'home-tour' : undefined;
     return (
         <div>
             <div className={cx('tours_item')}>
                 <div className={cx('tour_img')}>
-                    <Image animation src={data.img} alt={data.name} />
+                    <Image
+                        width={width}
+                        height={homeTour ? '205px' : '273px'}
+                        animation
+                        src={data.imgs ? data.imgs[0] : ''}
+                        alt={data.name}
+                    />
                     <span className={cx('tour_like')}>
                         <HeartStraight size={20} weight="bold" color="#ffffff" />
                     </span>
                 </div>
-                <div className={cx('tour_information')}>
+                <div className={cx('tour_information', home_tour)}>
                     <div className={cx('location_re')}>
                         <div className={cx('location')}>
                             <MapPin size={20} weight="bold" color="#3cb371" />
-                            {data.position}
+                            {data.destination}
                         </div>
                         <div className={cx('review')}>
                             <Star size={20} weight="fill" color="#FFB539" />
@@ -36,11 +43,11 @@ export default function TourCardItem({ data }) {
                     <div className={cx('day_persion')}>
                         <span className={cx('day_persion_item')}>
                             <Clock size={20} color="#3cb371" />
-                            {data.day}
+                            {data.date}
                         </span>
                         <span className={cx('day_persion_item')}>
                             <Users size={20} color="#3cb371" />
-                            {data.persion}
+                            {data.person_quantity}
                         </span>
                     </div>
                     <div className={cx('tour_price')}>
@@ -48,7 +55,7 @@ export default function TourCardItem({ data }) {
                             From
                             <span className={cx('price')}> ${data.price}</span>
                         </span>
-                        <Link className={cx('detail')} to={routes.tour_detail}>
+                        <Link className={cx('detail')} to={`/tour/${data.id}`}>
                             SEE DETAILS
                             <ArrowUpRight size={18} className={cx('detail_icon')} color="#3cb371" weight="bold" />
                         </Link>
