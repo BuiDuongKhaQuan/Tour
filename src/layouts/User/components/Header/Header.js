@@ -44,7 +44,7 @@ function Header() {
     const [modalLoginIsOpen, setModalLoginIsOpen] = useState(false);
     const [modalSearchIsOpen, setModalSearchIsOpen] = useState(false);
     const [modalMenuIsOpen, setModalMenuIsOpen] = useState(false);
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = JSON.parse(sessionStorage.getItem('user'));
     const body = document.body;
 
     const toggleModalLogin = () => {
