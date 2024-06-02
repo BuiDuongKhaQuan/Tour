@@ -39,7 +39,7 @@ const data = [
     },
 ];
 export default function Contact() {
-    const navigation = useNavigate();
+    const navigate = useNavigate();
     const columns = useMemo(
         () => [
             {
@@ -115,7 +115,7 @@ export default function Contact() {
                     small
                     color="error"
                     disabled={!table.getIsSomeRowsSelected()}
-                    onClick={() => navigation('/admin-contact-detail')}
+                    onClick={() => navigate('/admin-contact-detail')}
                     variant="contained"
                 >
                     Answer Selected Contacts

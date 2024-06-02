@@ -51,7 +51,7 @@ const data = [
     },
 ];
 export default function Destination() {
-    const navigation = useNavigate();
+    const navigate = useNavigate();
     const columns = useMemo(
         () => [
             {
@@ -146,7 +146,7 @@ export default function Destination() {
                     small
                     color="error"
                     disabled={!table.getIsSomeRowsSelected()}
-                    onClick={() => navigation('/admin-destination-detail')}
+                    onClick={() => navigate('/admin-destination-detail')}
                     variant="contained"
                 >
                     Edit Selected Tours

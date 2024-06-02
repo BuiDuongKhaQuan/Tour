@@ -36,7 +36,7 @@ const data = [
     },
 ];
 export default function Blog() {
-    const navigation = useNavigate();
+    const navigate = useNavigate();
     const columns = useMemo(
         () => [
             {
@@ -136,7 +136,7 @@ export default function Blog() {
                     small
                     color="error"
                     disabled={!table.getIsSomeRowsSelected()}
-                    onClick={() => navigation('/admin-blog-detail')}
+                    onClick={() => navigate('/admin-blog-detail')}
                     variant="contained"
                 >
                     Edit Selected Blogs
