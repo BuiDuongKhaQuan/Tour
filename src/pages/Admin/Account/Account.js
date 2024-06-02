@@ -102,7 +102,7 @@ const data = [
     },
 ];
 export default function Account() {
-    const navigation = useNavigate();
+    const navigate = useNavigate();
     const columns = useMemo(
         () => [
             {
@@ -200,7 +200,7 @@ export default function Account() {
                     small
                     color="error"
                     disabled={!table.getIsSomeRowsSelected()}
-                    onClick={() => navigation('/admin-account-detail')}
+                    onClick={() => navigate('/admin-account-detail')}
                     variant="contained"
                 >
                     Edit Selected Accounts

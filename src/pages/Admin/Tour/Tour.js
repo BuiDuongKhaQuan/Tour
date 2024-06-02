@@ -1,54 +1,27 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Tour.module.scss';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { Box } from '@mui/material';
 import Button from '~/components/Button';
 import { useNavigate } from 'react-router-dom';
-import images from '~/assets/images';
+import { getTours, getToursLimit } from '~/utils/httpRequest';
+import CurrencyFormat from 'react-currency-format';
 
 const cx = classNames.bind(styles);
 
-const data = [
-    {
-        name: 'Bali One Life Adventure',
-        img: images.tour_1_1,
-        position: 'Lasvegus, USA',
-        persion: '52+',
-        day: '07',
-        price: '350',
-        review: 5,
-    },
-    {
-        name: 'Places To Travel November',
-        img: images.tour_1_2,
-        position: ' Barcelona, Spain',
-        persion: '100+',
-        day: '13',
-        price: '350',
-        review: 5,
-    },
-    {
-        name: 'Brooklyn Beach Resort Tour',
-        img: images.tour_1_3,
-        position: ' Madrid, Spain',
-        persion: '50+',
-        day: '10',
-        price: '650',
-        review: 5,
-    },
-    {
-        name: 'Brooklyn Christmas Lights',
-        img: images.tour_1_4,
-        position: ' Lasvegus, USA',
-        persion: '312+',
-        day: '15',
-        price: '450',
-        review: 5,
-    },
-];
 export default function Tour() {
-    const navigation = useNavigate();
+    const navigate = useNavigate();
+    const [tours, setTours] = useState([{}]);
+
+    useEffect(() => {
+        const getData = async () => {
+            const response = await getTours();
+            setTours(response.data);
+        };
+        getData();
+    }, []);
+
     const columns = useMemo(
         () => [
             {
@@ -66,26 +39,26 @@ export default function Tour() {
                         <img
                             alt="avatar"
                             height={100}
-                            src={row.original.img}
+                            src={row.original.imgs && row.original.imgs[0]}
                             loading="lazy"
-                            style={{ borderRadius: '10px' }}
+                            style={{ borderRadius: '10px', width: '150px' }}
                         />
                         <span>{renderedCellValue}</span>
                     </Box>
                 ),
             },
             {
-                accessorKey: 'position', //normal accessorKey
+                accessorKey: 'destination', //normal accessorKey
                 header: 'Position',
                 size: 200,
             },
             {
-                accessorKey: 'persion',
+                accessorKey: 'person_quantity',
                 header: 'Persion',
                 size: 150,
             },
             {
-                accessorKey: 'day',
+                accessorKey: 'date',
                 header: 'Day',
                 size: 150,
             },
@@ -93,6 +66,15 @@ export default function Tour() {
                 accessorKey: 'price',
                 header: 'Price',
                 size: 150,
+                Cell: ({ cell }) => (
+                    <CurrencyFormat
+                        value={cell.getValue()}
+                        displayType={'text'}
+                        thousandSeparator={true}
+                        suffix={'đ'}
+                        decimalScale={2}
+                    />
+                ),
             },
         ],
         [],
@@ -100,7 +82,7 @@ export default function Tour() {
 
     const table = useMaterialReactTable({
         columns,
-        data,
+        data: tours,
         muiTableBodyCellProps: ({ row }) => ({
             //conditionally style selected rows
             sx: {
@@ -158,7 +140,13 @@ export default function Tour() {
                     small
                     color="error"
                     disabled={!table.getIsSomeRowsSelected()}
-                    onClick={() => navigation('/admin-tour-detail')}
+                    onClick={() => {
+                        const selectedRows = table.getSelectedRowModel().rows;
+                        if (selectedRows.length > 0) {
+                            const tour = selectedRows[0].original; // Select the first tour
+                            navigate('/admin-tour-detail', { state: tour }); // Pass as an object with a key
+                        }
+                    }}
                     variant="contained"
                 >
                     Edit Selected Tours
