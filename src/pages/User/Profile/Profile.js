@@ -1,45 +1,23 @@
-import React, { useEffect, useRef, useState } from 'react';
-import classNames from 'classnames/bind';
-import styles from './Profile.module.scss';
-import Image from '~/components/Image';
-import images from '~/assets/images';
-import { AppBar, Box, Tab, Tabs } from '@mui/material';
-import PropTypes from 'prop-types';
 import { useTheme } from '@emotion/react';
-import Breadcumb from '~/components/Breadcumb';
-import Input from '~/components/Input';
-import { Camera, EnvelopeSimple, GenderIntersex, MapPin, Phone, User } from '@phosphor-icons/react';
-import Select from '~/components/Select';
-import Button from '~/components/Button';
-import { TourCardItem } from '~/components/SliderCard';
-import { findTourById, getCompletedTour, getWattingTour, logout, updateUser, uploadAvatar } from '~/utils/httpRequest';
+import { AppBar, Tab, Tabs } from '@mui/material';
+import { Camera, EnvelopeSimple, MapPin, Phone, User } from '@phosphor-icons/react';
+import classNames from 'classnames/bind';
+import { useEffect, useRef, useState } from 'react';
+import { Store } from 'react-notifications-component';
 import { useNavigate } from 'react-router-dom';
-import routes from '~/config/routes';
-import Loading from '~/components/Loading';
 import AvatarCustom from '~/components/AvartarCustom';
-
+import Breadcumb from '~/components/Breadcumb';
+import Button from '~/components/Button';
+import Input from '~/components/Input';
+import Loading from '~/components/Loading';
+import Select from '~/components/Select';
+import { TourCardItem } from '~/components/SliderCard';
+import routes from '~/config/routes';
+import { DATA_GENDER_SELECT, notification } from '~/utils/constants';
+import { findTourById, getCompletedTour, getWattingTour, logout, updateUser, uploadAvatar } from '~/utils/httpRequest';
+import styles from './Profile.module.scss';
+import TabPanel from '~/components/TabPanel';
 const cx = classNames.bind(styles);
-function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-
-    return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`full-width-tabpanel-${index}`}
-            aria-labelledby={`full-width-tab-${index}`}
-            {...other}
-        >
-            {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-        </div>
-    );
-}
-
-TabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.number.isRequired,
-    value: PropTypes.number.isRequired,
-};
 
 function a11yProps(index) {
     return {
@@ -49,111 +27,24 @@ function a11yProps(index) {
 }
 
 export default function Profile() {
-    const DATA_TOURS = [
-        {
-            name: 'Bali One Life Adventure',
-            img: images.tour_1_1,
-            position: 'Lasvegus, USA',
-            persion: '52+',
-            day: '07',
-            price: '350',
-            review: 5,
-        },
-        {
-            name: 'Places To Travel November',
-            img: images.tour_1_2,
-            position: ' Barcelona, Spain',
-            persion: '100+',
-            day: '13',
-            price: '350',
-            review: 5,
-        },
-        {
-            name: 'Brooklyn Beach Resort Tour',
-            img: images.tour_1_3,
-            position: ' Madrid, Spain',
-            persion: '50+',
-            day: '10',
-            price: '650',
-            review: 5,
-        },
-        {
-            name: 'Brooklyn Christmas Lights',
-            img: images.tour_1_4,
-            position: ' Lasvegus, USA',
-            persion: '312+',
-            day: '15',
-            price: '450',
-            review: 5,
-        },
-        {
-            name: 'Brooklyn Christmas Lights',
-            img: images.tour_1_4,
-            position: ' Lasvegus, USA',
-            persion: '312+',
-            day: '15',
-            price: '450',
-            review: 5,
-        },
-        {
-            name: 'Brooklyn Christmas Lights',
-            img: images.tour_1_4,
-            position: ' Lasvegus, USA',
-            persion: '312+',
-            day: '15',
-            price: '450',
-            review: 5,
-        },
-        {
-            name: 'Brooklyn Christmas Lights',
-            img: images.tour_1_4,
-            position: ' Lasvegus, USA',
-            persion: '312+',
-            day: '15',
-            price: '450',
-            review: 5,
-        },
-        {
-            name: 'Brooklyn Christmas Lights',
-            img: images.tour_1_4,
-            position: ' Lasvegus, USA',
-            persion: '312+',
-            day: '15',
-            price: '450',
-            review: 5,
-        },
-    ];
-    const DATA_SELECT = {
-        id: 1,
-        title: 'Gender',
-        icon: <GenderIntersex weight="bold" />,
-        items: [
-            {
-                value: '1',
-                label: 'Male',
-            },
-            {
-                value: '2',
-                label: 'Female',
-            },
-        ],
-    };
-
     const theme = useTheme();
-    const navigation = useNavigate();
+    const navigate = useNavigate();
     const [value, setValue] = useState(0);
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = JSON.parse(sessionStorage.getItem('user'));
     const [name, setName] = useState(user ? user.name : '');
     const [email, setEmail] = useState(user ? user.email : '');
     const [phone, setPhone] = useState(user ? user.phone : '');
     const [address, setAddress] = useState(user ? user.address : '');
     const [avatar, setAvatar] = useState(user ? user.avatar : '');
     const [gender, setGender] = useState(user ? user.gender : '');
-    const [selectedOption, setSelectedOption] = useState(null);
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [wattingTours, setWattingTours] = useState([]);
     const [completedTours, setCompletedTours] = useState([]);
+    const findSelectedOption = (gender) => {
+        return DATA_GENDER_SELECT.items.find((item) => item.label.toLowerCase() === gender.toLowerCase());
+    };
+    const [selectedOption, setSelectedOption] = useState(findSelectedOption(gender));
 
     const fileInputRef = useRef(null);
 
@@ -181,10 +72,20 @@ export default function Profile() {
                 gender: selectedOption.label,
             };
             const newUser = await updateUser(user.id, newData);
-            localStorage.setItem('user', JSON.stringify(newUser));
+            sessionStorage.setItem('user', JSON.stringify(newUser));
             setAvatar(user.avatar);
+            Store.addNotification({
+                ...notification,
+                message: 'Update successful',
+            });
         } catch (error) {
             console.log('Error', error);
+            Store.addNotification({
+                ...notification,
+                title: 'Error',
+                type: 'danger',
+                message: 'Update successful',
+            });
         }
     };
 
@@ -198,7 +99,7 @@ export default function Profile() {
                 ...user,
                 avatar: response.avatar,
             };
-            localStorage.setItem('user', JSON.stringify(newUser));
+            sessionStorage.setItem('user', JSON.stringify(newUser));
         } catch (error) {
             console.error(error.message);
         } finally {
@@ -209,8 +110,8 @@ export default function Profile() {
     const handleLogout = async () => {
         try {
             await logout();
-            localStorage.removeItem('user');
-            navigation(routes.home);
+            sessionStorage.removeItem('user');
+            navigate(routes.home);
         } catch (error) {}
     };
 
@@ -221,18 +122,17 @@ export default function Profile() {
                 const completed = await getCompletedTour();
                 const toursWattingPromises = watting.map(async (booking) => {
                     const response = await findTourById(booking.id_tour);
-                    return response.tour; // Trả về đối tượng tour
+                    return response.data; // Trả về đối tượng tour
                 });
                 const toursWatting = await Promise.all(toursWattingPromises);
 
                 const toursCompletedPromises = completed.map(async (booking) => {
                     const response = await findTourById(booking.id_tour);
-                    return response.tour; // Trả về đối tượng tour
+                    return response.data; // Trả về đối tượng tour
                 });
                 const toursCompleted = await Promise.all(toursCompletedPromises);
 
                 setWattingTours(toursWatting);
-                console.log('Completed', toursCompleted);
                 setCompletedTours(toursCompleted);
             } catch (error) {
                 console.log(error);
@@ -314,11 +214,10 @@ export default function Profile() {
                                     type={'text'}
                                 />
                                 <Select
-                                    selectedOption={selectedOption}
-                                    setSelectedOption={setSelectedOption}
+                                    defaultValue={selectedOption}
+                                    onChange={setSelectedOption}
                                     className={cx('infor-select')}
-                                    placeholder={gender ? gender : 'Gender'}
-                                    data={DATA_SELECT}
+                                    data={DATA_GENDER_SELECT}
                                 />
                                 <Button primary large className={cx('btn-submit')} onClick={handleUpdate}>
                                     UPDATE

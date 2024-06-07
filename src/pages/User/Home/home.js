@@ -132,44 +132,6 @@ function Home() {
         ],
     };
 
-    const DATA_SLIDER = [
-        {
-            name: 'Adventure',
-            trip: '12',
-            img: images.cat_1_1,
-        },
-        {
-            name: 'Beaches',
-            trip: '22',
-            img: images.cat_1_2,
-        },
-        {
-            name: 'Boat Tour',
-            trip: '30',
-            img: images.cat_1_3,
-        },
-        {
-            name: 'City Tour',
-            trip: '13',
-            img: images.cat_1_4,
-        },
-        {
-            name: 'Hiking',
-            trip: '32',
-            img: images.cat_1_5,
-        },
-        {
-            name: 'Resort',
-            trip: '12',
-            img: images.cat_1_6,
-        },
-        {
-            name: 'Religious',
-            trip: '07',
-            img: images.cat_1_7,
-        },
-    ];
-
     const DATA_OFFERS = [
         {
             name: 'Switzerland',
@@ -276,7 +238,7 @@ function Home() {
         const fetchDestinations = async () => {
             try {
                 const response = await getDestinationsLimit(0, 8);
-                setDestinations(response.destinations);
+                setDestinations(response.data);
             } catch (error) {
                 console.log(error);
             }

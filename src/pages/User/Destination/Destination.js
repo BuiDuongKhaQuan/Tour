@@ -51,7 +51,7 @@ export default function Destination() {
             try {
                 const response = await getDestinationsLimit(itemOffset, 8);
                 const size = await getDestinationsSize();
-                setDestinations(response.destinations);
+                setDestinations(response.data);
                 setDestinationsSize(size);
             } catch (error) {
                 console.log(error);

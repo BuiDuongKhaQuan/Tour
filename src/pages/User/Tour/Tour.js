@@ -55,7 +55,7 @@ export default function Tour() {
     );
 
     return (
-        <LayoutWithSideBar searchBar classNameSideBar={cx('side-bar')}>
+        <LayoutWithSideBar searchBar categoryBar classNameSideBar={cx('side-bar')}>
             <TourContent />
             <div className={cx('pagination_')}>
                 <Pagination pageCount={pageCount} handlePageClick={handlePageClick} />
