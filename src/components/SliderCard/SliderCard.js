@@ -15,6 +15,7 @@ const SliderCard = forwardRef(
             slidesToShowOn770 = 1,
             sliderProps,
             children,
+            customPaging,
             ...passProps
         },
         ref,

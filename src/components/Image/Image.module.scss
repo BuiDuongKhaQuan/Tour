@@ -2,10 +2,47 @@
     border: none;
     vertical-align: middle;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
     img {
         transition: transform 0.5s;
         background-size: cover;
         width: 100%;
+        &:hover {
+            .action-btn {
+                opacity: 1;
+            }
+        }
+    }
+    &:hover {
+        .action-btn {
+            opacity: 1;
+        }
+    }
+}
+.action-btn {
+    position: absolute;
+    transition: ease-out 0.3s;
+    background-color: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .btn {
+        min-width: 35px;
+        height: 35px;
+        padding: 5px;
+        &:not(:last-child) {
+            margin-right: 5px;
+        }
+    }
+}
+.actionHover {
+    .action-btn {
+        background-color: rgba(0, 0, 0, 0.3);
+        opacity: 1;
     }
 }
 .circle {

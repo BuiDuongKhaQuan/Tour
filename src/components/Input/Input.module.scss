@@ -1,3 +1,11 @@
+.wraper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+.pading-left {
+    padding-left: 50px !important;
+}
 .input_container {
     display: flex;
     position: relative;
@@ -21,6 +29,7 @@
         }
     }
 }
+
 .icon {
     position: absolute;
     font-size: 16px;
@@ -32,4 +41,12 @@
 .right {
     top: 14px;
     right: 20px;
+}
+.label {
+    text-align: left;
+    display: inline-block;
+    width: 100%;
+    font-weight: 600;
+    margin-left: 5px;
+    font-family: 'PlayfairDisplay';
 }

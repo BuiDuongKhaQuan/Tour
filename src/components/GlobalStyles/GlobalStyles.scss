@@ -1,4 +1,5 @@
 @import 'normalize.css';
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
 
 :root {
     --black: #000;
@@ -41,7 +42,11 @@ svg {
 p {
     font-family: 'Roboto', sans-serif;
 }
-
+ul,
+ol {
+    list-style-type: none; /* Loại bỏ dấu chấm */
+    padding-left: 0; /* Loại bỏ khoảng cách thụt vào */
+}
 h2 {
     font-family: 'PlayfairDisplay', sans-serif;
     font-size: 45px;
@@ -163,4 +168,36 @@ a {
         font-size: 34px !important;
         text-align: center;
     }
+}
+
+//Sider
+.slick-dots {
+    bottom: -90px;
+}
+.slick-dots li {
+    width: 80px;
+    height: 80px;
+}
+.slick-thumb li img {
+    filter: grayscale(70%);
+}
+
+.slick-thumb li.slick-active img {
+    filter: grayscale(0);
+}
+/* Ghi đè các thuộc tính của .slick-dots li button */
+.slick-dots li button {
+    font-size: initial;
+    line-height: initial;
+    display: initial;
+    width: initial;
+    height: initial;
+    padding: initial;
+    color: initial;
+    border: initial;
+    outline: initial;
+    background: initial;
+}
+.slick-dots li button::before {
+    content: none;
 }
