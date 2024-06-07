@@ -4,6 +4,7 @@ import styles from './TourCardItem.module.scss';
 import Image from '~/components/Image';
 import { ArrowUpRight, Clock, HeartStraight, MapPin, Star, Users } from '@phosphor-icons/react';
 import { Link } from 'react-router-dom';
+import CurrencyFormat from 'react-currency-format';
 
 const cx = classNames.bind(styles);
 
@@ -53,7 +54,16 @@ export default function TourCardItem({ data, homeTour, profileTour }) {
                     <div className={cx('tour_price')}>
                         <span className={cx('price_box')}>
                             From
-                            <span className={cx('price')}> ${data.price}</span>
+                            <span className={cx('price')}>
+                                {' '}
+                                <CurrencyFormat
+                                    value={data.price}
+                                    displayType={'text'}
+                                    thousandSeparator={true}
+                                    suffix={'đ'}
+                                    decimalScale={2}
+                                />
+                            </span>
                         </span>
                         <Link className={cx('detail')} to={`/tour/${data.id}`}>
                             SEE DETAILS

@@ -51,7 +51,7 @@ export default function FormSubmit({ toggleModalLogin, setCloseModal }) {
         setIsLoading(true);
         try {
             await register(name, email, password);
-            localStorage.setItem('email', email);
+            sessionStorage.setItem('email', email);
             handleShowVerify();
         } catch (error) {
             setError(true);
@@ -63,11 +63,11 @@ export default function FormSubmit({ toggleModalLogin, setCloseModal }) {
 
     const handleSendOtp = async (event) => {
         event.preventDefault();
-        const email = localStorage.getItem('email');
+        const email = sessionStorage.getItem('email');
         setIsLoading(true);
         try {
             await verify(email, otp);
-            localStorage.removeItem('email');
+            sessionStorage.removeItem('email');
             handleShowLoginForm();
             console.log('Đăng ký thành công!');
         } catch (error) {
@@ -84,7 +84,7 @@ export default function FormSubmit({ toggleModalLogin, setCloseModal }) {
         console.log(email, password);
         try {
             const data = await login(email, password);
-            localStorage.setItem('user', JSON.stringify(data.user));
+            sessionStorage.setItem('user', JSON.stringify(data.user));
             setCloseModal();
             console.log(data.user);
         } catch (error) {
