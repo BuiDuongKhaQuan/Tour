@@ -10,6 +10,7 @@ export default function LayoutWithSideBar({
     children,
     searchBar,
     bookBar,
+    categoryBar,
     classNameContainer,
     classNameList,
     classNameSideBar,
@@ -19,7 +20,7 @@ export default function LayoutWithSideBar({
             <Breadcumb />
             <div className={cx('tour_container', classNameContainer)}>
                 <div className={cx('tour_list', classNameList)}>{children}</div>
-                <SideBar search={searchBar} bookTour={bookBar} className={classNameSideBar} />
+                <SideBar search={searchBar} bookTour={bookBar} category={categoryBar} className={classNameSideBar} />
             </div>
         </div>
     );

@@ -1,0 +1,68 @@
+.container {
+    margin: 100px 85px;
+    .content {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+    }
+}
+.information {
+    width: 65%;
+}
+.order {
+    width: 35%;
+    background-color: var(--smoke-color);
+    margin-bottom: 40px;
+    border-radius: 10px;
+    .title {
+        padding: 10px 30px;
+        background-color: var(--primary-color);
+        border-radius: 10px 10px 0 0;
+        color: var(--white);
+        h2 {
+            font-size: 20px;
+        }
+    }
+    .tours {
+        padding: 40px 20px;
+    }
+    .list-price {
+        margin: 0 30px;
+        padding: 10px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        border-top: 1px solid rgba(0, 0, 0, 0.37);
+    }
+    .price-item {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-between;
+        font-size: 18.5px;
+        font-weight: 600;
+        .lable {
+            width: 50%;
+            font-family: 'PlayfairDisplay';
+        }
+        .price {
+            width: 50%;
+            text-align: left;
+        }
+    }
+    .total {
+        margin: 20px 0;
+        .lable,
+        .price {
+            font-size: 30px;
+        }
+    }
+    .checkout-btn {
+        padding: 10px 30px;
+        .btn {
+            width: 100%;
+            font-size: 20px;
+            padding: 10px;
+        }
+    }
+}

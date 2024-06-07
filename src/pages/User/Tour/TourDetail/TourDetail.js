@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './TourDetail.module.scss';
 import Button from '~/components/Button';
@@ -6,10 +6,33 @@ import { Clock, CurrencyCircleDollar, EnvelopeSimple, MapPin, Star, User, UsersT
 import Input from '~/components/Input';
 import TextArea from '~/components/TextArea';
 import LayoutWithSideBar from '../../LayoutWithSideBar';
+import { useParams } from 'react-router-dom';
+import { findTourById } from '~/utils/httpRequest';
+import CurrencyFormat from 'react-currency-format';
 
 const cx = classNames.bind(styles);
 
 export default function TourDetail() {
+    const { id } = useParams();
+    const [tour, setTour] = useState({
+        name: '',
+        rate: 0,
+        date: 0,
+        person_quantity: 0,
+        information: '',
+        price: 0,
+        destination: '',
+        imgs: [],
+    });
+
+    useEffect(() => {
+        const getTour = async () => {
+            const response = await findTourById(id);
+            setTour(response.data);
+        };
+        getTour();
+    }, []);
+
     const Review = () => (
         <div className={cx('tour_review')}>
             <h2>Leave A Reply</h2>
@@ -52,7 +75,7 @@ export default function TourDetail() {
 
     const Information = () => (
         <div className={cx('tour_information')}>
-            <h2>Brooklyn Christmas Lights Tour</h2>
+            <h2>{tour.name}</h2>
             <div className={cx('information_list')}>
                 <div className={cx('information_item')}>
                     <div className={cx('information-icon')}>
@@ -60,7 +83,15 @@ export default function TourDetail() {
                     </div>
                     <div className={cx('information_')}>
                         <span>From</span>
-                        <p>$250.00</p>
+                        <p>
+                            <CurrencyFormat
+                                value={tour.price}
+                                displayType={'text'}
+                                thousandSeparator={true}
+                                suffix={'đ'}
+                                decimalScale={2}
+                            />
+                        </p>
                     </div>
                 </div>
                 <div className={cx('information_item')}>
@@ -69,7 +100,7 @@ export default function TourDetail() {
                     </div>
                     <div className={cx('information_')}>
                         <span>Duration</span>
-                        <p>10 Days, 11 Nights</p>
+                        <p>{tour.date}</p>
                     </div>
                 </div>
                 <div className={cx('information_item')}>
@@ -78,7 +109,7 @@ export default function TourDetail() {
                     </div>
                     <div className={cx('information_')}>
                         <span>Location</span>
-                        <p>Madrid, Spain</p>
+                        <p>{tour.destination}</p>
                     </div>
                 </div>
                 <div className={cx('information_item')}>
@@ -87,7 +118,7 @@ export default function TourDetail() {
                     </div>
                     <div className={cx('information_')}>
                         <span>Group Size</span>
-                        <p>50+ People</p>
+                        <p>{tour.person_quantity}</p>
                     </div>
                 </div>
             </div>
@@ -95,9 +126,11 @@ export default function TourDetail() {
     );
 
     return (
-        <LayoutWithSideBar bookBar>
+        <LayoutWithSideBar bookBar categoryBar>
             <Information />
-            <div className={cx('tour_content')}></div>
+            <div className={cx('tour_content')}>
+                <div className="ql-editor" dangerouslySetInnerHTML={{ __html: tour.information }} />
+            </div>
             <Review />
         </LayoutWithSideBar>
     );
