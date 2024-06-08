@@ -1,76 +1,91 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Blog.module.scss';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { Box } from '@mui/material';
 import Button from '~/components/Button';
 import { useNavigate } from 'react-router-dom';
-import images from '~/assets/images';
+import { getBlogs } from '~/utils/httpRequest';
+import { formattedDate } from '~/utils/constants';
+import routes from '~/config/routes';
 
 const cx = classNames.bind(styles);
 
-const data = [
-    {
-        img: images.tour_1_1,
-        time: '21 June, 2024',
-        user: 'admin',
-        content:
-            'Phosfluorescently unleash highly efficient experiences for team driven scenarios. Conveniently enhance cross-unit communities with accurate testing procedures. Dynamically embrace team building expertise. Proactively monetize parallel solutions.',
-        title: 'Get Tips For Making the Most of Your Summer',
-    },
-    {
-        img: images.tour_1_1,
-        time: '21 June, 2024',
-        user: 'admin',
-        content:
-            'Phosfluorescently unleash highly efficient experiences for team driven scenarios. Conveniently enhance cross-unit communities with accurate testing procedures. Dynamically embrace team building expertise. Proactively monetize parallel solutions.',
-        title: 'Get Tips For Making the Most of Your Summer',
-    },
-    {
-        img: images.tour_1_1,
-        time: '21 June, 2024',
-        user: 'admin',
-        content:
-            'Phosfluorescently unleash highly efficient experiences for team driven scenarios. Conveniently enhance cross-unit communities with accurate testing procedures. Dynamically embrace team building expertise. Proactively monetize parallel solutions.',
-        title: 'Get Tips For Making the Most of Your Summer',
-    },
-];
 export default function Blog() {
     const navigate = useNavigate();
+    const [blogs, setBlogs] = useState([{}]);
+
+    useEffect(() => {
+        const getData = async () => {
+            const response = await getBlogs();
+            setBlogs(response.data);
+        };
+        getData();
+    }, []);
+
     const columns = useMemo(
         () => [
             {
-                accessorKey: 'title', //access nested data with dot notation
+                accessorKey: 'topic', //access nested data with dot notation
                 header: 'Blog Name',
                 size: 250,
-                Cell: ({ renderedCellValue, row }) => (
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '1rem',
-                        }}
-                    >
-                        <img
-                            alt="avatar"
-                            height={100}
-                            src={row.original.img}
-                            loading="lazy"
-                            style={{ borderRadius: '10px' }}
-                        />
-                        <span>{renderedCellValue}</span>
-                    </Box>
-                ),
+                Cell: ({ renderedCellValue, row }) => {
+                    const handleClick = () => {
+                        const blog = row.original;
+                        navigate(`/admin-blog/${blog.id}`, { state: blog }); // Pass as an object with a key
+                    };
+                    return (
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '1rem',
+                                cursor: 'pointer',
+                            }}
+                            onClick={handleClick}
+                        >
+                            <img
+                                alt="avatar"
+                                height={100}
+                                src={row.original.img && row.original.img}
+                                loading="lazy"
+                                style={{ borderRadius: '10px', width: '150px' }}
+                            />
+                            <span>{renderedCellValue}</span>
+                        </Box>
+                    );
+                },
             },
             {
-                accessorKey: 'user',
-                header: 'User',
+                accessorKey: 'status',
+                header: 'Status',
                 size: 200,
+                Cell: ({ row }) => {
+                    let statusLabel;
+                    switch (row.original.status) {
+                        case '2':
+                            statusLabel = 'Not posted';
+                            break;
+                        case '1':
+                            statusLabel = 'Posted';
+                            break;
+                        case '3':
+                            statusLabel = 'Hide';
+                            break;
+                        default:
+                            statusLabel = 'Unknown';
+                    }
+                    return <span>{statusLabel}</span>;
+                },
             },
             {
-                accessorKey: 'time', //normal accessorKey
-                header: 'Time',
+                accessorKey: 'create_at', //normal accessorKey
+                header: 'Day create',
                 size: 200,
+                Cell: ({ row }) => {
+                    const date = new Date(row.original.create_at);
+                    return <span>{formattedDate(date)}</span>;
+                },
             },
         ],
         [],
@@ -78,7 +93,7 @@ export default function Blog() {
 
     const table = useMaterialReactTable({
         columns,
-        data,
+        data: blogs,
         muiTableBodyCellProps: ({ row }) => ({
             //conditionally style selected rows
             sx: {
@@ -112,9 +127,7 @@ export default function Blog() {
                     primary
                     small
                     color="secondary"
-                    onClick={() => {
-                        alert('Create New Blog');
-                    }}
+                    onClick={() => navigate(routes.admin_blog_create)}
                     variant="contained"
                 >
                     Create Blog
@@ -135,8 +148,14 @@ export default function Blog() {
                     primary
                     small
                     color="error"
-                    disabled={!table.getIsSomeRowsSelected()}
-                    onClick={() => navigate('/admin-blog-detail')}
+                    disabled={!table.getIsSomeRowsSelected() || table.getSelectedRowModel().rows.length !== 1}
+                    onClick={() => {
+                        const selectedRows = table.getSelectedRowModel().rows;
+                        if (selectedRows.length > 0) {
+                            const blog = selectedRows[0].original; // Select the first blog
+                            navigate(`/admin-blog/${blog.id}`, { state: blog }); // Pass as an object with a key
+                        }
+                    }}
                     variant="contained"
                 >
                     Edit Selected Blogs

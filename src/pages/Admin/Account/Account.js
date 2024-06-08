@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Account.module.scss';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
@@ -6,143 +6,77 @@ import { Box } from '@mui/material';
 import Button from '~/components/Button';
 import { ContentCopy } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { getUsers } from '~/utils/httpRequest';
+import AvatarCustom from '~/components/AvartarCustom/AvatarCustom';
 
 const cx = classNames.bind(styles);
 
-const data = [
-    {
-        name: {
-            firstName: 'Joshua',
-            lastName: 'Rolluffs',
-        },
-        address: '32188 Larkin Turnpike',
-        email: 'Charleston',
-        gender: 'South Carolina',
-    },
-    {
-        name: {
-            firstName: 'John',
-            lastName: 'Doe',
-        },
-        address: '261 Erdman Ford',
-        email: 'East Daphne',
-        gender: 'Kentucky',
-    },
-    {
-        name: {
-            firstName: 'John',
-            lastName: 'Doe',
-        },
-        address: '261 Erdman Ford',
-        email: 'East Daphne',
-        gender: 'Kentucky',
-    },
-    {
-        name: {
-            firstName: 'John',
-            lastName: 'Doe',
-        },
-        address: '261 Erdman Ford',
-        email: 'East Daphne',
-        gender: 'Kentucky',
-    },
-    {
-        name: {
-            firstName: 'John',
-            lastName: 'Doe',
-        },
-        address: '261 Erdman Ford',
-        email: 'East Daphne',
-        gender: 'Kentucky',
-    },
-    {
-        name: {
-            firstName: 'John',
-            lastName: 'Doe',
-        },
-        address: '261 Erdman Ford',
-        email: 'East Daphne',
-        gender: 'Kentucky',
-    },
-    {
-        name: {
-            firstName: 'Jane',
-            lastName: 'Doe',
-        },
-        address: '769 Dominic Grove',
-        email: 'Columbus',
-        gender: 'Ohio',
-    },
-    {
-        name: {
-            firstName: 'Joe',
-            lastName: 'Doe',
-        },
-        address: '566 Brakus Inlet',
-        email: 'South Linda',
-        gender: 'West Virginia',
-    },
-    {
-        name: {
-            firstName: 'Kevin',
-            lastName: 'Vandy',
-        },
-        address: '722 Emie Stream',
-        email: 'Lincoln',
-        gender: 'Nebraska',
-    },
-    {
-        name: {
-            firstName: 'Joshua',
-            lastName: 'Rolluffs',
-        },
-        address: '32188 Larkin Turnpike',
-        email: 'Charleston',
-        gender: 'South Carolina',
-    },
-];
 export default function Account() {
     const navigate = useNavigate();
-    const columns = useMemo(
-        () => [
-            {
-                accessorKey: 'name.firstName', //access nested data with dot notation
-                header: 'First Name',
-                size: 150,
+    const [users, setUsers] = useState([{}]);
+
+    useEffect(() => {
+        const getData = async () => {
+            const response = await getUsers();
+            setUsers(response.data);
+        };
+        getData();
+    }, []);
+    const columns = useMemo(() => [
+        {
+            accessorKey: 'name',
+            header: 'Last Name',
+            size: 200,
+            Cell: ({ renderedCellValue, row }) => {
+                const handleClick = () => {
+                    const user = row.original;
+                    navigate(`/admin-account/${user.id}`);
+                };
+                return (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '1rem',
+                            cursor: 'pointer',
+                        }}
+                        onClick={handleClick}
+                    >
+                        <AvatarCustom
+                            src={row.original.avatar && row.original.avatar}
+                            stringAva={renderedCellValue ? renderedCellValue : ''}
+                        />
+                        <span>{renderedCellValue}</span>
+                    </Box>
+                );
             },
-            {
-                accessorKey: 'name.lastName',
-                header: 'Last Name',
-                size: 150,
+        },
+        {
+            accessorKey: 'email',
+            header: 'Email',
+            size: 150,
+            enableClickToCopy: true,
+            muiCopyButtonProps: {
+                fullWidth: true,
+                startIcon: <ContentCopy />,
+                sx: { justifyContent: 'flex-start' },
             },
-            {
-                accessorKey: 'address', //normal accessorKey
-                header: 'Address',
-                size: 200,
-            },
-            {
-                accessorKey: 'email',
-                header: 'Email',
-                size: 150,
-                enableClickToCopy: true,
-                muiCopyButtonProps: {
-                    fullWidth: true,
-                    startIcon: <ContentCopy />,
-                    sx: { justifyContent: 'flex-start' },
-                },
-            },
-            {
-                accessorKey: 'gender',
-                header: 'Gender',
-                size: 150,
-            },
-        ],
-        [],
-    );
+        },
+        {
+            accessorKey: 'address', //normal accessorKey
+            header: 'Address',
+            size: 200,
+        },
+        {
+            accessorKey: 'gender',
+            header: 'Gender',
+            size: 150,
+        },
+    ]);
 
     const table = useMaterialReactTable({
         columns,
-        data,
+        data: users,
         muiTableBodyCellProps: ({ row }) => ({
             //conditionally style selected rows
             sx: {
@@ -199,8 +133,14 @@ export default function Account() {
                     primary
                     small
                     color="error"
-                    disabled={!table.getIsSomeRowsSelected()}
-                    onClick={() => navigate('/admin-account-detail')}
+                    disabled={!table.getIsSomeRowsSelected() || table.getSelectedRowModel().rows.length !== 1}
+                    onClick={() => {
+                        const selectedRows = table.getSelectedRowModel().rows;
+                        if (selectedRows.length > 0) {
+                            const user = selectedRows[0].original; // Select the first destination
+                            navigate(`/admin-account/${user.id}`);
+                        }
+                    }}
                     variant="contained"
                 >
                     Edit Selected Accounts
