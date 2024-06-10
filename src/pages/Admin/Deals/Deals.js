@@ -1,32 +1,31 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
-import styles from './Tour.module.scss';
+import styles from './Deals.module.scss';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { Box } from '@mui/material';
-import Button from '~/components/Button';
 import { useNavigate } from 'react-router-dom';
-import { deleteTour, getTours } from '~/utils/httpRequest';
-import CurrencyFormat from 'react-currency-format';
+import Button from '~/components/Button';
+import { deleteDeals, getDeals } from '~/utils/httpRequest';
+import { formattedDate, showNotifications } from '~/utils/constants';
 import routes from '~/config/routes';
-import { showNotifications } from '~/utils/constants';
 
 const cx = classNames.bind(styles);
 
-export default function Tour() {
+export default function Deals() {
     const navigate = useNavigate();
-    const [tours, setTours] = useState([{}]);
+    const [destinations, setDealss] = useState([{}]);
 
     useEffect(() => {
         const getData = async () => {
-            const response = await getTours();
-            setTours(response.data);
+            const response = await getDeals();
+            setDealss(response.data);
         };
         getData();
     }, []);
     const handleDelete = async (id) => {
         try {
-            const response = await deleteTour(id);
-            setTours(response.data);
+            const response = await deleteDeals(id);
+            setDealss(response.data);
             showNotifications({ message: response.message });
         } catch (error) {
             showNotifications({
@@ -40,73 +39,67 @@ export default function Tour() {
     const columns = useMemo(
         () => [
             {
-                accessorKey: 'name', //access nested data with dot notation
-                header: 'Tour Name',
-                size: 250,
+                accessorKey: 'id', //access nested data with dot notation
+                header: 'Stt',
+                size: 200,
                 Cell: ({ renderedCellValue, row }) => {
-                    const handleClick = () => {
-                        const tour = row.original;
-                        navigate(`/admin-tour/${tour.id}`); // Pass as an object with a key
-                    };
                     return (
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '1rem',
-                                cursor: 'pointer',
-                            }}
-                            onClick={handleClick}
-                        >
-                            <img
-                                alt="avatar"
-                                height={100}
-                                src={row.original.images && row.original.images[0]?.url}
-                                loading="lazy"
-                                style={{ borderRadius: '10px', width: '150px' }}
-                            />
-                            <span>{renderedCellValue}</span>
-                        </Box>
+                        <span style={{ cursor: 'pointer' }} onClick={() => navigate(`/admin-deals/${row.original.id}`)}>
+                            {renderedCellValue}
+                        </span>
                     );
                 },
             },
             {
-                accessorKey: 'destination', //normal accessorKey
-                header: 'Position',
+                accessorKey: 'offer', //normal accessorKey
+                header: 'Offer',
                 size: 200,
-                Cell: ({ renderedCellValue }) => <span>{renderedCellValue ? renderedCellValue.name : ''}</span>,
+                Cell: ({ renderedCellValue, row }) => {
+                    return (
+                        <span style={{ cursor: 'pointer' }} onClick={() => navigate(`/admin-deals/${row.original.id}`)}>
+                            {renderedCellValue}%
+                        </span>
+                    );
+                },
             },
             {
-                accessorKey: 'personQuantity',
-                header: 'Persion',
-                size: 150,
+                accessorKey: 'quantity', //normal accessorKey
+                header: 'Quantity',
+                size: 200,
             },
             {
-                accessorKey: 'date',
-                header: 'Day',
-                size: 150,
+                accessorKey: 'status', //normal accessorKey
+                header: 'Status',
+                size: 200,
+                Cell: ({ row }) => {
+                    let statusLabel;
+                    const currentDate = new Date();
+                    const expirationDate = new Date(row.original.dateExpiration);
+
+                    if (expirationDate < currentDate) {
+                        statusLabel = 'Expired';
+                    } else {
+                        statusLabel = 'Still expired';
+                    }
+                    return <span>{statusLabel}</span>;
+                },
             },
             {
-                accessorKey: 'price',
-                header: 'Price',
-                size: 150,
-                Cell: ({ cell }) => (
-                    <CurrencyFormat
-                        value={cell.getValue()}
-                        displayType={'text'}
-                        thousandSeparator={true}
-                        suffix={'VND'}
-                        decimalScale={2}
-                    />
-                ),
+                accessorKey: 'dateExpiration', //normal accessorKey
+                header: 'Date Expiration',
+                size: 200,
+                Cell: ({ renderedCellValue }) => {
+                    const date = new Date(renderedCellValue);
+                    return <span>{formattedDate(date)}</span>;
+                },
             },
         ],
-        [],
+        [navigate],
     );
 
     const table = useMaterialReactTable({
         columns,
-        data: tours,
+        data: destinations,
         muiTableBodyCellProps: ({ row }) => ({
             //conditionally style selected rows
             sx: {
@@ -140,10 +133,10 @@ export default function Tour() {
                     primary
                     small
                     color="secondary"
-                    onClick={() => navigate(routes.admin_tour_creat)}
+                    onClick={() => navigate(routes.admin_deals_create)}
                     variant="contained"
                 >
-                    Create Tour
+                    Create Deals
                 </Button>
                 <Button
                     primary
@@ -158,7 +151,7 @@ export default function Tour() {
                     }}
                     variant="contained"
                 >
-                    Delete Selected Tours
+                    Delete Selected Deals
                 </Button>
                 <Button
                     primary
@@ -168,13 +161,13 @@ export default function Tour() {
                     onClick={() => {
                         const selectedRows = table.getSelectedRowModel().rows;
                         if (selectedRows.length > 0) {
-                            const tour = selectedRows[0].original; // Select the first tour
-                            navigate(`/admin-tour/${tour.id}`); // Pass as an object with a key
+                            const deals = selectedRows[0].original; // Select the first deals
+                            navigate(`/admin-deals/${deals.id}`); // Pass as an object with a key
                         }
                     }}
                     variant="contained"
                 >
-                    Edit Selected Tours
+                    Edit Selected Deals
                 </Button>
             </Box>
         ),

@@ -1,9 +1,9 @@
 import { AppBar, Tab, Tabs, useTheme } from '@mui/material';
 import { AirplaneTakeoff, Calendar, CurrencyCircleDollar, MapPin, UsersThree } from '@phosphor-icons/react';
 import classNames from 'classnames/bind';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FaRegSquarePlus } from 'react-icons/fa6';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Slider from 'react-slick';
 import Button from '~/components/Button';
 import Image from '~/components/Image';
@@ -12,10 +12,13 @@ import Loading from '~/components/Loading';
 import QuillEditor from '~/components/QuillEditor';
 import Select from '~/components/Select';
 import TabPanel from '~/components/TabPanel';
+import routes from '~/config/routes';
 import { DATA_STATUS_SELECT, formattedDate, showNotifications } from '~/utils/constants';
 import {
     addImgTour,
+    createTour,
     deleteImgTour,
+    deleteTour,
     findTourById,
     getDestinations,
     updateImgTour,
@@ -32,23 +35,25 @@ function a11yProps(index) {
     };
 }
 
-export default function TourDetail() {
+export default function TourDetail({ create }) {
     const theme = useTheme();
-    const fileInputRef = useRef(null);
+    const fileInputRefs = useRef([]);
     const fileInputAddRef = useRef(null);
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
     const [tour, setTour] = useState({
         name: '',
         date: '',
         rate: '',
-        person_quantity: '',
+        personQuantity: '',
         price: '',
-        status: '',
-        create_at: '',
-        destination_id: '',
+        categoryId: 1,
+        status: DATA_STATUS_SELECT.items[0].value,
+        createdAt: new Date(),
+        destination: '',
         information: '',
-        imgs: [],
+        images: [],
     });
     const [valuePanel, setValuePanel] = useState(0);
     const [destinationsSelect, setDestinationsSelect] = useState({
@@ -66,16 +71,19 @@ export default function TourDetail() {
     const findSelectedOption = (destinationID) => {
         return destinationsSelect.items.find((item) => item.value === destinationID);
     };
-    useEffect(() => {
-        getTourByID(id);
-        getAllDestination();
-    }, [id]);
 
     useEffect(() => {
-        if (destinationsSelect.items.length > 0) {
-            setSelectedOption(findSelectedOption(tour.destination_id));
+        if (!create) {
+            getTourByID(id);
         }
-    }, [destinationsSelect]);
+        getAllDestination();
+    }, [id, create]);
+
+    useEffect(() => {
+        if (destinationsSelect.items.length > 0 && !create) {
+            setSelectedOption(findSelectedOption(tour.destination.id));
+        }
+    }, [destinationsSelect, create]);
 
     useEffect(() => {
         setSelectedStatusOption(findSelectedStatusOption(tour.status));
@@ -86,7 +94,7 @@ export default function TourDetail() {
             const response = await findTourById(id);
             setTour(response.data);
         } catch (error) {
-            console.error('Error fetching destinations:', error);
+            console.error('Error fetching tour:', error);
         }
     };
 
@@ -97,21 +105,27 @@ export default function TourDetail() {
                 value: destination.id,
                 label: destination.name,
             }));
-            setDestinationsSelect((prev) => ({
-                ...prev,
-                items: [...(Array.isArray(prev.items) ? prev.items : []), ...items],
-            }));
+            setDestinationsSelect((prev) => {
+                const existingItems = new Set(prev.items.map((item) => item.value));
+                const newItems = items.filter((item) => !existingItems.has(item.value));
+                return {
+                    ...prev,
+                    items: [...prev.items, ...newItems],
+                };
+            });
         } catch (error) {
             console.error('Error fetching destinations:', error);
         }
     };
+
     const handleDestinationChange = (selectedOption) => {
         setSelectedOption(selectedOption);
         setTour((prev) => ({
             ...prev,
-            destination_id: selectedOption.value,
+            destinationId: selectedOption.value,
         }));
     };
+
     const handleStatusChange = (selectedOption) => {
         setSelectedStatusOption(selectedOption);
         setTour((prev) => ({
@@ -124,54 +138,88 @@ export default function TourDetail() {
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await updateTour(id, tour);
-            setTour(response.data);
-            showNotifications({ message: response.message });
+            if (create) {
+                const data = new FormData();
+                for (const key in tour) {
+                    if (key !== 'images') {
+                        data.append(key, tour[key]);
+                    }
+                }
+                tour.images.forEach((img) => {
+                    data.append('images', img.file);
+                });
+
+                const response = await createTour(data);
+                navigate(routes.admin_tour);
+                showNotifications({ message: response.message });
+            } else {
+                const response = await updateTour(id, tour);
+                setTour(response.data);
+                showNotifications({ message: response.message });
+            }
         } catch (error) {
             showNotifications({
                 title: 'Submit Error',
                 type: 'danger',
                 message: 'Network error, please try again later',
             });
-            console.log(error);
+            console.error(error);
         } finally {
             setLoading(false);
         }
     };
+
     const handlePanelChange = (event, newValue) => {
         setValuePanel(newValue);
     };
-    const handleDeleteImg = async (imgLink) => {
+
+    const handleDeleteImg = async (imageId) => {
         setLoading(true);
         try {
-            const response = await deleteImgTour({ imgLink, tour_id: tour.id });
-            setTour({ ...tour, imgs: response.data });
-            showNotifications({ message: response.message });
+            if (create) {
+                const newImages = tour.images.filter((img) => img.id !== imageId);
+                setTour({ ...tour, images: newImages });
+            } else {
+                const response = await deleteImgTour({ imageId, tourId: tour.id });
+                setTour({ ...tour, images: response.data });
+                showNotifications({ message: response.message });
+            }
         } catch (error) {
             showNotifications({
                 title: 'Delete Error',
                 type: 'danger',
                 message: 'Network error, please try again later',
             });
-            console.log(error);
+            console.error(error);
         } finally {
             setLoading(false);
         }
     };
-
-    const handleUpdateImg = async (imgLink, file) => {
+    if (fileInputRefs.current.length !== tour.images.length) {
+        fileInputRefs.current = Array(tour.images.length)
+            .fill()
+            .map((_, i) => fileInputRefs.current[i] || React.createRef());
+    }
+    const handleUpdateImg = async (imageId, file) => {
         setLoading(true);
         try {
-            const response = await updateImgTour({ imgLink, tour_id: tour.id, image: file });
-            setTour({ ...tour, imgs: response.data });
-            showNotifications({ message: response.message });
+            if (create) {
+                const newImages = tour.images.map((img) =>
+                    img.id === imageId ? { ...img, file, url: URL.createObjectURL(file) } : img,
+                );
+                setTour({ ...tour, images: newImages });
+            } else {
+                const response = await updateImgTour({ imageId, tourId: tour.id, image: file });
+                setTour({ ...tour, images: response.data });
+                showNotifications({ message: response.message });
+            }
         } catch (error) {
             showNotifications({
                 title: 'Update Error',
                 type: 'danger',
                 message: 'Network error, please try again later',
             });
-            console.log(error);
+            console.error(error);
         } finally {
             setLoading(false);
         }
@@ -180,31 +228,69 @@ export default function TourDetail() {
     const handleAddImg = async (files) => {
         setLoading(true);
         try {
-            const data = new FormData();
-            files.forEach((file) => {
-                data.append('image', file);
-            });
-            const response = await addImgTour(tour.id, data);
-            console.log(response);
-            setTour({ ...tour, imgs: response.data });
-            showNotifications({ message: response.message });
+            if (create) {
+                setTour((prevTour) => {
+                    // Lấy id lớn nhất hiện tại
+                    const maxId = prevTour.images.length > 0 ? Math.max(...prevTour.images.map((img) => img.id)) : 0;
+
+                    // Tạo mảng newImages với id bắt đầu từ maxId + 1
+                    const newImages = files.map((file, index) => ({
+                        id: maxId + 1 + index,
+                        file,
+                        url: URL.createObjectURL(file),
+                    }));
+
+                    console.log(newImages);
+                    // Cập nhật trạng thái tour với mảng images mới
+                    return {
+                        ...prevTour,
+                        images: [...prevTour.images, ...newImages],
+                    };
+                });
+            } else {
+                const data = new FormData();
+                files.forEach((file) => {
+                    data.append('images', file);
+                });
+                const response = await addImgTour(tour.id, data);
+                setTour({ ...tour, images: response.data });
+                showNotifications({ message: response.message });
+            }
         } catch (error) {
             showNotifications({
                 title: 'Add Error',
                 type: 'danger',
                 message: 'Network error, please try again later',
             });
-            console.log(error);
+            console.error(error);
         } finally {
             setLoading(false);
         }
     };
-    const handleFileUpdateChange = (event, img) => {
-        const file = event.target.files[0];
-        if (file) {
-            handleUpdateImg(img, file);
+
+    const handleDelete = async () => {
+        try {
+            const response = await deleteTour(id);
+            navigate(routes.admin_tour);
+            showNotifications({ message: response.message });
+        } catch (error) {
+            showNotifications({
+                title: 'Delete Error',
+                type: 'danger',
+                message: 'Network error, please try again later',
+            });
+            console.error(error);
         }
     };
+
+    const handleFileUpdateChange = (event, imageId) => {
+        const file = event.target.files[0];
+        if (file) {
+            console.log('idImage', imageId);
+            handleUpdateImg(imageId, file);
+        }
+    };
+
     const handleFileAddChange = (event) => {
         const files = Array.from(event.target.files);
         if (files.length > 0) {
@@ -219,29 +305,32 @@ export default function TourDetail() {
             }
         }
     };
-    const triggerFileInput = () => {
-        if (fileInputRef.current) {
-            fileInputRef.current.click();
+
+    const triggerFileInput = (index) => {
+        if (fileInputRefs.current[index]) {
+            fileInputRefs.current[index].current.click();
         }
     };
+
     const triggerFileAddInput = () => {
         if (fileInputAddRef.current) {
             fileInputAddRef.current.click();
         }
     };
+
     const settings = {
         customPaging: function (i) {
             return (
-                <a href={i}>
+                <a href={i} key={i}>
                     <Image
-                        action={tour.imgs.length - 1 === i && tour.imgs.length < 10}
+                        action={tour.images.length - 1 === i && tour.images.length < 10}
                         actionHover
                         onClickBtnLeft={() => triggerFileAddInput()}
                         iconBtnLeft={<FaRegSquarePlus size={25} />}
                         width={80}
                         height={80}
-                        src={`${tour.imgs[i]}/abstract0${i + 1}.jpg`}
-                        alt={'avatar'}
+                        src={tour.images[i]?.url}
+                        alt={'Tour Image'}
                     />
                 </a>
             );
@@ -253,6 +342,7 @@ export default function TourDetail() {
         slidesToShow: 1,
         slidesToScroll: 1,
     };
+
     return (
         <div className={cx('wrapper')}>
             {loading && <Loading />}
@@ -273,26 +363,26 @@ export default function TourDetail() {
                     </AppBar>
                     <TabPanel value={valuePanel} index={0} dir={theme.direction} style={{ marginBottom: '70px' }}>
                         <div className={cx('slider-container')}>
-                            {tour.imgs.length > 1 ? (
+                            {tour.images.length > 1 ? (
                                 <Slider {...settings}>
-                                    {tour.imgs.map((img, index) => (
+                                    {tour.images.map((img, index) => (
                                         <div key={index} className={cx('img-wraper')}>
                                             <div className={cx('img-content')}>
                                                 <Image
                                                     action
-                                                    onClickBtnLeft={() => handleDeleteImg(img)}
-                                                    onClickBtnRight={() => triggerFileInput()}
+                                                    onClickBtnLeft={() => handleDeleteImg(img.id)}
+                                                    onClickBtnRight={() => triggerFileInput(index)}
                                                     width={'80%'}
                                                     height={'400px'}
-                                                    src={img}
-                                                    alt={'avatar'}
+                                                    src={img.url}
+                                                    alt={'Tour Image'}
                                                 />
                                                 <input
                                                     type="file"
                                                     accept="image/*"
                                                     style={{ display: 'none' }}
-                                                    onChange={(event) => handleFileUpdateChange(event, img)}
-                                                    ref={fileInputRef}
+                                                    onChange={(event) => handleFileUpdateChange(event, img.id)}
+                                                    ref={fileInputRefs.current[index]}
                                                 />
                                             </div>
                                         </div>
@@ -303,23 +393,23 @@ export default function TourDetail() {
                                     <Image
                                         action
                                         onClickBtnLeft={() => triggerFileAddInput()}
-                                        onClickBtnRight={() => triggerFileInput(tour.imgs[0])}
+                                        onClickBtnRight={!create && (() => triggerFileInput(tour.images[0]?.url))}
                                         iconBtnLeft={<FaRegSquarePlus size={20} />}
                                         width={'80%'}
                                         height={'400px'}
-                                        src={tour.imgs[0]}
-                                        alt={'avatar'}
+                                        src={tour.images[0]?.url}
+                                        alt={'Tour Image'}
                                     />
                                     <input
                                         type="file"
                                         accept="image/*"
                                         style={{ display: 'none' }}
-                                        onChange={(event) => handleFileUpdateChange(event)}
-                                        ref={fileInputRef}
+                                        onChange={(event) => handleFileUpdateChange(event, tour.images[0]?.id)}
+                                        ref={fileInputRefs.current[0]}
                                     />
                                 </div>
                             )}
-                            {tour.imgs.length < 10 && (
+                            {tour.images.length < 10 && (
                                 <input
                                     type="file"
                                     accept="image/*"
@@ -369,10 +459,10 @@ export default function TourDetail() {
                                 <Input
                                     classNameInput={cx('input')}
                                     leftIcon={<UsersThree size={20} weight="bold" />}
-                                    placeholder={'Persion'}
-                                    label={'Persion'}
-                                    value={tour.person_quantity}
-                                    onChange={(e) => setTour({ ...tour, person_quantity: e.target.value })}
+                                    placeholder={'Person'}
+                                    label={'Person'}
+                                    value={tour.personQuantity}
+                                    onChange={(e) => setTour({ ...tour, personQuantity: e.target.value })}
                                 />
                                 <Input
                                     classNameInput={cx('input')}
@@ -398,7 +488,7 @@ export default function TourDetail() {
                                     label={'Day create'}
                                     className={cx('input_wraper')}
                                     classNameInput={cx('input')}
-                                    placeholder={formattedDate(new Date(tour.create_at))}
+                                    placeholder={formattedDate(new Date(tour.createdAt))}
                                     type="text"
                                 />
                             </div>
@@ -416,10 +506,11 @@ export default function TourDetail() {
                         <Button primary large className={cx('btn')} type="submit">
                             Submit
                         </Button>
-
-                        <Button primary large className={cx('btn')}>
-                            Delete
-                        </Button>
+                        {!create && (
+                            <Button primary large className={cx('btn')} type="button" onClick={handleDelete}>
+                                Delete
+                            </Button>
+                        )}
                     </div>
                 </div>
             </form>

@@ -5,8 +5,9 @@ import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Button from '~/components/Button';
-import { getDestinations } from '~/utils/httpRequest';
-import { formattedDate } from '~/utils/constants';
+import { deleteDestination, getDestinations } from '~/utils/httpRequest';
+import { formattedDate, showNotifications } from '~/utils/constants';
+import routes from '~/config/routes';
 
 const cx = classNames.bind(styles);
 
@@ -21,7 +22,20 @@ export default function Destination() {
         };
         getData();
     }, []);
-
+    const handleDelete = async (id) => {
+        try {
+            const response = await deleteDestination(id);
+            setDestinations(response.data);
+            showNotifications({ message: response.message });
+        } catch (error) {
+            showNotifications({
+                title: 'Delete Error',
+                type: 'danger',
+                message: 'Network error, please try again later',
+            });
+            console.error(error);
+        }
+    };
     const columns = useMemo(
         () => [
             {
@@ -46,7 +60,7 @@ export default function Destination() {
                             <img
                                 alt="avatar"
                                 height={100}
-                                src={row.original.img && row.original.img}
+                                src={row.original.image && row.original.image.url}
                                 loading="lazy"
                                 style={{ borderRadius: '10px', width: '150px' }}
                             />
@@ -67,13 +81,13 @@ export default function Destination() {
                 Cell: ({ row }) => {
                     let statusLabel;
                     switch (row.original.status) {
-                        case '0':
+                        case 0:
                             statusLabel = 'Not posted';
                             break;
-                        case '1':
+                        case 1:
                             statusLabel = 'Posted';
                             break;
-                        case '3':
+                        case 3:
                             statusLabel = 'Hide';
                             break;
                         default:
@@ -83,16 +97,16 @@ export default function Destination() {
                 },
             },
             {
-                accessorKey: 'create_at', //normal accessorKey
+                accessorKey: 'createdAt', //normal accessorKey
                 header: 'Day created',
                 size: 200,
                 Cell: ({ row }) => {
-                    const date = new Date(row.original.create_at);
+                    const date = new Date(row.original.createAt);
                     return <span>{formattedDate(date)}</span>;
                 },
             },
         ],
-        [],
+        [navigate],
     );
 
     const table = useMaterialReactTable({
@@ -131,12 +145,10 @@ export default function Destination() {
                     primary
                     small
                     color="secondary"
-                    onClick={() => {
-                        alert('Create New Tour');
-                    }}
+                    onClick={() => navigate(routes.admin_destination_create)}
                     variant="contained"
                 >
-                    Create Tour
+                    Create Destination
                 </Button>
                 <Button
                     primary
@@ -144,11 +156,14 @@ export default function Destination() {
                     color="error"
                     disabled={!table.getIsSomeRowsSelected()}
                     onClick={() => {
-                        alert('Delete Selected Tours');
+                        const selectedRows = table.getSelectedRowModel().rows;
+                        selectedRows.forEach((row) => {
+                            handleDelete(row.original.id);
+                        });
                     }}
                     variant="contained"
                 >
-                    Delete Selected Tours
+                    Delete Selected Destination
                 </Button>
                 <Button
                     primary
@@ -164,7 +179,7 @@ export default function Destination() {
                     }}
                     variant="contained"
                 >
-                    Edit Selected Tours
+                    Edit Selected Destination
                 </Button>
             </Box>
         ),

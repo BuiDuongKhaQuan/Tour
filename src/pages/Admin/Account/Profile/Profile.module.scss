@@ -45,3 +45,46 @@
         z-index: 0;
     }
 }
+.modal {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    border: 1px solid var(--black) !important;
+    width: 440px;
+    backdrop-filter: blur(20px);
+    background-color: var(--white);
+    .modal-content {
+        position: relative;
+        min-height: 300px;
+        min-width: 300px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 30px;
+    }
+    .btnClose {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        width: 30px;
+        height: 30px;
+    }
+    .checkbox-wraper {
+        width: 100%;
+        padding: 10px;
+        font-size: 18px;
+        label {
+            margin-left: 10px;
+        }
+    }
+    .btnSave {
+        text-align: center;
+        padding-bottom: 20px;
+    }
+}

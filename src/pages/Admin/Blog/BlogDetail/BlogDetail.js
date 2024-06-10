@@ -1,38 +1,34 @@
 import { AirplaneTakeoff } from '@phosphor-icons/react';
 import classNames from 'classnames/bind';
 import { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { FaRegSquarePlus } from 'react-icons/fa6';
+import { useNavigate, useParams } from 'react-router-dom';
 import Button from '~/components/Button';
 import Image from '~/components/Image';
 import Input from '~/components/Input';
 import Loading from '~/components/Loading';
 import QuillEditor from '~/components/QuillEditor';
 import Select from '~/components/Select';
+import routes from '~/config/routes';
 import { DATA_STATUS_SELECT, formattedDate, showNotifications } from '~/utils/constants';
-import { findBlogById, updateBlog, createBlog } from '~/utils/httpRequest';
+import { createBlog, deleteBlog, findBlogById, updateBlog } from '~/utils/httpRequest';
 import styles from './BlogDetail.module.scss';
-import { FaRegSquarePlus } from 'react-icons/fa6';
 
 const cx = classNames.bind(styles);
 
 export default function BlogDetail({ create }) {
     const { id } = useParams();
     const navigate = useNavigate();
-    const location = useLocation();
     const fileInputRef = useRef(null);
     const [loading, setLoading] = useState(false);
     const [imagePreview, setImagePreview] = useState('');
-    const [blog, setBlog] = useState(
-        create
-            ? {
-                  topic: '',
-                  status: DATA_STATUS_SELECT.items[0].value,
-                  create_at: new Date(),
-                  img: '',
-                  information: '',
-              }
-            : location.state,
-    );
+    const [blog, setBlog] = useState({
+        topic: '',
+        status: DATA_STATUS_SELECT.items[0].value,
+        createdAt: new Date(),
+        image: { url: '' },
+        information: '',
+    });
 
     const findSelectedOption = (statusValue) => {
         return DATA_STATUS_SELECT.items.find((item) => item.value === statusValue);
@@ -42,7 +38,7 @@ export default function BlogDetail({ create }) {
 
     useEffect(() => {
         if (!create) {
-            getBlog(id);
+            getBlogById(id);
         }
     }, [id, create]);
 
@@ -50,7 +46,7 @@ export default function BlogDetail({ create }) {
         setSelectedOption(findSelectedOption(blog.status));
     }, [blog]);
 
-    const getBlog = async (id) => {
+    const getBlogById = async (id) => {
         try {
             const response = await findBlogById(id);
             setBlog(response.data);
@@ -74,7 +70,7 @@ export default function BlogDetail({ create }) {
             let response;
             if (create) {
                 response = await createBlog(blog);
-                navigate(`/admin-blog`);
+                navigate(routes.admin_blog);
             } else {
                 response = await updateBlog(id, blog);
             }
@@ -116,13 +112,26 @@ export default function BlogDetail({ create }) {
             const previewUrl = URL.createObjectURL(file);
             setImagePreview(previewUrl);
             if (create) {
-                setBlog({ ...blog, img: file });
+                setBlog({ ...blog, image: file });
             } else {
                 handleUpdateImg(file);
             }
         }
     };
-
+    const handleDelete = async () => {
+        try {
+            const response = await deleteBlog(id);
+            navigate(routes.admin_blog);
+            showNotifications({ message: response.message });
+        } catch (error) {
+            showNotifications({
+                title: 'Delete Error',
+                type: 'danger',
+                message: 'Network error, please try again later',
+            });
+            console.error(error);
+        }
+    };
     const triggerFileInput = () => {
         if (fileInputRef.current) {
             fileInputRef.current.click();
@@ -142,8 +151,8 @@ export default function BlogDetail({ create }) {
                                 onClickBtnRight={() => triggerFileInput()}
                                 iconBtnRight={create && <FaRegSquarePlus size={20} />}
                                 width={300}
-                                src={imagePreview || blog.img}
-                                alt={'avatar'}
+                                src={imagePreview || blog.image.url}
+                                alt={'Blog Image'}
                             />
                             <input
                                 type="file"
@@ -183,7 +192,7 @@ export default function BlogDetail({ create }) {
                                     disabled={true}
                                     classNameInput={cx('input')}
                                     className={cx('input_wraper')}
-                                    placeholder={formattedDate(new Date(blog.create_at))}
+                                    placeholder={formattedDate(new Date(blog.createdAt))}
                                     type="text"
                                 />
                             </div>
@@ -202,7 +211,7 @@ export default function BlogDetail({ create }) {
                             </Button>
 
                             {!create && (
-                                <Button primary large className={cx('btn')}>
+                                <Button primary large className={cx('btn')} type="button" onClick={handleDelete}>
                                     Delete
                                 </Button>
                             )}
