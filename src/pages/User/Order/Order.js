@@ -8,7 +8,7 @@ import { book, findTourById } from '~/utils/httpRequest';
 import { TourCardItem } from '~/components/SliderCard';
 import Button from '~/components/Button';
 import { Store } from 'react-notifications-component';
-import { notification } from '~/utils/constants';
+import { notification, showNotifications } from '~/utils/constants';
 import CurrencyFormat from 'react-currency-format';
 
 const cx = classNames.bind(styles);
@@ -24,15 +24,15 @@ export default function Order() {
 
     useEffect(() => {
         const getTour = async () => {
-            const response = await findTourById(formData.id_tour);
+            const response = await findTourById(formData.tourId);
             setTour(response.data);
         };
         getTour();
     }, []);
 
     const calculateTotalPrice = () => {
-        const priceAdult = formData.adult_quantity.value * (tour?.price || 0);
-        const priceChild = formData.child_quantity.value * (tour?.price / 2 || 0);
+        const priceAdult = formData.adultQuantity * (tour?.price || 0);
+        const priceChild = formData.childQuantity * (tour?.price / 2 || 0);
         setPriceAdult(priceAdult);
         setPriceChild(priceChild);
         totalPriceByTicket();
@@ -40,10 +40,10 @@ export default function Order() {
     const totalPriceByTicket = () => {
         let total = priceAdult + priceChild;
         const valueTicket = formData.ticket.value;
-        if (valueTicket === '1') {
-        } else if (valueTicket === '2') {
+        if (valueTicket === 1) {
+        } else if (valueTicket === 2) {
             total += total * 0.3;
-        } else if (valueTicket === '3') {
+        } else if (valueTicket === 3) {
             total += total * 0.6;
         }
         return total;
@@ -61,17 +61,15 @@ export default function Order() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!sessionStorage.getItem('user')) {
-            Store.addNotification({
-                ...notification,
+            showNotifications({
                 type: 'warning',
                 title: 'Warning',
                 message: 'Bạn cần đăng nhập để đặt Tour',
             });
         } else {
-            const { name, email, phone, ticket, adult_quantity, child_quantity, date, message } = formData;
+            const { name, email, phone, date, message } = formData;
             if (name === '' || email === '' || phone === '' || date === '' || message === '') {
-                Store.addNotification({
-                    ...notification,
+                showNotifications({
                     type: 'warning',
                     title: 'Warning',
                     message: 'Vui lòng điền đầy đủ thông tin',
@@ -80,16 +78,11 @@ export default function Order() {
                 try {
                     const response = await book({
                         ...formData,
-                        id_user: user.id,
-                        ticket: ticket.label,
-                        adult_quantity: adult_quantity.value,
-                        child_quantity: child_quantity.value,
-                        total_price: totalPriceByTicket(),
+                        totalPrice: totalPriceByTicket(),
                     });
-                    navigate('/payment', { state: { id: response.id, price: response.total_price } });
+                    navigate('/payment', { state: { id: response.data.id, price: response.data.totalPrice } });
                 } catch (error) {
-                    Store.addNotification({
-                        ...notification,
+                    showNotifications({
                         type: 'warning',
                         title: 'Warning',
                         message: 'Lỗi mạng, vui lòng đặt lại sau!',
@@ -122,7 +115,7 @@ export default function Order() {
                                 <span className={cx('price')}> {formData.ticket.label}</span>
                             </div>
                             <div className={cx('price-item')}>
-                                <span className={cx('lable')}>Adult {`(${formData.adult_quantity.value} person)`}</span>
+                                <span className={cx('lable')}>Adult {`(${formData.adultQuantity} person)`}</span>
                                 <span className={cx('price')}>
                                     {' '}
                                     <CurrencyFormat
@@ -135,7 +128,7 @@ export default function Order() {
                                 </span>
                             </div>
                             <div className={cx('price-item')}>
-                                <span className={cx('lable')}>Child {`(${formData.child_quantity.value} person)`}</span>
+                                <span className={cx('lable')}>Child {`(${formData.childQuantity} person)`}</span>
                                 <span className={cx('price')}>
                                     {' '}
                                     <CurrencyFormat

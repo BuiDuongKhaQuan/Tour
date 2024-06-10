@@ -18,7 +18,7 @@ export default function Tour() {
         const fetchToursSize = async () => {
             try {
                 const size = await getToursSize();
-                setToursSize(size);
+                setToursSize(size.data);
             } catch (error) {
                 console.log(error);
             }
@@ -31,7 +31,8 @@ export default function Tour() {
         const fetchTours = async () => {
             try {
                 const response = await getToursLimit(itemOffset, 8);
-                setTours(response.tours);
+                setTours(response.data);
+                console.log(response.data);
             } catch (error) {
                 console.log(error);
             }

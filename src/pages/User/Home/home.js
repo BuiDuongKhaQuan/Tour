@@ -136,19 +136,19 @@ function Home() {
         {
             name: 'Switzerland',
             trip: '6+',
-            img: images.tour_3_1,
+            image: { url: images.tour_3_1 },
             sell: '25% Off',
         },
         {
             name: 'Barcelona',
             trip: '8+',
-            img: images.tour_3_2,
+            image: { url: images.tour_3_2 },
             sell: '25% Off',
         },
         {
             name: 'Amsterdam',
             trip: '6+',
-            img: images.tour_3_3,
+            image: { url: images.tour_3_3 },
             sell: '25% Off',
         },
     ];
@@ -226,7 +226,8 @@ function Home() {
         const fetchTours = async () => {
             try {
                 const response = await getToursLimit(0, 8);
-                setTours(response.tours);
+                setTours(response.data);
+                console.log('udusdusghud', response.data);
             } catch (error) {
                 console.log(error);
             }
@@ -239,6 +240,7 @@ function Home() {
             try {
                 const response = await getDestinationsLimit(0, 8);
                 setDestinations(response.data);
+                console.log(response.data);
             } catch (error) {
                 console.log(error);
             }
@@ -432,9 +434,7 @@ function Home() {
             <div className={cx('category')}>
                 <SupTitle left right primary small title={'Categories'} />
                 <h2>Browse By Destination Category</h2>
-                <div className={cx('_row')}>
-                    <Categories data={destinations} />
-                </div>
+                <div className={cx('_row')}>{destinations && <Categories data={destinations} />}</div>
             </div>
             <div className={cx('aboutus')}>
                 <div className={cx('about_left')}>
@@ -479,17 +479,19 @@ function Home() {
                 <SupTitle left right primary small title={'Top Destinations'} />
                 <h2>Popular Destinations</h2>
                 <div className={cx('_row')}>
-                    <SliderCard
-                        animation
-                        large
-                        tripSmall
-                        slidesToShowOn1024={2}
-                        slidesToShowOn1200={3}
-                        slidesToShowOn1450={4}
-                        iconLeftName={<MapPin size={30} weight="fill" color="#3cb371" />}
-                        slidesToShow={4}
-                        slides={destinations}
-                    />
+                    {destinations && (
+                        <SliderCard
+                            animation
+                            large
+                            tripSmall
+                            slidesToShowOn1024={2}
+                            slidesToShowOn1200={3}
+                            slidesToShowOn1450={4}
+                            iconLeftName={<MapPin size={30} weight="fill" color="#3cb371" />}
+                            slidesToShow={4}
+                            slides={destinations}
+                        />
+                    )}
                 </div>
             </div>
             <div className={cx('offers')} style={{ backgroundImage: `url(${images.pattern_bg_2})` }}>
@@ -579,9 +581,7 @@ function Home() {
                             View All Tours
                         </Button>
                     </div>
-                    <div className={cx('featured_tour')}>
-                        <TourItem data={tours} />
-                    </div>
+                    <div className={cx('featured_tour')}>{tours && <TourItem data={tours} />}</div>
                 </div>
             </div>
             <div

@@ -18,11 +18,11 @@ export default function TourDetail() {
         name: '',
         rate: 0,
         date: 0,
-        person_quantity: 0,
+        personQuantity: 0,
         information: '',
         price: 0,
-        destination: '',
-        imgs: [],
+        destination: { name: '' },
+        images: [{}],
     });
 
     useEffect(() => {
@@ -109,7 +109,7 @@ export default function TourDetail() {
                     </div>
                     <div className={cx('information_')}>
                         <span>Location</span>
-                        <p>{tour.destination}</p>
+                        <p>{tour.destination.name}</p>
                     </div>
                 </div>
                 <div className={cx('information_item')}>
@@ -118,7 +118,7 @@ export default function TourDetail() {
                     </div>
                     <div className={cx('information_')}>
                         <span>Group Size</span>
-                        <p>{tour.person_quantity}</p>
+                        <p>{tour.personQuantity}</p>
                     </div>
                 </div>
             </div>
@@ -129,7 +129,9 @@ export default function TourDetail() {
         <LayoutWithSideBar bookBar categoryBar>
             <Information />
             <div className={cx('tour_content')}>
-                <div className="ql-editor" dangerouslySetInnerHTML={{ __html: tour.information }} />
+                <div className="ql-snow">
+                    <div className="ql-editor" dangerouslySetInnerHTML={{ __html: tour.information }} />
+                </div>
             </div>
             <Review />
         </LayoutWithSideBar>
