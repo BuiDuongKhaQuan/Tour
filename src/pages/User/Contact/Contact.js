@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Contact.module.scss';
 import Breadcumb from '~/components/Breadcumb';
@@ -8,6 +8,8 @@ import images from '~/assets/images';
 import Input from '~/components/Input';
 import TextArea from '~/components/TextArea';
 import Button from '~/components/Button';
+import { createContact } from '~/utils/httpRequest';
+import { showNotifications } from '~/utils/constants';
 
 const cx = classNames.bind(styles);
 
@@ -16,6 +18,39 @@ export default function Contact() {
         phone: '0328216789',
         email: 'travel@gmail.com',
         address: '123 Main St',
+    };
+
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        topic: '',
+        message: '',
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+
+    const handleSendMessage = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await createContact(formData);
+            showNotifications({
+                message: response.message,
+            });
+            setFormData({ name: '', email: '', phone: '', topic: '', message: '' }); // Reset form
+        } catch (error) {
+            showNotifications({
+                title: 'Error',
+                type: 'danger',
+                message: 'Failed to send message. Please try again.',
+            });
+        }
     };
 
     return (
@@ -31,9 +66,9 @@ export default function Contact() {
                         <div className={cx('contact_item')}>
                             <h2>Contact Number:</h2>
                             <div className={cx('item_wrapper')}>
-                                <sapn className={cx('icon')}>
+                                <span className={cx('icon')}>
                                     <Phone />
-                                </sapn>
+                                </span>
                                 <span className={cx('text')}>{DATA_COMPANY.phone}</span>
                             </div>
                         </div>
@@ -71,19 +106,25 @@ export default function Contact() {
                         </div>
                     </div>
                 </div>
-                <form className={cx('form')}>
+                <form className={cx('form')} onSubmit={handleSendMessage}>
                     <h2>Make An Appointment</h2>
                     <div className={cx('input_list')}>
                         <Input
                             classNameInput={cx('input')}
                             rightIcon={<User size={20} weight="bold" />}
                             placeholder={'Your Name'}
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
                         />
                         <Input
                             classNameInput={cx('input')}
                             rightIcon={<EnvelopeSimple size={20} weight="bold" />}
                             placeholder={'Email Address'}
                             type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
                         />
                     </div>
                     <div className={cx('input_list')}>
@@ -92,15 +133,27 @@ export default function Contact() {
                             rightIcon={<Phone size={20} weight="bold" />}
                             placeholder={'Phone Number'}
                             type="number"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleChange}
                         />
                         <Input
                             classNameInput={cx('input')}
                             rightIcon={<NewspaperClipping size={20} weight="bold" />}
-                            placeholder={'Queary Topic'}
+                            placeholder={'Query Topic'}
+                            name="topic"
+                            value={formData.topic}
+                            onChange={handleChange}
                         />
                     </div>
-                    <TextArea className={cx('text_area')} placeholder={'Your Message'} />
-                    <Button primary large className={cx('btn')}>
+                    <TextArea
+                        className={cx('text_area')}
+                        placeholder={'Your Message'}
+                        name="message"
+                        value={formData.message}
+                        onChange={handleChange}
+                    />
+                    <Button primary large className={cx('btn')} type="submit">
                         Send Message Now
                     </Button>
                 </form>

@@ -3,7 +3,6 @@ import { AppBar, Tab, Tabs } from '@mui/material';
 import { Camera, EnvelopeSimple, MapPin, Phone, User } from '@phosphor-icons/react';
 import classNames from 'classnames/bind';
 import { useEffect, useRef, useState } from 'react';
-import { Store } from 'react-notifications-component';
 import { useNavigate } from 'react-router-dom';
 import AvatarCustom from '~/components/AvartarCustom';
 import Breadcumb from '~/components/Breadcumb';
@@ -12,11 +11,11 @@ import Input from '~/components/Input';
 import Loading from '~/components/Loading';
 import Select from '~/components/Select';
 import { TourCardItem } from '~/components/SliderCard';
-import routes from '~/config/routes';
-import { DATA_GENDER_SELECT, notification } from '~/utils/constants';
-import { findTourById, getCompletedTour, getWattingTour, logout, updateUser, uploadAvatar } from '~/utils/httpRequest';
-import styles from './Profile.module.scss';
 import TabPanel from '~/components/TabPanel';
+import routes from '~/config/routes';
+import { DATA_GENDER_SELECT, showNotifications } from '~/utils/constants';
+import { findTourById, getCompletedTour, getWattingTour, logout, updateUser } from '~/utils/httpRequest';
+import styles from './Profile.module.scss';
 const cx = classNames.bind(styles);
 
 function a11yProps(index) {
@@ -31,20 +30,23 @@ export default function Profile() {
     const navigate = useNavigate();
     const [value, setValue] = useState(0);
     const user = JSON.parse(sessionStorage.getItem('user'));
-    const [name, setName] = useState(user ? user.name : '');
-    const [email, setEmail] = useState(user ? user.email : '');
-    const [phone, setPhone] = useState(user ? user.phone : '');
-    const [address, setAddress] = useState(user ? user.address : '');
-    const [avatar, setAvatar] = useState(user ? user.avatar : '');
-    const [gender, setGender] = useState(user ? user.gender : '');
-    const [password, setPassword] = useState('');
+    const [formData, setFormData] = useState({
+        name: user?.name,
+        email: user?.email,
+        phone: user?.phone,
+        address: user?.address,
+        avatar: user?.avatar,
+        gender: user?.gender,
+    });
     const [loading, setLoading] = useState(false);
     const [wattingTours, setWattingTours] = useState([]);
     const [completedTours, setCompletedTours] = useState([]);
+    const [avatarPreview, setAvatarPreview] = useState(user?.avatar?.url || '');
+
     const findSelectedOption = (gender) => {
-        return DATA_GENDER_SELECT.items.find((item) => item.label.toLowerCase() === gender.toLowerCase());
+        return DATA_GENDER_SELECT.items.find((item) => item.label.toLowerCase() === gender?.toLowerCase());
     };
-    const [selectedOption, setSelectedOption] = useState(findSelectedOption(gender));
+    const [selectedOption, setSelectedOption] = useState(findSelectedOption(user?.gender));
 
     const fileInputRef = useRef(null);
 
@@ -55,53 +57,38 @@ export default function Profile() {
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-            handleUpload(file);
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                avatar: file,
+            }));
+            setAvatarPreview(URL.createObjectURL(file));
         }
     };
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
     const handleUpdate = async (event) => {
         event.preventDefault();
+        setLoading(true);
         try {
             const newData = {
-                name,
-                phone,
-                address,
+                ...formData,
                 gender: selectedOption.label,
             };
-            const newUser = await updateUser(user.id, newData);
-            sessionStorage.setItem('user', JSON.stringify(newUser));
-            setAvatar(user.avatar);
-            Store.addNotification({
-                ...notification,
-                message: 'Update successful',
+            const response = await updateUser(user.id, newData);
+            sessionStorage.setItem('user', JSON.stringify(response.data));
+            showNotifications({
+                message: response.message,
             });
         } catch (error) {
             console.log('Error', error);
-            Store.addNotification({
-                ...notification,
+            showNotifications({
                 title: 'Error',
                 type: 'danger',
-                message: 'Update successful',
+                message: 'Update failed',
             });
-        }
-    };
-
-    const handleUpload = async (avatarFile) => {
-        setLoading(true);
-        try {
-            const formData = new FormData();
-            formData.append('avatar', avatarFile);
-            const response = await uploadAvatar(formData);
-            const newUser = {
-                ...user,
-                avatar: response.avatar,
-            };
-            sessionStorage.setItem('user', JSON.stringify(newUser));
-        } catch (error) {
-            console.error(error.message);
         } finally {
             setLoading(false);
         }
@@ -112,7 +99,9 @@ export default function Profile() {
             await logout();
             sessionStorage.removeItem('user');
             navigate(routes.home);
-        } catch (error) {}
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     useEffect(() => {
@@ -122,13 +111,13 @@ export default function Profile() {
                 const completed = await getCompletedTour();
                 const toursWattingPromises = watting.map(async (booking) => {
                     const response = await findTourById(booking.id_tour);
-                    return response.data; // Trả về đối tượng tour
+                    return response.data;
                 });
                 const toursWatting = await Promise.all(toursWattingPromises);
 
                 const toursCompletedPromises = completed.map(async (booking) => {
                     const response = await findTourById(booking.id_tour);
-                    return response.data; // Trả về đối tượng tour
+                    return response.data;
                 });
                 const toursCompleted = await Promise.all(toursCompletedPromises);
 
@@ -140,6 +129,13 @@ export default function Profile() {
         };
         fetchDestinations();
     }, []);
+
+    const handleFormChange = (field) => (event) => {
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [field]: event.target.value,
+        }));
+    };
 
     return (
         <div className={cx('wrapper')}>
@@ -153,7 +149,7 @@ export default function Profile() {
                                 alt={'Avatar'}
                                 width={300}
                                 height={300}
-                                src={user.avatar}
+                                src={avatarPreview}
                                 stringAva={user.name}
                             />
                             <span className={cx('camera-icon')} onClick={handleIconClick}>
@@ -167,7 +163,7 @@ export default function Profile() {
                                 onChange={handleFileChange}
                             />
                         </div>
-                        <h2>{name}</h2>
+                        <h2>{formData.name}</h2>
                     </div>
                     <div className={cx('tabs')}>
                         <AppBar position="static" className={cx('app-bar')}>
@@ -179,7 +175,7 @@ export default function Profile() {
                                 aria-label="full width tabs example"
                             >
                                 <Tab label="Information" {...a11yProps(0)} />
-                                <Tab label="Watting tour" {...a11yProps(1)} />
+                                <Tab label="Waiting tour" {...a11yProps(1)} />
                                 <Tab label="Booked tour" {...a11yProps(2)} />
                             </Tabs>
                         </AppBar>
@@ -187,29 +183,29 @@ export default function Profile() {
                             <div className={cx('information')}>
                                 <Input
                                     placeholder={'Your Name'}
-                                    value={user.name && name}
-                                    onChange={(event) => setName(event.target.value)}
+                                    value={formData.name}
+                                    onChange={handleFormChange('name')}
                                     rightIcon={<User weight="bold" />}
                                 />
                                 <Input
                                     placeholder={'Your Email'}
-                                    value={user.email && email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    value={formData.email}
+                                    onChange={handleFormChange('email')}
                                     rightIcon={<EnvelopeSimple weight="bold" />}
                                     type={'email'}
                                     disabled
                                 />
                                 <Input
                                     placeholder={'Phone Number'}
-                                    value={user.phone && phone}
-                                    onChange={(e) => setPhone(e.target.value)}
+                                    value={formData.phone}
+                                    onChange={handleFormChange('phone')}
                                     rightIcon={<Phone weight="bold" />}
                                     type={'number'}
                                 />
                                 <Input
                                     placeholder={'Address'}
-                                    value={user.address && address}
-                                    onChange={(e) => setAddress(e.target.value)}
+                                    value={formData.address}
+                                    onChange={handleFormChange('address')}
                                     rightIcon={<MapPin weight="bold" />}
                                     type={'text'}
                                 />
@@ -230,16 +226,16 @@ export default function Profile() {
                         <TabPanel value={value} index={1} dir={theme.direction}>
                             <div className={cx('list')}>
                                 {wattingTours &&
-                                    wattingTours.map((reslut, index) => (
-                                        <TourCardItem profileTour data={reslut} key={index} />
+                                    wattingTours.map((result, index) => (
+                                        <TourCardItem profileTour data={result} key={index} />
                                     ))}
                             </div>
                         </TabPanel>
                         <TabPanel value={value} index={2} dir={theme.direction}>
                             <div className={cx('list')}>
                                 {completedTours &&
-                                    completedTours.map((reslut, index) => (
-                                        <TourCardItem profileTour data={reslut} key={index} />
+                                    completedTours.map((result, index) => (
+                                        <TourCardItem profileTour data={result} key={index} />
                                     ))}
                             </div>
                         </TabPanel>

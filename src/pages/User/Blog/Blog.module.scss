@@ -37,12 +37,4 @@
             color: var(--primary-color);
         }
     }
-    p {
-        color: var(--text-p-color);
-        margin-bottom: 20px;
-        line-height: 28px;
-    }
-    &:hover img {
-        transform: scale(1.1);
-    }
 }

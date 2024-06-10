@@ -52,13 +52,14 @@ export default function Destination() {
                 const response = await getDestinationsLimit(itemOffset, 8);
                 const size = await getDestinationsSize();
                 setDestinations(response.data);
-                setDestinationsSize(size);
+                setDestinationsSize(size.data);
             } catch (error) {
                 console.log(error);
             }
         };
         fetchDestinations();
     }, [itemOffset]);
+
     const pageCount = Math.ceil(destinationsSize / 8);
     const handlePageClick = (event) => {
         const newOffset = event.selected * 8;
