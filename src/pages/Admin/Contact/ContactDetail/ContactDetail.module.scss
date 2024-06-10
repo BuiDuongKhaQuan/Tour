@@ -4,10 +4,15 @@
     align-items: center;
     gap: 30px;
     margin-top: 20px;
+    h2 {
+        margin-bottom: 30px;
+        text-align: left;
+        font-size: 25px !important;
+    }
 }
 
 .form {
-    width: 100%;
+    width: 70%;
     display: flex;
     text-align: center;
     background-color: var(--white);
@@ -15,38 +20,46 @@
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 1px 6px -2px rgba(50, 71, 92, 0.6705882353);
-    h2 {
-        margin-bottom: 30px;
-        text-align: left;
-        font-size: 25px;
-    }
     .text_area {
         margin-bottom: 20px;
         textarea {
             background-color: var(--smoke-color);
             border-color: #adadad69;
+            min-height: 380px;
         }
     }
-
-    .infor {
-        .input_list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            .input {
-                background-color: var(--smoke-color);
-                border-color: #adadad69;
-            }
-        }
-        .action-btn {
-            .btn {
-                font-size: 14px;
-                text-align: left;
-                text-transform: uppercase;
-                &:not(:last-child) {
-                    margin-right: 20px;
-                }
-            }
+}
+.answer {
+}
+.infor {
+    display: flex;
+    width: 30%;
+    flex-direction: column;
+    gap: 20px;
+    background-color: var(--white);
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 1px 6px -2px rgba(50, 71, 92, 0.6705882353);
+    .text_area-mess {
+        border-color: #adadad69;
+    }
+}
+.input_list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    .input {
+        background-color: var(--smoke-color);
+        border-color: #adadad69;
+    }
+}
+.action-btn {
+    .btn {
+        font-size: 14px;
+        text-align: left;
+        text-transform: uppercase;
+        &:not(:last-child) {
+            margin-right: 20px;
         }
     }
 }

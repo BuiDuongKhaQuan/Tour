@@ -83,10 +83,9 @@ export default function FormSubmit({ toggleModalLogin, setCloseModal }) {
         setIsLoading(true);
         console.log(email, password);
         try {
-            const data = await login(email, password);
-            sessionStorage.setItem('user', JSON.stringify(data.user));
+            const response = await login(email, password);
+            sessionStorage.setItem('user', JSON.stringify(response.data));
             setCloseModal();
-            console.log(data.user);
         } catch (error) {
             setError(true);
             setMessage(error.response.data.error);

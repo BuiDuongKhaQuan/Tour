@@ -1,45 +1,42 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Contact.module.scss';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { Box } from '@mui/material';
 import Button from '~/components/Button';
 import { useNavigate } from 'react-router-dom';
+import { deleteContact, getContacts } from '~/utils/httpRequest';
+import { showNotifications } from '~/utils/constants';
+import { ContentCopy } from '@mui/icons-material';
 
 const cx = classNames.bind(styles);
 
-const data = [
-    {
-        name: 'Bali One Life Adventure',
-        email: 'quan@gmail.com',
-        phone: 'Lasvegus, USA',
-        topic: '52+',
-        message: '07',
-    },
-    {
-        name: 'Bali One Life Adventure',
-        email: 'quan@gmail.com',
-        phone: 'Lasvegus, USA',
-        topic: '52+',
-        message: '07',
-    },
-    {
-        name: 'Bali One Life Adventure',
-        email: 'quan@gmail.com',
-        phone: 'Lasvegus, USA',
-        topic: '52+',
-        message: '07',
-    },
-    {
-        name: 'Bali One Life Adventure',
-        email: 'quan@gmail.com',
-        phone: 'Lasvegus, USA',
-        topic: '52+',
-        message: '07',
-    },
-];
 export default function Contact() {
     const navigate = useNavigate();
+    const [contact, setContacts] = useState([{}]);
+
+    useEffect(() => {
+        const getData = async () => {
+            const response = await getContacts();
+            setContacts(response.data);
+        };
+        getData();
+    }, []);
+
+    const handleDelete = async (id) => {
+        try {
+            const response = await deleteContact(id);
+            setContacts(response.data);
+            showNotifications({ message: response.message });
+        } catch (error) {
+            showNotifications({
+                title: 'Update Error',
+                type: 'danger',
+                message: 'Network error, please try again later',
+            });
+            console.error(error);
+        }
+    };
     const columns = useMemo(
         () => [
             {
@@ -51,6 +48,12 @@ export default function Contact() {
                 accessorKey: 'email', //normal accessorKey
                 header: 'Email',
                 size: 200,
+                enableClickToCopy: true,
+                muiCopyButtonProps: {
+                    fullWidth: true,
+                    startIcon: <ContentCopy />,
+                    sx: { justifyContent: 'flex-start' },
+                },
             },
             {
                 accessorKey: 'phone',
@@ -62,13 +65,35 @@ export default function Contact() {
                 header: 'Topic',
                 size: 150,
             },
+            {
+                accessorKey: 'status',
+                header: 'Status',
+                size: 150,
+                Cell: ({ row }) => {
+                    let statusLabel;
+                    switch (row.original.status) {
+                        case 1:
+                            statusLabel = 'Not answered';
+                            break;
+                        case 2:
+                            statusLabel = 'Answered';
+                            break;
+                        case 3:
+                            statusLabel = 'Hide';
+                            break;
+                        default:
+                            statusLabel = 'Unknown';
+                    }
+                    return <span>{statusLabel}</span>;
+                },
+            },
         ],
         [],
     );
 
     const table = useMaterialReactTable({
         columns,
-        data,
+        data: contact,
         muiTableBodyCellProps: ({ row }) => ({
             //conditionally style selected rows
             sx: {
@@ -104,7 +129,10 @@ export default function Contact() {
                     color="error"
                     disabled={!table.getIsSomeRowsSelected()}
                     onClick={() => {
-                        alert('Delete Selected Contacts');
+                        const selectedRows = table.getSelectedRowModel().rows;
+                        selectedRows.forEach((row) => {
+                            handleDelete(row.original.id);
+                        });
                     }}
                     variant="contained"
                 >
@@ -115,7 +143,13 @@ export default function Contact() {
                     small
                     color="error"
                     disabled={!table.getIsSomeRowsSelected()}
-                    onClick={() => navigate('/admin-contact-detail')}
+                    onClick={() => {
+                        const selectedRows = table.getSelectedRowModel().rows;
+                        if (selectedRows.length > 0) {
+                            const contact = selectedRows[0].original; // Select the first contact
+                            navigate(`/admin-contact/${contact.id}`); // Pass as an object with a key
+                        }
+                    }}
                     variant="contained"
                 >
                     Answer Selected Contacts

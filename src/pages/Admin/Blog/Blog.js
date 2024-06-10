@@ -5,8 +5,8 @@ import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import { Box } from '@mui/material';
 import Button from '~/components/Button';
 import { useNavigate } from 'react-router-dom';
-import { getBlogs } from '~/utils/httpRequest';
-import { formattedDate } from '~/utils/constants';
+import { deleteBlog, getBlogs } from '~/utils/httpRequest';
+import { formattedDate, showNotifications } from '~/utils/constants';
 import routes from '~/config/routes';
 
 const cx = classNames.bind(styles);
@@ -22,6 +22,21 @@ export default function Blog() {
         };
         getData();
     }, []);
+
+    const handleDelete = async (id) => {
+        try {
+            const response = await deleteBlog(id);
+            setBlogs(response.data);
+            showNotifications({ message: response.message });
+        } catch (error) {
+            showNotifications({
+                title: 'Update Error',
+                type: 'danger',
+                message: 'Network error, please try again later',
+            });
+            console.error(error);
+        }
+    };
 
     const columns = useMemo(
         () => [
@@ -47,7 +62,7 @@ export default function Blog() {
                             <img
                                 alt="avatar"
                                 height={100}
-                                src={row.original.img && row.original.img}
+                                src={row.original.image && row.original.image?.url}
                                 loading="lazy"
                                 style={{ borderRadius: '10px', width: '150px' }}
                             />
@@ -63,13 +78,13 @@ export default function Blog() {
                 Cell: ({ row }) => {
                     let statusLabel;
                     switch (row.original.status) {
-                        case '2':
+                        case 2:
                             statusLabel = 'Not posted';
                             break;
-                        case '1':
+                        case 1:
                             statusLabel = 'Posted';
                             break;
-                        case '3':
+                        case 3:
                             statusLabel = 'Hide';
                             break;
                         default:
@@ -83,7 +98,7 @@ export default function Blog() {
                 header: 'Day create',
                 size: 200,
                 Cell: ({ row }) => {
-                    const date = new Date(row.original.create_at);
+                    const date = new Date(row.original.createdAt);
                     return <span>{formattedDate(date)}</span>;
                 },
             },
@@ -138,7 +153,10 @@ export default function Blog() {
                     color="error"
                     disabled={!table.getIsSomeRowsSelected()}
                     onClick={() => {
-                        alert('Delete Selected Blogs');
+                        const selectedRows = table.getSelectedRowModel().rows;
+                        selectedRows.forEach((row) => {
+                            handleDelete(row.original.id);
+                        });
                     }}
                     variant="contained"
                 >

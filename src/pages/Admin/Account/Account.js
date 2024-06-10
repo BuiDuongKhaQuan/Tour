@@ -43,7 +43,7 @@ export default function Account() {
                         onClick={handleClick}
                     >
                         <AvatarCustom
-                            src={row.original.avatar && row.original.avatar}
+                            src={row.original.avatar && row.original.avatar.url}
                             stringAva={renderedCellValue ? renderedCellValue : ''}
                         />
                         <span>{renderedCellValue}</span>
