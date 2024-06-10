@@ -4,6 +4,7 @@
     align-items: center;
     gap: 30px;
     margin-top: 20px;
+    overflow: hidden;
 }
 
 .form {
@@ -20,68 +21,71 @@
         text-align: left;
         font-size: 25px;
     }
-    .avatar {
-        text-align: center;
-        margin-right: 10px;
-        .avatar-img {
-            overflow: hidden;
-            border-radius: 10px;
-        }
-        img {
-            overflow: hidden;
-        }
-        .avater-btn {
-            margin-top: -30px;
-            background-color: var(--primary-color);
-        }
+}
+.tabs {
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    gap: 30px;
+
+    .app-bar {
+        background-color: transparent;
+        color: var(--black);
+        font-size: 30px !important;
     }
-    .container {
+
+    .fields {
         display: flex;
         text-align: center;
-        flex-direction: column;
-        gap: 30px;
-        .fields {
+        flex-direction: row;
+    }
+    .infor {
+        width: 100%;
+        .input_list {
             display: flex;
-            text-align: center;
             flex-direction: row;
-        }
-        .infor {
-            width: 100%;
-            .input_list {
-                display: flex;
-                flex-direction: row;
-                margin-top: 20px;
-                gap: 20px;
-                margin-bottom: 20px;
-                .input,
-                .select-content {
-                    background-color: var(--smoke-color);
-                    border-color: #adadad69;
-                }
-                .input_wraper,
-                .select {
-                    width: 50%;
-                }
+            margin-top: 20px;
+            gap: 20px;
+            margin-bottom: 20px;
+            .input,
+            .input_wraper,
+            .select-content {
+                border-color: #adadad69;
             }
-        }
-        .information {
-            min-height: 50vh;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            .edit {
-            }
-            .input_list {
-                display: flex;
-                flex-direction: row;
-                gap: 20px;
-                justify-content: center;
-            }
-            .btn {
-                font-size: 14px;
-                text-transform: uppercase;
-                padding: 10px;
+            .input_wraper,
+            .select {
+                width: 50%;
             }
         }
     }
+}
+.information {
+    min-height: 50vh;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .input_list {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        justify-content: center;
+    }
+}
+.btn {
+    font-size: 14px;
+    text-transform: uppercase;
+    padding: 10px;
+    &:not(:last-child) {
+        margin-right: 10px;
+    }
+}
+
+.img-content {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
 }

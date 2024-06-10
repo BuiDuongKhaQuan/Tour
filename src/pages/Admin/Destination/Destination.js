@@ -1,86 +1,95 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Destination.module.scss';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import images from '~/assets/images';
 import Button from '~/components/Button';
+import { getDestinations } from '~/utils/httpRequest';
+import { formattedDate } from '~/utils/constants';
 
 const cx = classNames.bind(styles);
-const data = [
-    {
-        name: 'Switzerland',
-        trip: '6+',
-        img: images.dest_2_1,
-    },
-    {
-        name: 'Barcelona',
-        trip: '8+',
-        img: images.dest_2_2,
-    },
-    {
-        name: 'Amsterdam',
-        trip: '6+',
-        img: images.dest_2_3,
-    },
-    {
-        name: 'Budapest City',
-        trip: '5+',
-        img: images.dest_2_4,
-    },
-    {
-        name: 'Switzerland',
-        trip: '6+',
-        img: images.dest_2_1,
-    },
-    {
-        name: 'Barcelona',
-        trip: '8+',
-        img: images.dest_2_2,
-    },
-    {
-        name: 'Amsterdam',
-        trip: '6+',
-        img: images.dest_2_3,
-    },
-    {
-        name: 'Budapest City',
-        trip: '5+',
-        img: images.dest_2_4,
-    },
-];
+
 export default function Destination() {
     const navigate = useNavigate();
+    const [destinations, setDestinations] = useState([{}]);
+
+    useEffect(() => {
+        const getData = async () => {
+            const response = await getDestinations();
+            setDestinations(response.data);
+        };
+        getData();
+    }, []);
+
     const columns = useMemo(
         () => [
             {
                 accessorKey: 'name', //access nested data with dot notation
                 header: 'Destination Name',
                 size: 250,
-                Cell: ({ renderedCellValue, row }) => (
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '1rem',
-                        }}
-                    >
-                        <img
-                            alt="avatar"
-                            height={100}
-                            src={row.original.img}
-                            loading="lazy"
-                            style={{ borderRadius: '10px' }}
-                        />
-                        <span>{renderedCellValue}</span>
-                    </Box>
-                ),
+                Cell: ({ renderedCellValue, row }) => {
+                    const handleClick = () => {
+                        const destination = row.original;
+                        navigate(`/admin-destination/${destination.id}`, { state: destination }); // Pass as an object with a key
+                    };
+                    return (
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '1rem',
+                                cursor: 'pointer',
+                            }}
+                            onClick={handleClick}
+                        >
+                            <img
+                                alt="avatar"
+                                height={100}
+                                src={row.original.img && row.original.img}
+                                loading="lazy"
+                                style={{ borderRadius: '10px', width: '150px' }}
+                            />
+                            <span>{renderedCellValue}</span>
+                        </Box>
+                    );
+                },
             },
             {
-                accessorKey: 'trip', //normal accessorKey
+                accessorKey: 'trips', //normal accessorKey
                 header: 'Trip',
                 size: 200,
+            },
+            {
+                accessorKey: 'status', //normal accessorKey
+                header: 'Status',
+                size: 200,
+                Cell: ({ row }) => {
+                    let statusLabel;
+                    switch (row.original.status) {
+                        case '0':
+                            statusLabel = 'Not posted';
+                            break;
+                        case '1':
+                            statusLabel = 'Posted';
+                            break;
+                        case '3':
+                            statusLabel = 'Hide';
+                            break;
+                        default:
+                            statusLabel = 'Unknown';
+                    }
+                    return <span>{statusLabel}</span>;
+                },
+            },
+            {
+                accessorKey: 'create_at', //normal accessorKey
+                header: 'Day created',
+                size: 200,
+                Cell: ({ row }) => {
+                    const date = new Date(row.original.create_at);
+                    return <span>{formattedDate(date)}</span>;
+                },
             },
         ],
         [],
@@ -88,7 +97,7 @@ export default function Destination() {
 
     const table = useMaterialReactTable({
         columns,
-        data,
+        data: destinations,
         muiTableBodyCellProps: ({ row }) => ({
             //conditionally style selected rows
             sx: {
@@ -145,8 +154,14 @@ export default function Destination() {
                     primary
                     small
                     color="error"
-                    disabled={!table.getIsSomeRowsSelected()}
-                    onClick={() => navigate('/admin-destination-detail')}
+                    disabled={!table.getIsSomeRowsSelected() || table.getSelectedRowModel().rows.length !== 1}
+                    onClick={() => {
+                        const selectedRows = table.getSelectedRowModel().rows;
+                        if (selectedRows.length > 0) {
+                            const destination = selectedRows[0].original; // Select the first destination
+                            navigate(`/admin-destination/${destination.id}`, { state: destination }); // Pass as an object with a key
+                        }
+                    }}
                     variant="contained"
                 >
                     Edit Selected Tours

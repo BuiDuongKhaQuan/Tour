@@ -5,7 +5,7 @@ import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import { Box } from '@mui/material';
 import Button from '~/components/Button';
 import { useNavigate } from 'react-router-dom';
-import { getTours, getToursLimit } from '~/utils/httpRequest';
+import { getTours } from '~/utils/httpRequest';
 import CurrencyFormat from 'react-currency-format';
 
 const cx = classNames.bind(styles);
@@ -28,24 +28,32 @@ export default function Tour() {
                 accessorKey: 'name', //access nested data with dot notation
                 header: 'Tour Name',
                 size: 250,
-                Cell: ({ renderedCellValue, row }) => (
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '1rem',
-                        }}
-                    >
-                        <img
-                            alt="avatar"
-                            height={100}
-                            src={row.original.imgs && row.original.imgs[0]}
-                            loading="lazy"
-                            style={{ borderRadius: '10px', width: '150px' }}
-                        />
-                        <span>{renderedCellValue}</span>
-                    </Box>
-                ),
+                Cell: ({ renderedCellValue, row }) => {
+                    const handleClick = () => {
+                        const tour = row.original;
+                        navigate(`/admin-tour/${tour.id}`); // Pass as an object with a key
+                    };
+                    return (
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '1rem',
+                                cursor: 'pointer',
+                            }}
+                            onClick={handleClick}
+                        >
+                            <img
+                                alt="avatar"
+                                height={100}
+                                src={row.original.imgs && row.original.imgs[0]}
+                                loading="lazy"
+                                style={{ borderRadius: '10px', width: '150px' }}
+                            />
+                            <span>{renderedCellValue}</span>
+                        </Box>
+                    );
+                },
             },
             {
                 accessorKey: 'destination', //normal accessorKey
@@ -71,7 +79,7 @@ export default function Tour() {
                         value={cell.getValue()}
                         displayType={'text'}
                         thousandSeparator={true}
-                        suffix={'đ'}
+                        suffix={'VND'}
                         decimalScale={2}
                     />
                 ),
@@ -139,12 +147,12 @@ export default function Tour() {
                     primary
                     small
                     color="error"
-                    disabled={!table.getIsSomeRowsSelected()}
+                    disabled={!table.getIsSomeRowsSelected() || table.getSelectedRowModel().rows.length !== 1}
                     onClick={() => {
                         const selectedRows = table.getSelectedRowModel().rows;
                         if (selectedRows.length > 0) {
                             const tour = selectedRows[0].original; // Select the first tour
-                            navigate('/admin-tour-detail', { state: tour }); // Pass as an object with a key
+                            navigate(`/admin-tour/${tour.id}`); // Pass as an object with a key
                         }
                     }}
                     variant="contained"
