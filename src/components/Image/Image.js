@@ -71,7 +71,7 @@ const Image = forwardRef(
                     src={fallBack || src}
                     alt={alt}
                     ref={ref}
-                    onError={handleError}
+                    // onError={handleError}
                 />
             </div>
         );
