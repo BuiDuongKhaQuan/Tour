@@ -173,6 +173,14 @@ export const findTourById = async (id) => {
         throw new Error('Error uploading image: ' + error.message);
     }
 };
+export const findAllTourByColumn = async (column, value) => {
+    try {
+        const response = await request.get(`/tours?column=${column}&value=${value}`);
+        return response.data;
+    } catch (error) {
+        throw new Error('Error uploading image: ' + error.message);
+    }
+};
 export const deleteTour = async (id) => {
     try {
         const response = await request.delete(`/tours/${id}`);
@@ -543,14 +551,7 @@ export const createDeals = async (data) => {
         throw new Error('Error uploading image: ' + error.message);
     }
 };
-export const answerDeals = async (id, data) => {
-    try {
-        const response = await request.put(`/deals/${id}/answer`, data);
-        return response.data;
-    } catch (error) {
-        throw new Error('Error uploading image: ' + error.message);
-    }
-};
+
 export const deleteDeals = async (id) => {
     try {
         const response = await request.delete(`/deals/${id}`);
@@ -574,6 +575,103 @@ export const getDealsLimit = async (start, page) => {
         return response.data;
     } catch (error) {
         throw new Error('Error uploading image: ' + error.message);
+    }
+};
+
+//Review
+export const getReview = async () => {
+    try {
+        const response = await request.get('/reviews/all');
+        return response.data;
+    } catch (error) {
+        throw new Error('Error uploading image: ' + error.message);
+    }
+};
+export const findReviewById = async (id) => {
+    try {
+        const response = await request.get(`/reviews/${id}`);
+        return response.data;
+    } catch (error) {
+        throw new Error('Error uploading image: ' + error.message);
+    }
+};
+export const findReviewByTourId = async (tourId) => {
+    try {
+        const response = await request.get(`/reviews?tourId=${tourId}`);
+        return response.data;
+    } catch (error) {
+        throw new Error('Error uploading image: ' + error.message);
+    }
+};
+export const updateReview = async (id, data) => {
+    try {
+        const response = await request.put(`/reviews/${id}/edit`, data);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+export const createReview = async (data) => {
+    try {
+        const response = await request.post(`/reviews`, data);
+        return response.data;
+    } catch (error) {
+        throw new Error('Error uploading image: ' + error.message);
+    }
+};
+export const answerReview = async (id, data) => {
+    try {
+        const response = await request.put(`/reviews/${id}/answer`, data);
+        return response.data;
+    } catch (error) {
+        throw new Error('Error uploading image: ' + error.message);
+    }
+};
+export const deleteReview = async (id) => {
+    try {
+        const response = await request.delete(`/reviews/${id}`);
+        return response.data;
+    } catch (error) {
+        throw new Error('Error uploading image: ' + error.message);
+    }
+};
+
+export const getReviewSize = async () => {
+    try {
+        const response = await request.get('/reviews/all-size');
+        return response.data;
+    } catch (error) {
+        throw new Error('Error uploading image: ' + error.message);
+    }
+};
+export const getReviewLimit = async (start, page) => {
+    try {
+        const response = await request.get(`/reviews?start=${start}&page=${page}`);
+        return response.data;
+    } catch (error) {
+        throw new Error('Error uploading image: ' + error.message);
+    }
+};
+
+//Company
+export const findCompanyById = async () => {
+    try {
+        const response = await request.get(`/company/1`);
+        return response.data;
+    } catch (error) {
+        throw new Error('Error uploading image: ' + error.message);
+    }
+};
+export const updateCompany = async (data) => {
+    try {
+        const response = await request.put(`/company/1/edit`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
     }
 };
 

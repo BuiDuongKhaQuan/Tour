@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import Breadcumb from '~/components/Breadcumb';
-import SideBar from '~/layouts/User/components/SideBar';
-import styles from './Order.module.scss';
 import classNames from 'classnames/bind';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { book, findTourById } from '~/utils/httpRequest';
-import { TourCardItem } from '~/components/SliderCard';
-import Button from '~/components/Button';
-import { Store } from 'react-notifications-component';
-import { notification, showNotifications } from '~/utils/constants';
+import { useEffect, useState } from 'react';
 import CurrencyFormat from 'react-currency-format';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Breadcumb from '~/components/Breadcumb';
+import Button from '~/components/Button';
+import { TourCardItem } from '~/components/SliderCard';
+import SideBar from '~/layouts/User/components/SideBar';
+import { showNotifications } from '~/utils/constants';
+import { book, findTourById } from '~/utils/httpRequest';
+import styles from './Order.module.scss';
 
 const cx = classNames.bind(styles);
 
@@ -20,7 +19,6 @@ export default function Order() {
     const [tour, setTour] = useState(null);
     const [priceAdult, setPriceAdult] = useState(0);
     const [priceChild, setPriceChild] = useState(0);
-    const user = JSON.parse(sessionStorage.getItem('user'));
 
     useEffect(() => {
         const getTour = async () => {
@@ -28,7 +26,7 @@ export default function Order() {
             setTour(response.data);
         };
         getTour();
-    }, []);
+    }, [formData.tourId]);
 
     const calculateTotalPrice = () => {
         const priceAdult = formData.adultQuantity * (tour?.price || 0);

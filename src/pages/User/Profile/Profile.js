@@ -4,7 +4,7 @@ import { Camera, EnvelopeSimple, MapPin, Phone, User } from '@phosphor-icons/rea
 import classNames from 'classnames/bind';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AvatarCustom from '~/components/AvartarCustom';
+import AvatarCustom from '~/components/AvatarCustom';
 import Breadcumb from '~/components/Breadcumb';
 import Button from '~/components/Button';
 import Input from '~/components/Input';

@@ -21,7 +21,7 @@ export default function DealsDetail({ create }) {
         offer: '',
         quantity: 0,
         dateExpiration: '',
-        status: '',
+        status: DATA_STATUS_SELECT.items[0].value,
     });
     const [loading, setLoading] = useState(false);
 
@@ -118,16 +118,16 @@ export default function DealsDetail({ create }) {
                                 <Input
                                     label={'Offer'}
                                     classNameInput={cx('input')}
-                                    leftIcon={<MdDriveFileRenameOutline />}
+                                    rightIcon={'%'}
                                     placeholder={'Deals offer'}
                                     value={deals?.offer}
                                     onChange={(e) => setDeals({ ...deals, offer: e.target.value })}
-                                    type="text"
+                                    type="number"
                                 />
                                 <Input
                                     label={'Quantity'}
                                     classNameInput={cx('input')}
-                                    rightIcon={'%'}
+                                    leftIcon={<MdDriveFileRenameOutline />}
                                     placeholder={'Quantity'}
                                     value={deals?.quantity}
                                     onChange={(e) => setDeals({ ...deals, quantity: e.target.value })}

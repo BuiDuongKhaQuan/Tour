@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import classNames from 'classnames/bind';
-import styles from './BlogDetail.module.scss';
-import images from '~/assets/images';
 import { Calendar, Tag, User } from '@phosphor-icons/react';
-import Image from '~/components/Image';
-import LayoutWithSideBar from '../../LayoutWithSideBar';
+import classNames from 'classnames/bind';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { findBlogById } from '~/utils/httpRequest';
+import Image from '~/components/Image';
 import { formattedDate } from '~/utils/constants';
+import { findBlogById } from '~/utils/httpRequest';
+import LayoutWithSideBar from '../../LayoutWithSideBar';
+import styles from './BlogDetail.module.scss';
 
 const cx = classNames.bind(styles);
 
@@ -26,7 +25,7 @@ export default function BlogDetail() {
             setBlog(response.data);
         };
         getBlog();
-    }, []);
+    }, [id]);
 
     const BlogContent = () => (
         <div className={cx('blog_wrapper')}>
@@ -38,7 +37,7 @@ export default function BlogDetail() {
                         Travel
                     </span>
                     <span className={cx('infor_item')}>
-                        <Calendar className={cx('infor_item_icon')} weight="f   ill" />
+                        <Calendar className={cx('infor_item_icon')} weight="fill" />
                         {formattedDate(new Date(blog.createdAt))}
                     </span>
                     <span className={cx('infor_item')}>

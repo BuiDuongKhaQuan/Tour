@@ -18,10 +18,11 @@ import {
 } from '@phosphor-icons/react';
 import SupTitle from '~/components/SupTitle';
 import SliderCard, { CardItem, TourCardItem } from '~/components/SliderCard';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Image from '~/components/Image';
 import { useEffect, useRef, useState } from 'react';
 import { getDestinationsLimit, getToursLimit } from '~/utils/httpRequest';
+import routes from '~/config/routes';
 
 const cx = classNames.bind(styles);
 
@@ -222,12 +223,12 @@ function Home() {
     ];
     const [tours, setTours] = useState([]);
     const [destinations, setDestinations] = useState([]);
+    const navigate = useNavigate();
     useEffect(() => {
         const fetchTours = async () => {
             try {
                 const response = await getToursLimit(0, 8);
                 setTours(response.data);
-                console.log('udusdusghud', response.data);
             } catch (error) {
                 console.log(error);
             }
@@ -240,7 +241,6 @@ function Home() {
             try {
                 const response = await getDestinationsLimit(0, 8);
                 setDestinations(response.data);
-                console.log(response.data);
             } catch (error) {
                 console.log(error);
             }
@@ -577,7 +577,7 @@ function Home() {
                             <SupTitle primary right small title={'Featured Tours'} />
                             <h2>Most Popular Tours</h2>
                         </div>
-                        <Button primary large>
+                        <Button primary large onClick={() => navigate(routes.tour)} type="button">
                             View All Tours
                         </Button>
                     </div>

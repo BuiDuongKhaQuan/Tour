@@ -41,7 +41,7 @@ export default function Contact() {
         () => [
             {
                 accessorKey: 'name', //access nested data with dot notation
-                header: 'Contact Name',
+                header: 'Name',
                 size: 250,
             },
             {

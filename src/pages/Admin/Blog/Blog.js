@@ -103,7 +103,7 @@ export default function Blog() {
                 },
             },
         ],
-        [],
+        [navigate],
     );
 
     const table = useMaterialReactTable({

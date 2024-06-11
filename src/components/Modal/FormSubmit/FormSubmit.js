@@ -217,7 +217,7 @@ export default function FormSubmit({ toggleModalLogin, setCloseModal }) {
                             rightIcon={<EnvelopeSimple size={25} />}
                         />
                         {message && <span className={cx('error', 'success')}>{message}</span>}
-                        <Button className={cx('submit-btn')} primary large>
+                        <Button className={cx('submit-btn')} primary large type="button">
                             Send
                         </Button>
                     </form>

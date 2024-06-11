@@ -69,6 +69,7 @@
     .rating_form {
         display: flex;
         gap: 15px;
+        margin-top: -25px;
         flex-direction: column;
     }
     .rating_input {
@@ -93,6 +94,28 @@
     }
     .rating_btn {
         width: 160px;
+    }
+}
+.review-list {
+    margin-top: 30px;
+    .review-item {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.205);
+    }
+    .name {
+        font-weight: 600;
+    }
+    .time {
+        font-size: 13px;
+    }
+    .image-list {
+        display: flex;
+        flex-direction: row;
+        padding: 10px 0;
+        gap: 5px;
     }
 }
 @media (max-width: 570px) {
