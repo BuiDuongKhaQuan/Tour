@@ -1,10 +1,13 @@
-import React from 'react';
-import classNames from 'classnames/bind';
-import styles from './Header.module.scss';
-import Image from '~/components/Image';
-import images from '~/assets/images';
-import { Link } from 'react-router-dom';
 import { Airplane, BellRinging, BookBookmark, House, MapPin, SignOut, UsersThree } from '@phosphor-icons/react';
+import classNames from 'classnames/bind';
+import { NavLink } from 'react-router-dom';
+import images from '~/assets/images';
+import Image from '~/components/Image';
+import styles from './Header.module.scss';
+import routes from '~/config/routes';
+import { IoTicketOutline } from 'react-icons/io5';
+import { MdOutlineLocalOffer } from 'react-icons/md';
+import { FaRegBuilding } from 'react-icons/fa';
 
 const cx = classNames.bind(styles);
 
@@ -13,33 +16,47 @@ export default function Header() {
         {
             title: 'Dashboard',
             icon: <House weight="bold" />,
-            to: '/admin',
+            to: routes.admin,
+        },
+        {
+            title: 'Company',
+            icon: <FaRegBuilding />,
+            to: routes.admin_company,
         },
         {
             title: 'Account',
             icon: <UsersThree weight="bold" />,
-            to: '/admin-account',
+            to: routes.admin_account,
         },
         {
             title: 'Destination',
             icon: <MapPin weight="bold" />,
-            to: '/admin-destination',
+            to: routes.admin_destination,
         },
         {
             title: 'Tour',
             icon: <Airplane weight="bold" />,
-            to: '/admin-tour',
+            to: routes.admin_tour,
         },
-
+        {
+            title: 'Deals',
+            icon: <MdOutlineLocalOffer />,
+            to: routes.admin_deals,
+        },
         {
             title: 'Blog',
             icon: <BookBookmark weight="bold" />,
-            to: '/admin-blog',
+            to: routes.admin_blog,
         },
         {
             title: 'Contact',
             icon: <BellRinging weight="bold" />,
-            to: '/admin-contact',
+            to: routes.admin_contact,
+        },
+        {
+            title: 'Ticket',
+            icon: <IoTicketOutline />,
+            to: routes.admin_ticket,
         },
         {
             title: 'Logout',
@@ -53,10 +70,10 @@ export default function Header() {
             <Image src={images.logo} width={'200px'} />
             <div className={cx('menu-list')}>
                 {MENU.map((result, index) => (
-                    <Link to={result.to} className={cx('menu_item')} key={index}>
+                    <NavLink to={result.to} className={(nav) => cx('menu_item', { active: nav.isActive })} key={index}>
                         <span>{result.icon}</span>
                         <h6>{result.title}</h6>
-                    </Link>
+                    </NavLink>
                 ))}
             </div>
         </div>

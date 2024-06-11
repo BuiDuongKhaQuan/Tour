@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { Store } from 'react-notifications-component';
 import { useParams } from 'react-router-dom';
-import AvatarCustom from '~/components/AvartarCustom/AvatarCustom';
+import AvatarCustom from '~/components/AvatarCustom/AvatarCustom';
 import Button from '~/components/Button';
 import Input from '~/components/Input';
 import Select from '~/components/Select';

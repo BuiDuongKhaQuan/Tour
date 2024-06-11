@@ -79,7 +79,7 @@ export default function Deals() {
                     if (expirationDate < currentDate) {
                         statusLabel = 'Expired';
                     } else {
-                        statusLabel = 'Still expired';
+                        statusLabel = 'Unexpired';
                     }
                     return <span>{statusLabel}</span>;
                 },

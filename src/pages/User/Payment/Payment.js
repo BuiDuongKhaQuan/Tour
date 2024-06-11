@@ -4,22 +4,20 @@ import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { CreditCard } from '@phosphor-icons/react';
 import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { AiFillQuestionCircle } from 'react-icons/ai';
 import { FaCcMastercard, FaCcVisa } from 'react-icons/fa';
 import { MdPhoneAndroid } from 'react-icons/md';
-import { useLocation } from 'react-router-dom';
+import { Store } from 'react-notifications-component';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Breadcumb from '~/components/Breadcumb';
 import Button from '~/components/Button';
 import Input from '~/components/Input';
 import Select from '~/components/Select';
-import { initialOptions } from '~/utils/constants';
+import routes from '~/config/routes';
+import { initialOptions, notification } from '~/utils/constants';
 import { paypalCapture, paypalOrder, paypalSendMail } from '~/utils/httpRequest';
 import styles from './Payment.module.scss';
-import { Store } from 'react-notifications-component';
-import { notification } from '~/utils/constants';
-import { useNavigate } from 'react-router-dom';
-import routes from '~/config/routes';
 
 const cx = classNames.bind(styles);
 function TabPanel(props) {

@@ -2,10 +2,20 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 110px;
 }
 .container {
     margin-top: var(--dafault-layout-header-height);
     width: 100%;
+    @media (min-width: 768px) {
+        padding: 0 24px; // Tăng khoảng đệm khi màn hình rộng hơn tablet
+    }
+
+    @media (min-width: 1024px) {
+        max-width: 1700px; // Giới hạn chiều rộng tối đa khi màn hình lớn hơn
+        margin: 0 auto; // Căn giữa container
+        padding: 0; // Loại bỏ khoảng đệm khi đã có max-width
+    }
 }
 .content {
     flex: 1;

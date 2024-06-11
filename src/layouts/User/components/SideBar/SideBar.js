@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import classNames from 'classnames/bind';
-import styles from './SideBar.module.scss';
-import Input from '~/components/Input';
-import Button from '~/components/Button';
 import { ArrowRight, EnvelopeSimple, MagnifyingGlass, Phone, User } from '@phosphor-icons/react';
-import H2Decoration from '~/components/H2Decoration';
-import { Link, useParams } from 'react-router-dom';
-import routes from '~/config/routes';
+import classNames from 'classnames/bind';
+import { useEffect, useState } from 'react';
+import { FaChild } from 'react-icons/fa6';
+import { IoIosPerson } from 'react-icons/io';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import images from '~/assets/images';
+import Button from '~/components/Button';
+import H2Decoration from '~/components/H2Decoration';
 import Image from '~/components/Image';
+import Input from '~/components/Input';
 import Select from '~/components/Select';
 import TextArea from '~/components/TextArea';
-import { useNavigate } from 'react-router-dom';
-import { Store } from 'react-notifications-component';
-import { notification, DATA_CATE, DATA_DEAL, DATA_SELECT } from '~/utils/constants';
+import routes from '~/config/routes';
+import { DATA_CATE, DATA_DEAL, getTodayDate, showNotifications } from '~/utils/constants';
+import { getTickets } from '~/utils/httpRequest';
+import styles from './SideBar.module.scss';
 
 const cx = classNames.bind(styles);
 
@@ -28,18 +29,28 @@ export default function SideBar({
 }) {
     const { id } = useParams();
     const navigate = useNavigate();
+    const user = JSON.parse(sessionStorage.getItem('user'));
+    const [ticketSelect, setTicketSelect] = useState({
+        id: 2,
+        title: 'Ticket',
+        items: [],
+    });
     const [formData, setFormData] = useState(
         formDataOrder
             ? formDataOrder
             : {
-                  name: '',
-                  email: '',
-                  phone: '',
-                  ticket: '',
-                  adult_quantity: '',
-                  child_quantity: '',
+                  userId: user?.id,
+                  tourId: id,
+                  name: user?.name,
+                  email: user?.email,
+                  phone: user?.phone,
+                  adultQuantity: '',
+                  childQuantity: '',
                   date: '',
+                  totalPrice: '',
                   message: '',
+                  ticketId: '',
+                  ticket: {},
               },
     );
     useEffect(() => {
@@ -47,6 +58,29 @@ export default function SideBar({
             onFormDataChange(formData);
         }
     }, [formData, onFormDataChange]);
+    useEffect(() => {
+        getAllTicket();
+    }, [id]);
+
+    const getAllTicket = async () => {
+        try {
+            const response = await getTickets();
+            const items = response.data.map((ticket) => ({
+                value: ticket.id,
+                label: `${ticket.type} (+${ticket.value}%)`,
+            }));
+            setTicketSelect((prev) => {
+                const existingItems = new Set(prev.items.map((item) => item.value));
+                const newItems = items.filter((item) => !existingItems.has(item.value));
+                return {
+                    ...prev,
+                    items: [...prev.items, ...newItems],
+                };
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -54,38 +88,38 @@ export default function SideBar({
     };
 
     const handleSelectChange = (name, data) => {
-        setFormData({ ...formData, [name]: data });
+        setFormData({ ...formData, [name]: data, ticketId: data.value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log(formData);
         if (!sessionStorage.getItem('user')) {
-            Store.addNotification({
-                ...notification,
+            showNotifications({
                 type: 'warning',
                 title: 'Warning',
                 message: 'Bạn cần đăng nhập để đặt Tour',
             });
         } else {
-            const { name, email, phone, id_ticket, adult_quantity, child_quantity, date, message } = formData;
+            const { name, email, phone, ticket, adultQuantity, childQuantity, date, message } = formData;
             if (
                 name === '' ||
                 email === '' ||
                 phone === '' ||
-                id_ticket === '' ||
-                adult_quantity === '' ||
-                child_quantity === '' ||
+                ticket === '' ||
+                adultQuantity === '' ||
+                childQuantity === '' ||
                 date === '' ||
                 message === ''
             ) {
-                Store.addNotification({
-                    ...notification,
+                console.log(formData);
+                showNotifications({
                     type: 'warning',
                     title: 'Warning',
                     message: 'Vui lòng điền đầy đủ thông tin',
                 });
             } else {
-                navigate('/order', { state: { ...formData, id_tour: id } });
+                navigate('/order', { state: formData });
             }
         }
     };
@@ -138,22 +172,27 @@ export default function SideBar({
                             onChange={handleChange}
                         />
                         <Select
-                            data={DATA_SELECT[0]}
-                            defaultValue={formData.ticket}
+                            data={ticketSelect}
+                            defaultValue={formDataOrder?.ticket}
+                            placeholder={'Ticket'}
                             onChange={(option) => handleSelectChange('ticket', option)}
                         />
                         <div className={cx('search-form_item')}>
-                            <Select
-                                className={cx('form_item_select')}
-                                data={DATA_SELECT[1]}
-                                defaultValue={formData.adult_quantity}
-                                onChange={(option) => handleSelectChange('adult_quantity', option)}
+                            <Input
+                                placeholder="Adult quantity"
+                                rightIcon={<IoIosPerson />}
+                                type="number"
+                                name="adultQuantity"
+                                value={formData.adultQuantity}
+                                onChange={handleChange}
                             />
-                            <Select
-                                className={cx('form_item_select')}
-                                data={DATA_SELECT[2]}
-                                defaultValue={formData.child_quantity}
-                                onChange={(option) => handleSelectChange('child_quantity', option)}
+                            <Input
+                                placeholder="Child quantity"
+                                rightIcon={<FaChild />}
+                                type="number"
+                                name="childQuantity"
+                                value={formData.childQuantity}
+                                onChange={handleChange}
                             />
                         </div>
                         <Input
@@ -163,6 +202,7 @@ export default function SideBar({
                             name="date"
                             value={formData.date}
                             onChange={handleChange}
+                            min={getTodayDate()}
                         />
                         <TextArea
                             placeholder="Your Message"

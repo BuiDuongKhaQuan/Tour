@@ -18,10 +18,13 @@ import {
 } from '@phosphor-icons/react';
 import Button from '~/components/Button';
 import H2Decoration from '~/components/H2Decoration';
+import routes from '~/config/routes';
 
 const cx = classNames.bind(styles);
 
 export default function Footer() {
+    const company = JSON.parse(sessionStorage.getItem('company'));
+
     return (
         <div className={cx('footer_wrapper')} style={{ backgroundImage: `url(${images.footer_bg_1})` }}>
             <div className={cx('form_offer')}>
@@ -51,11 +54,8 @@ export default function Footer() {
             </div>
             <div className={cx('container')}>
                 <div className={cx('slogan', 'p_15')}>
-                    <Image width={'189px'} src={images.logo} />
-                    <p>
-                        Globally communicate adaptive e-markets & timely manufactured product. Objectively exploit
-                        collaborative relationships vis-a-vis competitive manufactured.
-                    </p>
+                    <Image width={'189px'} src={company?.logo} />
+                    <p>{company?.logan}</p>
                     <div className={cx('fanpage')}>
                         <Button
                             className={cx('fanpage_button')}
@@ -86,19 +86,19 @@ export default function Footer() {
                             <ArrowRight className={cx('arrow_icon')} size={20} weight="bold" />
                             About Us
                         </Link>
-                        <Link className={cx('_link')}>
+                        <Link className={cx('_link')} to={routes.tour}>
                             <ArrowRight className={cx('arrow_icon')} size={20} weight="bold" />
                             Tour
                         </Link>
-                        <Link className={cx('_link')}>
+                        <Link className={cx('_link')} to={routes.destination}>
                             <ArrowRight className={cx('arrow_icon')} size={20} weight="bold" />
                             Destinations
                         </Link>
-                        <Link className={cx('_link')}>
+                        <Link className={cx('_link')} to={routes.blog}>
                             <ArrowRight className={cx('arrow_icon')} size={20} weight="bold" />
                             Blog
                         </Link>
-                        <Link className={cx('_link')}>
+                        <Link className={cx('_link')} to={routes.contact}>
                             <ArrowRight className={cx('arrow_icon')} size={20} weight="bold" />
                             Contact Us
                         </Link>
@@ -111,19 +111,19 @@ export default function Footer() {
                             <span className={cx('item_icon')}>
                                 <MapPin size={13} weight="fill" />
                             </span>
-                            <span className={cx('item_text')}>Linh Trung, Thu Duc, TPHCM</span>
+                            <span className={cx('item_text')}>{company.address}</span>
                         </div>
                         <div className={cx('contact_item')}>
                             <span className={cx('item_icon')}>
                                 <Phone size={13} weight="fill" />
                             </span>
-                            <span className={cx('item_text')}>+(84) 098 765 4131</span>
+                            <span className={cx('item_text')}>{company.phone}</span>
                         </div>
                         <div className={cx('contact_item')}>
                             <span className={cx('item_icon')}>
                                 <EnvelopeSimple size={13} weight="fill" />
                             </span>
-                            <span className={cx('item_text')}>info@travel.com</span>
+                            <span className={cx('item_text')}>{company.email}</span>
                         </div>
                     </div>
                 </div>

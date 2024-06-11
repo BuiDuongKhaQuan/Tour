@@ -101,7 +101,7 @@ export default function Tour() {
                 ),
             },
         ],
-        [],
+        [navigate],
     );
 
     const table = useMaterialReactTable({
