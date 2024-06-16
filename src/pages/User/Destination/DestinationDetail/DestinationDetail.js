@@ -40,7 +40,6 @@ export default function DestinationDetail() {
 
     return (
         <div className={cx('des_detail_wrapper')}>
-            <Breadcumb breadcumb_wrapper={'Home'} />
             <div className={cx('des_detail_container')}>
                 <div className={cx('des_detail_top')}>
                     <h2>

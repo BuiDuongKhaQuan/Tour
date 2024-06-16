@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
-import classNames from 'classnames/bind';
-import styles from './Contact.module.scss';
-import Breadcumb from '~/components/Breadcumb';
-import H2Decoration from '~/components/H2Decoration';
 import { EnvelopeSimple, MapPin, NewspaperClipping, Phone, User } from '@phosphor-icons/react';
+import classNames from 'classnames/bind';
+import { useState } from 'react';
 import images from '~/assets/images';
+import Button from '~/components/Button';
+import H2Decoration from '~/components/H2Decoration';
 import Input from '~/components/Input';
 import TextArea from '~/components/TextArea';
-import Button from '~/components/Button';
-import { createContact } from '~/utils/httpRequest';
 import { showNotifications } from '~/utils/constants';
+import { createContact } from '~/utils/httpRequest';
+import styles from './Contact.module.scss';
 
 const cx = classNames.bind(styles);
 
@@ -55,7 +54,6 @@ export default function Contact() {
 
     return (
         <>
-            <Breadcumb />
             <div className={cx('contact_wrapper')}>
                 <div className={cx('information')}>
                     <div className={cx('contact')}>

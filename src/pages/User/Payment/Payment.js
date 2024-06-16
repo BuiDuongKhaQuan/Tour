@@ -10,7 +10,6 @@ import { FaCcMastercard, FaCcVisa } from 'react-icons/fa';
 import { MdPhoneAndroid } from 'react-icons/md';
 import { Store } from 'react-notifications-component';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Breadcumb from '~/components/Breadcumb';
 import Button from '~/components/Button';
 import Input from '~/components/Input';
 import Select from '~/components/Select';
@@ -75,8 +74,6 @@ export default function Payment() {
     };
 
     const createOrder = async () => {
-        console.log('dujsahduhas', tourBooked.price);
-
         try {
             const orderData = await paypalOrder(tourBooked.id, tourBooked.price);
             if (orderData.id) {
@@ -137,7 +134,6 @@ export default function Payment() {
     };
     return (
         <>
-            <Breadcumb />
             <div className={cx('wraper')}>
                 <div className={cx('container')}>
                     <div className={cx('tabs')}>

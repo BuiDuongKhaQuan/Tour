@@ -74,7 +74,7 @@ export default function TourDetail() {
             email: '',
             status: 1,
             tourId: id,
-            userId: user.id,
+            userId: user?.id,
             images: [],
         });
         const [saveUserInfo, setSaveUserInfo] = useState(false); // State để lưu trạng thái của checkbox
@@ -96,6 +96,15 @@ export default function TourDetail() {
             } else {
                 localStorage.removeItem('savedUserInfo');
             }
+            if (!sessionStorage.getItem('user')) {
+                showNotifications({
+                    type: 'warning',
+                    title: 'Warning',
+                    message: 'Bạn cần đăng nhập để đặt Tour',
+                });
+                return;
+            }
+
             if (!review.message || !review.name || !review.email || !review.rate) {
                 showNotifications({
                     title: 'Validation Error',

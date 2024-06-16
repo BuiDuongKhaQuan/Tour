@@ -1,8 +1,6 @@
-import React from 'react';
 import classNames from 'classnames/bind';
-import styles from './LayoutWithSideBar.module.scss';
-import Breadcumb from '~/components/Breadcumb';
 import SideBar from '~/layouts/User/components/SideBar';
+import styles from './LayoutWithSideBar.module.scss';
 
 const cx = classNames.bind(styles);
 
@@ -10,6 +8,7 @@ export default function LayoutWithSideBar({
     children,
     searchBar,
     bookBar,
+    filterBar,
     categoryBar,
     classNameContainer,
     classNameList,
@@ -17,10 +16,15 @@ export default function LayoutWithSideBar({
 }) {
     return (
         <div className={cx('tour_wrapper')}>
-            <Breadcumb />
             <div className={cx('tour_container', classNameContainer)}>
                 <div className={cx('tour_list', classNameList)}>{children}</div>
-                <SideBar search={searchBar} bookTour={bookBar} category={categoryBar} className={classNameSideBar} />
+                <SideBar
+                    filterBar={filterBar}
+                    search={searchBar}
+                    bookTour={bookBar}
+                    category={categoryBar}
+                    className={classNameSideBar}
+                />
             </div>
         </div>
     );

@@ -2,7 +2,6 @@ import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import CurrencyFormat from 'react-currency-format';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Breadcumb from '~/components/Breadcumb';
 import Button from '~/components/Button';
 import { TourCardItem } from '~/components/SliderCard';
 import SideBar from '~/layouts/User/components/SideBar';
@@ -15,6 +14,7 @@ const cx = classNames.bind(styles);
 export default function Order() {
     const location = useLocation();
     const navigate = useNavigate();
+    const user = JSON.parse(sessionStorage.getItem('user'));
     const [formData, setFormData] = useState(location.state);
     const [tour, setTour] = useState(null);
     const [priceAdult, setPriceAdult] = useState(0);
@@ -76,6 +76,7 @@ export default function Order() {
                 try {
                     const response = await book({
                         ...formData,
+                        userId: user.id,
                         totalPrice: totalPriceByTicket(),
                     });
                     navigate('/payment', { state: { id: response.data.id, price: response.data.totalPrice } });
@@ -91,7 +92,6 @@ export default function Order() {
     };
     return (
         <>
-            <Breadcumb />
             <div className={cx('container')}>
                 <div className={cx('content')}>
                     <div className={cx('information')}>
@@ -136,6 +136,11 @@ export default function Order() {
                                         suffix={'đ'}
                                         decimalScale={2}
                                     />
+                                </span>
+                            </div>
+                            <div className={cx('price-item')}>
+                                <span className={cx('lable')} style={{ color: '#3cb371' }}>
+                                    (** 1 Child = 50% Adult)
                                 </span>
                             </div>
                             <div className={cx('price-item', 'total')}>

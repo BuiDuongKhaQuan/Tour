@@ -1,44 +1,57 @@
-import React, { useEffect, useState } from 'react';
+import { MagnifyingGlass } from '@phosphor-icons/react';
 import classNames from 'classnames/bind';
-import styles from './Tour.module.scss';
-import TourCardItem from '~/components/SliderCard/TourCardItem';
+import { useEffect, useState } from 'react';
+import Button from '~/components/Button';
+import FilterBar from '~/components/FilterBar';
+import Input from '~/components/Input';
 import Pagination from '~/components/Pagination';
+import TourCardItem from '~/components/SliderCard/TourCardItem';
+import { getCategories, getDestinations, searchTours } from '~/utils/httpRequest';
 import LayoutWithSideBar from '../LayoutWithSideBar';
-import { getToursLimit, getToursSize } from '~/utils/httpRequest';
+import styles from './Tour.module.scss';
+import routes from '~/config/routes';
+import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
 export default function Tour() {
     const [tours, setTours] = useState([]);
+    const [destinations, setDestinations] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [toursSize, setToursSize] = useState(0);
     const [itemOffset, setItemOffset] = useState(0);
+    const [filters, setFilters] = useState({ destinations: [], categories: [], name: '', hasDeal: false });
+    const [searchKeyword, setSearchKeyword] = useState('');
 
-    // Lấy kích thước danh sách tour một lần khi component được mount
+    // Lấy danh sách destinations và categories khi component được mount
     useEffect(() => {
-        const fetchToursSize = async () => {
+        const getData = async () => {
             try {
-                const size = await getToursSize();
-                setToursSize(size.data);
+                const response = await getDestinations();
+                const response1 = await getCategories();
+                setDestinations(response.data);
+                setCategories(response1.data);
             } catch (error) {
                 console.log(error);
             }
         };
-        fetchToursSize();
+        getData();
     }, []);
 
-    // Lấy danh sách tour mỗi khi itemOffset thay đổi
+    // Lấy danh sách tour mỗi khi itemOffset hoặc filters thay đổi
     useEffect(() => {
         const fetchTours = async () => {
             try {
-                const response = await getToursLimit(itemOffset, 8);
+                const response = await searchTours({ ...filters, offset: itemOffset, limit: 8 });
                 setTours(response.data);
+                setToursSize(response.total);
                 console.log(response.data);
             } catch (error) {
                 console.log(error);
             }
         };
         fetchTours();
-    }, [itemOffset]);
+    }, [itemOffset, filters]);
 
     const pageCount = Math.ceil(toursSize / 8);
 
@@ -46,21 +59,90 @@ export default function Tour() {
         const newOffset = event.selected * 8;
         setItemOffset(newOffset);
     };
+    const handleSearchInputChange = (event) => {
+        setSearchKeyword(event.target.value);
+    };
 
-    const TourContent = () => (
-        <div className={cx('tour_row')}>
-            {tours.map((result, index) => (
-                <TourCardItem data={result} key={index} />
-            ))}
-        </div>
-    );
+    const handleSearch = async () => {
+        try {
+            const response = await searchTours({ name: searchKeyword });
+            setToursSize(response.total);
+            setTours(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const resetFilters = () => {
+        setFilters({ destinations: [], categories: [], name: '', hasDeal: false });
+        setItemOffset(0);
+    };
+
+    const TourContent = () => {
+        if (tours.length === 0) {
+            return (
+                <div className={cx('no-tours')}>
+                    Không có tour phù hợp với bô lọc của bạn!. Xem tất cả{' '}
+                    <Link className={cx('link-tours')} to={routes.tour} onClick={resetFilters}>
+                        Tại đây
+                    </Link>
+                </div>
+            );
+        }
+
+        return (
+            <div className={cx('tour_row')}>
+                {tours.map((result, index) => (
+                    <TourCardItem data={result} key={index} />
+                ))}
+            </div>
+        );
+    };
+
+    const handleFilterChange = (newFilters) => {
+        setFilters(newFilters);
+        setItemOffset(0); // Đặt lại offset khi thay đổi bộ lọc
+    };
 
     return (
-        <LayoutWithSideBar searchBar categoryBar classNameSideBar={cx('side-bar')}>
+        <LayoutWithSideBar
+            filterBar={
+                <FilterBar destinations={destinations} categories={categories} onFilterChange={handleFilterChange} />
+            }
+            searchBar={
+                <div className={cx('background_item')}>
+                    <form
+                        className={cx('search-form')}
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            handleSearch();
+                        }}
+                    >
+                        <Input
+                            placeholder={'Enter Keyword'}
+                            value={searchKeyword}
+                            onChange={handleSearchInputChange}
+                            button={
+                                <Button
+                                    type="submit"
+                                    primary
+                                    className={cx('icon')}
+                                    leftIcon={<MagnifyingGlass size={20} color="#ffffff" />}
+                                />
+                            }
+                        />
+                    </form>
+                </div>
+            }
+            categoryBar
+            classNameSideBar={cx('side-bar')}
+        >
             <TourContent />
-            <div className={cx('pagination_')}>
-                <Pagination pageCount={pageCount} handlePageClick={handlePageClick} />
-            </div>
+            {toursSize > 8 && (
+                <div className={cx('pagination_')}>
+                    <Pagination pageCount={pageCount} handlePageClick={handlePageClick} />
+                </div>
+            )}
         </LayoutWithSideBar>
     );
 }

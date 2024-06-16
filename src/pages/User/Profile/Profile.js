@@ -5,7 +5,6 @@ import classNames from 'classnames/bind';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AvatarCustom from '~/components/AvatarCustom';
-import Breadcumb from '~/components/Breadcumb';
 import Button from '~/components/Button';
 import Input from '~/components/Input';
 import Loading from '~/components/Loading';
@@ -14,8 +13,18 @@ import { TourCardItem } from '~/components/SliderCard';
 import TabPanel from '~/components/TabPanel';
 import routes from '~/config/routes';
 import { DATA_GENDER_SELECT, showNotifications } from '~/utils/constants';
-import { findTourById, getCompletedTour, getWattingTour, logout, updateUser } from '~/utils/httpRequest';
+import {
+    findTourById,
+    getBookings,
+    getBookingsByStatus,
+    getCompletedTour,
+    getWattingTour,
+    logout,
+    updateUser,
+} from '~/utils/httpRequest';
 import styles from './Profile.module.scss';
+import { useAuth } from '~/hooks/useAuth';
+import CurrencyFormat from 'react-currency-format';
 const cx = classNames.bind(styles);
 
 function a11yProps(index) {
@@ -39,9 +48,11 @@ export default function Profile() {
         gender: user?.gender,
     });
     const [loading, setLoading] = useState(false);
-    const [wattingTours, setWattingTours] = useState([]);
-    const [completedTours, setCompletedTours] = useState([]);
+    const [wattingBookings, setWattingBookings] = useState([]);
+    const [completedBookings, setCompletedBookings] = useState([]);
+    const [cancelledBookings, setCancelledBookings] = useState([]);
     const [avatarPreview, setAvatarPreview] = useState(user?.avatar?.url || '');
+    const { removeData } = useAuth();
 
     const findSelectedOption = (gender) => {
         return DATA_GENDER_SELECT.items.find((item) => item.label.toLowerCase() === gender?.toLowerCase());
@@ -97,7 +108,7 @@ export default function Profile() {
     const handleLogout = async () => {
         try {
             await logout();
-            sessionStorage.removeItem('user');
+            await removeData();
             navigate(routes.home);
         } catch (error) {
             console.log(error);
@@ -107,22 +118,12 @@ export default function Profile() {
     useEffect(() => {
         const fetchDestinations = async () => {
             try {
-                const watting = await getWattingTour();
-                const completed = await getCompletedTour();
-                const toursWattingPromises = watting.map(async (booking) => {
-                    const response = await findTourById(booking.id_tour);
-                    return response.data;
-                });
-                const toursWatting = await Promise.all(toursWattingPromises);
-
-                const toursCompletedPromises = completed.map(async (booking) => {
-                    const response = await findTourById(booking.id_tour);
-                    return response.data;
-                });
-                const toursCompleted = await Promise.all(toursCompletedPromises);
-
-                setWattingTours(toursWatting);
-                setCompletedTours(toursCompleted);
+                const response = await getBookingsByStatus(user.id, 1);
+                const response1 = await getBookingsByStatus(user.id, 2);
+                const response2 = await getBookingsByStatus(user.id, 3);
+                setWattingBookings(response.data);
+                setCompletedBookings(response1.data);
+                setCancelledBookings(response2.data);
             } catch (error) {
                 console.log(error);
             }
@@ -136,11 +137,26 @@ export default function Profile() {
             [field]: event.target.value,
         }));
     };
+    const getPaymentMethod = (paymentID) => {
+        if (paymentID === 1) return 'Paypal';
+        if (paymentID === 2) return 'VN Pay';
+        if (paymentID === 3) return 'Masster cards';
+        if (paymentID === 4) return 'Tiền mặt';
+    };
+
+    const getStatusOrrder = (status) => {
+        if (status === 1) return 'Not received';
+        if (status === 2) return 'Complete';
+        if (status === 3) return 'Cancelled';
+    };
+    const getCheckoutStatusOrrder = (status) => {
+        if (status === 1) return 'Chưa thanh toán';
+        if (status === 2) return 'Đã thanh toán';
+    };
 
     return (
         <div className={cx('wrapper')}>
             {loading && <Loading />}
-            <Breadcumb />
             <div className={cx('container')}>
                 <div className={cx('row')}>
                     <div className={cx('avatar')}>
@@ -177,6 +193,7 @@ export default function Profile() {
                                 <Tab label="Information" {...a11yProps(0)} />
                                 <Tab label="Waiting tour" {...a11yProps(1)} />
                                 <Tab label="Booked tour" {...a11yProps(2)} />
+                                <Tab label="Cancelled tour" {...a11yProps(3)} />
                             </Tabs>
                         </AppBar>
                         <TabPanel value={value} index={0} dir={theme.direction}>
@@ -224,20 +241,151 @@ export default function Profile() {
                             </div>
                         </TabPanel>
                         <TabPanel value={value} index={1} dir={theme.direction}>
-                            <div className={cx('list')}>
-                                {wattingTours &&
-                                    wattingTours.map((result, index) => (
-                                        <TourCardItem profileTour data={result} key={index} />
-                                    ))}
-                            </div>
+                            <table className={cx('table')}>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Ngày đi</th>
+                                        <th>Giá</th>
+                                        <th>Trạng Thái Thanh Toán</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {wattingBookings && wattingBookings.length > 0 ? (
+                                        wattingBookings.map((book, index) => (
+                                            <tr key={index}>
+                                                <td>{book.id}</td>
+                                                <td>{book.date}</td>
+                                                <td>
+                                                    <CurrencyFormat
+                                                        value={book.totalPrice}
+                                                        displayType={'text'}
+                                                        thousandSeparator={true}
+                                                        suffix={'đ'}
+                                                        decimalScale={2}
+                                                    />
+                                                </td>
+                                                <td>{getCheckoutStatusOrrder(book.checkoutStatus)}</td>
+                                                <td>
+                                                    <Button
+                                                        primary
+                                                        small
+                                                        type="button"
+                                                        onClick={() => navigate(`/order/${book.id}`)}
+                                                    >
+                                                        Xem
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>
+                                                Không có tour nào đang chờ
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
                         </TabPanel>
                         <TabPanel value={value} index={2} dir={theme.direction}>
-                            <div className={cx('list')}>
-                                {completedTours &&
-                                    completedTours.map((result, index) => (
-                                        <TourCardItem profileTour data={result} key={index} />
-                                    ))}
-                            </div>
+                            <table className={cx('table')}>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Ngày đi</th>
+                                        <th>Giá</th>
+                                        <th>Trạng Thái Thanh Toán</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {completedBookings && completedBookings.length > 0 ? (
+                                        completedBookings.map((book, index) => (
+                                            <tr key={index}>
+                                                <td>{book.id}</td>
+                                                <td>{book.date}</td>
+                                                <td>
+                                                    <CurrencyFormat
+                                                        value={book.totalPrice}
+                                                        displayType={'text'}
+                                                        thousandSeparator={true}
+                                                        suffix={'đ'}
+                                                        decimalScale={2}
+                                                    />
+                                                </td>
+                                                <td>{getCheckoutStatusOrrder(book.checkoutStatus)}</td>
+                                                <td>
+                                                    <Button
+                                                        primary
+                                                        small
+                                                        type="button"
+                                                        onClick={() => navigate(`/order/${book.id}`)}
+                                                    >
+                                                        Xem
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>
+                                                Không có tour nào đã hoàn thành
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </TabPanel>
+                        <TabPanel value={value} index={3} dir={theme.direction}>
+                            <table className={cx('table')}>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Ngày đi</th>
+                                        <th>Giá</th>
+                                        <th>Trạng Thái Thanh Toán</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {cancelledBookings && cancelledBookings.length > 0 ? (
+                                        cancelledBookings.map((book, index) => (
+                                            <tr key={index}>
+                                                <td>{book.id}</td>
+                                                <td>{book.date}</td>
+                                                <td>
+                                                    <CurrencyFormat
+                                                        value={book.totalPrice}
+                                                        displayType={'text'}
+                                                        thousandSeparator={true}
+                                                        suffix={'đ'}
+                                                        decimalScale={2}
+                                                    />
+                                                </td>
+                                                <td>Đã hoàng tiền</td>
+                                                <td>
+                                                    <Button
+                                                        primary
+                                                        small
+                                                        type="button"
+                                                        onClick={() => navigate(`/order/${book.id}`)}
+                                                    >
+                                                        Xem
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>
+                                                Không có tour nào đã hủy
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
                         </TabPanel>
                     </div>
                 </div>

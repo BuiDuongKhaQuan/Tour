@@ -4,6 +4,7 @@ import 'tippy.js/dist/tippy.css';
 import images from '~/assets/images';
 import Select from '~/components/Select';
 import Button from '~/components/Button';
+import CountUp from 'react-countup';
 import {
     ArrowLeft,
     ArrowRight,
@@ -21,8 +22,11 @@ import SliderCard, { CardItem, TourCardItem } from '~/components/SliderCard';
 import { Link, useNavigate } from 'react-router-dom';
 import Image from '~/components/Image';
 import { useEffect, useRef, useState } from 'react';
-import { getDestinationsLimit, getToursLimit } from '~/utils/httpRequest';
+import { findTourByDeal, getBlogLimit, getDestinationsLimit, getToursLimit } from '~/utils/httpRequest';
 import routes from '~/config/routes';
+import Countdown from 'react-countdown';
+import { formattedDate } from '~/utils/constants';
+
 
 const cx = classNames.bind(styles);
 
@@ -133,27 +137,6 @@ function Home() {
         ],
     };
 
-    const DATA_OFFERS = [
-        {
-            name: 'Switzerland',
-            trip: '6+',
-            image: { url: images.tour_3_1 },
-            sell: '25% Off',
-        },
-        {
-            name: 'Barcelona',
-            trip: '8+',
-            image: { url: images.tour_3_2 },
-            sell: '25% Off',
-        },
-        {
-            name: 'Amsterdam',
-            trip: '6+',
-            image: { url: images.tour_3_3 },
-            sell: '25% Off',
-        },
-    ];
-
     const DATA_PROCESS = [
         {
             title: 'Find Ans Enjoy A Trip That Fits Your Lifestyle With Your Friends',
@@ -201,52 +184,70 @@ function Home() {
         },
     ];
 
-    const DATA_NEWS = [
-        {
-            title: 'Bali One Life Adventure',
-            img: images.tour_1_1,
-            position: 'Lasvegus, USA',
-            time: '15 July, 2023',
-        },
-        {
-            title: 'Bali One Life Adventure',
-            img: images.tour_1_1,
-            position: 'Lasvegus, USA',
-            time: '15 July, 2023',
-        },
-        {
-            title: 'Bali One Life Adventure',
-            img: images.tour_1_1,
-            position: 'Lasvegus, USA',
-            time: '15 July, 2023',
-        },
-    ];
     const [tours, setTours] = useState([]);
+    const [blogs, setBlogs] = useState([]);
+    const [toursOfDeal, setToursOfDeal] = useState([]);
     const [destinations, setDestinations] = useState([]);
     const navigate = useNavigate();
-    useEffect(() => {
-        const fetchTours = async () => {
-            try {
-                const response = await getToursLimit(0, 8);
-                setTours(response.data);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        fetchTours();
-    }, []);
 
     useEffect(() => {
-        const fetchDestinations = async () => {
-            try {
-                const response = await getDestinationsLimit(0, 8);
-                setDestinations(response.data);
-            } catch (error) {
-                console.log(error);
-            }
-        };
+        fetchTours();
         fetchDestinations();
+        getAllToursDeal();
+        getAllBlog();
     }, []);
+
+    const fetchTours = async () => {
+        try {
+            const response = await getToursLimit(0, 8);
+            setTours(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const getAllToursDeal = async () => {
+        try {
+            const response = await findTourByDeal();
+            setToursOfDeal(response.data);
+        } catch (error) {
+            console.error('Error fetching tours:', error);
+        }
+    };
+    const fetchDestinations = async () => {
+        try {
+            const response = await getDestinationsLimit(0, 8);
+            setDestinations(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const getAllBlog = async () => {
+        try {
+            const response = await getBlogLimit(0, 6);
+            setBlogs(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const sliderRef1 = useRef(null);
+    const nextSlide1 = () => {
+        sliderRef1.current.slickNext(); // Gọi hàm slickNext() từ ref
+    };
+
+    const previousSlide1 = () => {
+        sliderRef1.current.slickPrev(); // Gọi hàm slickPrev() từ ref
+    };
+
+    const sliderRef = useRef(null);
+    const nextSlide = () => {
+        sliderRef.current.slickNext(); // Gọi hàm slickNext() từ ref
+    };
+
+    const previousSlide = () => {
+        sliderRef.current.slickPrev();
+    };
+
     const ServiceItem = ({ data, content }) =>
         data.map((result, index) => (
             <div className={cx('container_service')} key={index}>
@@ -296,24 +297,43 @@ function Home() {
             ))}
         </SliderCard>
     );
-    const sliderRef1 = useRef(null);
-    const nextSlide1 = () => {
-        sliderRef1.current.slickNext(); // Gọi hàm slickNext() từ ref
+    const TourOffer = ({ data }) => (
+        <SliderCard
+            animation
+            ref={sliderRef1}
+            slidesToShow={2}
+            slidesToShowOn770={1}
+            slidesToShowOn1024={1}
+            slidesToShowOn1200={2}
+            slidesToShowOn1450={2}
+        >
+            {data.map((reslut, index) => (
+                <TourCardItem data={reslut} sellOff homeTour key={index} />
+            ))}
+        </SliderCard>
+    );
+    const rendererCountDown = ({ days, hours, minutes, seconds, completed }) => {
+        return (
+            <ul className={cx('offers_countdown')}>
+                <li>
+                    <div className={cx('count_number')}>{days}</div>
+                    <span>Days</span>
+                </li>
+                <li>
+                    <div className={cx('count_number')}>{hours}</div>
+                    <span>Housr</span>
+                </li>
+                <li>
+                    <div className={cx('count_number')}>{minutes}</div>
+                    <span>Minutes</span>
+                </li>
+                <li>
+                    <div className={cx('count_number')}>{seconds}</div>
+                    <span>Senconds</span>
+                </li>
+            </ul>
+        );
     };
-
-    const previousSlide1 = () => {
-        sliderRef1.current.slickPrev(); // Gọi hàm slickPrev() từ ref
-    };
-
-    const sliderRef = useRef(null);
-    const nextSlide = () => {
-        sliderRef.current.slickNext(); // Gọi hàm slickNext() từ ref
-    };
-
-    const previousSlide = () => {
-        sliderRef.current.slickPrev(); // Gọi hàm slickPrev() từ ref
-    };
-
     const TeamItem = ({ data }) => (
         <SliderCard
             sliderProps={{
@@ -354,27 +374,41 @@ function Home() {
         <SliderCard slidesToShow={3} slidesToShowOn1024={2} slidesToShowOn1200={2} slidesToShowOn1450={3}>
             {data.map((result, index) => (
                 <div className={cx('new_item')} key={index}>
-                    {!!(index % 2) && <Image animation className={cx('new_img')} src={result.img} alt={result.title} />}
+                    {!!(index % 2) && (
+                        <Image
+                            animation
+                            height={250}
+                            className={cx('new_img')}
+                            src={result.image.url}
+                            alt={result.topic}
+                        />
+                    )}
                     <div className={cx('new_information')}>
                         <div className={cx('new_item_time')}>
                             <span className={cx('time')}>
                                 <Tag size={18} weight="duotone" color="#3cb371" />
-                                {result.position}
+                                Travel
                             </span>
                             <span className={cx('location')}>
                                 <Calendar size={18} weight="duotone" color="#3cb371" />
-                                {result.time}
+                                {formattedDate(new Date(result.createdAt))}
                             </span>
                         </div>
-                        <h3 className={cx('new_title')}>
-                            <Link>{result.title}</Link>
-                        </h3>
-                        <Link className={cx('new_read_more')}>
+                        <h3 className={cx('new_title')}>{result.topic}</h3>
+                        <Link className={cx('new_read_more')} to={`/blog/${result.id}`}>
                             READ MORE
                             <ArrowUpRight size={18} className={cx('detail_icon')} color="#3cb371" weight="bold" />
                         </Link>
                     </div>
-                    {!!(index % 2) || <Image animation className={cx('new_img')} src={result.img} alt={result.title} />}
+                    {!!(index % 2) || (
+                        <Image
+                            animation
+                            height={250}
+                            className={cx('new_img')}
+                            src={result.image.url}
+                            alt={result.topic}
+                        />
+                    )}
                 </div>
             ))}
         </SliderCard>
@@ -450,15 +484,21 @@ function Home() {
                     </div>
                     <div className={cx('about_left_bottom')}>
                         <div className={cx('left_bottom_item')}>
-                            <h2>25+</h2>
+                            <h2>
+                                <CountUp end={25} duration={2} />+
+                            </h2>
                             <p>Years Of Experiences</p>
                         </div>
                         <div className={cx('left_bottom_item')}>
-                            <h2>15+</h2>
+                            <h2>
+                                <CountUp end={15} duration={2} />+
+                            </h2>
                             <p>Years Of Experiences</p>
                         </div>
                         <div className={cx('left_bottom_item')}>
-                            <h2>35+</h2>
+                            <h2>
+                                <CountUp end={35} duration={2} />+
+                            </h2>
                             <p>Years Of Experiences</p>
                         </div>
                     </div>
@@ -497,24 +537,7 @@ function Home() {
             <div className={cx('offers')} style={{ backgroundImage: `url(${images.pattern_bg_2})` }}>
                 <div className={cx('offers_left')} style={{ backgroundImage: `url(${images.pattern_bg_3})` }}>
                     <img src={images.offer_1} alt="Img" />
-                    <ul className={cx('offers_countdown')}>
-                        <li>
-                            <div className={cx('count_number')}>00</div>
-                            <span>Days</span>
-                        </li>
-                        <li>
-                            <div className={cx('count_number')}>00</div>
-                            <span>Housr</span>
-                        </li>
-                        <li>
-                            <div className={cx('count_number')}>00</div>
-                            <span>Minutes</span>
-                        </li>
-                        <li>
-                            <div className={cx('count_number')}>00</div>
-                            <span>Senconds</span>
-                        </li>
-                    </ul>
+                    <Countdown date={Date.now() + 10 * 24 * 60 * 60 * 1000} renderer={rendererCountDown} />,
                 </div>
                 <div className={cx('offers_right')}>
                     <div className={cx('offers_header')}>
@@ -539,19 +562,7 @@ function Home() {
                         </div>
                     </div>
                     <div className={cx('offers_list')}>
-                        <SliderCard
-                            ref={sliderRef1}
-                            slidesToShow={3}
-                            animation
-                            slidesToShowOn770={2}
-                            slidesToShowOn1024={2}
-                            slidesToShowOn1200={3}
-                            slidesToShowOn1450={3}
-                            large
-                            textInImg
-                            sellOff
-                            slides={DATA_OFFERS}
-                        />
+                        <TourOffer data={toursOfDeal} />
                     </div>
                 </div>
             </div>
@@ -578,7 +589,7 @@ function Home() {
                             <h2>Most Popular Tours</h2>
                         </div>
                         <Button primary large onClick={() => navigate(routes.tour)} type="button">
-                            View All Tours
+                            VIEW ALL TOURS
                         </Button>
                     </div>
                     <div className={cx('featured_tour')}>{tours && <TourItem data={tours} />}</div>
@@ -645,12 +656,12 @@ function Home() {
                         <SupTitle right primary small title={'News & Updates'} />
                         <h2>Our Latest News & Articles</h2>
                     </div>
-                    <Button large primary>
+                    <Button large primary type="button" onClick={() => navigate(routes.blog)}>
                         VIEW ALL POST
                     </Button>
                 </div>
                 <div className={cx('new_slider')}>
-                    <NewItem data={DATA_NEWS} />
+                    <NewItem data={blogs} />
                 </div>
             </div>
         </div>
