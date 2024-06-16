@@ -7,7 +7,7 @@ import Button from '~/components/Button';
 import { ContentCopy } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { getUsers } from '~/utils/httpRequest';
-import AvatarCustom from '~/components/AvartarCustom/AvatarCustom';
+import AvatarCustom from '~/components/AvatarCustom/AvatarCustom';
 
 const cx = classNames.bind(styles);
 
@@ -22,57 +22,60 @@ export default function Account() {
         };
         getData();
     }, []);
-    const columns = useMemo(() => [
-        {
-            accessorKey: 'name',
-            header: 'Last Name',
-            size: 200,
-            Cell: ({ renderedCellValue, row }) => {
-                const handleClick = () => {
-                    const user = row.original;
-                    navigate(`/admin-account/${user.id}`);
-                };
-                return (
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '1rem',
-                            cursor: 'pointer',
-                        }}
-                        onClick={handleClick}
-                    >
-                        <AvatarCustom
-                            src={row.original.avatar && row.original.avatar}
-                            stringAva={renderedCellValue ? renderedCellValue : ''}
-                        />
-                        <span>{renderedCellValue}</span>
-                    </Box>
-                );
+    const columns = useMemo(
+        () => [
+            {
+                accessorKey: 'name',
+                header: 'Last Name',
+                size: 200,
+                Cell: ({ renderedCellValue, row }) => {
+                    const handleClick = () => {
+                        const user = row.original;
+                        navigate(`/admin-account/${user.id}`);
+                    };
+                    return (
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '1rem',
+                                cursor: 'pointer',
+                            }}
+                            onClick={handleClick}
+                        >
+                            <AvatarCustom
+                                src={row.original.avatar && row.original.avatar.url}
+                                stringAva={renderedCellValue ? renderedCellValue : ''}
+                            />
+                            <span>{renderedCellValue}</span>
+                        </Box>
+                    );
+                },
             },
-        },
-        {
-            accessorKey: 'email',
-            header: 'Email',
-            size: 150,
-            enableClickToCopy: true,
-            muiCopyButtonProps: {
-                fullWidth: true,
-                startIcon: <ContentCopy />,
-                sx: { justifyContent: 'flex-start' },
+            {
+                accessorKey: 'email',
+                header: 'Email',
+                size: 150,
+                enableClickToCopy: true,
+                muiCopyButtonProps: {
+                    fullWidth: true,
+                    startIcon: <ContentCopy />,
+                    sx: { justifyContent: 'flex-start' },
+                },
             },
-        },
-        {
-            accessorKey: 'address', //normal accessorKey
-            header: 'Address',
-            size: 200,
-        },
-        {
-            accessorKey: 'gender',
-            header: 'Gender',
-            size: 150,
-        },
-    ]);
+            {
+                accessorKey: 'address', //normal accessorKey
+                header: 'Address',
+                size: 200,
+            },
+            {
+                accessorKey: 'gender',
+                header: 'Gender',
+                size: 150,
+            },
+        ],
+        [navigate],
+    );
 
     const table = useMaterialReactTable({
         columns,

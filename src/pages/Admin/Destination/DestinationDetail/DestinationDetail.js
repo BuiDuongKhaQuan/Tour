@@ -1,33 +1,59 @@
 import { AirplaneTakeoff, MapPin } from '@phosphor-icons/react';
 import classNames from 'classnames/bind';
 import { useEffect, useRef, useState } from 'react';
-import { Store } from 'react-notifications-component';
-import { useLocation, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Button from '~/components/Button';
 import Image from '~/components/Image';
 import Input from '~/components/Input';
+import Loading from '~/components/Loading';
 import QuillEditor from '~/components/QuillEditor';
 import Select from '~/components/Select';
-import { DATA_STATUS_SELECT, formattedDate, notification } from '~/utils/constants';
-import { updateDestination } from '~/utils/httpRequest';
+import { DATA_STATUS_SELECT, formattedDate, showNotifications } from '~/utils/constants';
+import { findDestinationById, updateDestination, createDestination, deleteDestination } from '~/utils/httpRequest';
 import styles from './DestinationDetail.module.scss';
+import routes from '~/config/routes';
+import { FaRegSquarePlus } from 'react-icons/fa6';
 
 const cx = classNames.bind(styles);
-export default function DestinationDetail() {
+
+export default function DestinationDetail({ create }) {
     const { id } = useParams();
-    const location = useLocation();
     const fileInputRef = useRef(null);
-    const [destination, setDestination] = useState(location.state);
-    const [imagePreview, setImagePreview] = useState('');
+    const navigate = useNavigate();
+    const [destination, setDestination] = useState({
+        name: '',
+        trips: '',
+        information: '',
+        status: DATA_STATUS_SELECT.items[0].value,
+        createdAt: new Date(),
+        image: { url: '' },
+    });
+    const [loading, setLoading] = useState(false);
+    const [imagePreview, setImagePreview] = useState(null);
     const findSelectedOption = (statusValue) => {
         return DATA_STATUS_SELECT.items.find((item) => item.value === statusValue);
     };
-    const [selectedOption, setSelectedOption] = useState(findSelectedOption(destination.status));
+    const [selectedOption, setSelectedOption] = useState(findSelectedOption(destination?.status));
 
     useEffect(() => {
-        setImagePreview(destination.img);
-        setSelectedOption(findSelectedOption(destination.status));
+        if (!create) {
+            getDestinationByID(id);
+        }
+    }, [id, create]);
+
+    useEffect(() => {
+        setImagePreview(destination?.image.url);
+        setSelectedOption(findSelectedOption(destination?.status));
     }, [destination]);
+
+    const getDestinationByID = async (id) => {
+        try {
+            const response = await findDestinationById(id);
+            setDestination(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const handleDestinationChange = (selectedOption) => {
         setSelectedOption(selectedOption);
@@ -39,20 +65,26 @@ export default function DestinationDetail() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
-            const response = await updateDestination(id, destination);
-            setDestination(response.data);
-            Store.addNotification({
-                ...notification,
-                message: 'Update destination successfully',
-            });
+            if (create) {
+                await createDestination(destination);
+                navigate(routes.admin_destination);
+                showNotifications({ message: 'Destination created successfully!' });
+            } else {
+                const response = await updateDestination(id, destination);
+                setDestination(response.data);
+                showNotifications({ message: 'Destination updated successfully!' });
+            }
         } catch (error) {
-            Store.addNotification({
-                ...notification,
-                message: 'Network error, please try again later',
+            showNotifications({
+                title: 'Submit Error',
                 type: 'danger',
+                message: 'Network error, please try again later',
             });
-            console.log(error);
+            console.error(error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -61,29 +93,50 @@ export default function DestinationDetail() {
         if (file) {
             setDestination((prev) => ({
                 ...prev,
-                img: file,
+                image: file,
             }));
             setImagePreview(URL.createObjectURL(file));
+            console.log(imagePreview);
         }
     };
+
     const triggerFileInput = () => {
         if (fileInputRef.current) {
             fileInputRef.current.click();
         }
     };
+
+    const handleDelete = async () => {
+        try {
+            const response = await deleteDestination(id);
+            navigate(routes.admin_destination);
+            showNotifications({ message: response.message });
+        } catch (error) {
+            showNotifications({
+                title: 'Delete Error',
+                type: 'danger',
+                message: 'Network error, please try again later',
+            });
+            console.error(error);
+        }
+    };
+
     return (
         <div className={cx('wrapper')}>
+            {loading && <Loading />}
             <form className={cx('form')} onSubmit={handleSubmit}>
-                <h2>Information</h2>
+                <h2>{create ? 'Create Destination' : 'Edit Destination'}</h2>
                 <div className={cx('container')}>
                     <div className={cx('fields')}>
                         <div className={cx('avatar')}>
                             <Image
                                 action
-                                onClickBtnRight={() => triggerFileInput()}
+                                onClickBtnLeft={() => triggerFileInput()}
+                                iconBtnLeft={<FaRegSquarePlus size={20} />}
                                 width={300}
+                                height={350}
                                 src={imagePreview}
-                                alt={'avatar'}
+                                alt={'Destination Image'}
                             />
                             <input
                                 type="file"
@@ -99,8 +152,8 @@ export default function DestinationDetail() {
                                     label={'Name'}
                                     classNameInput={cx('input')}
                                     leftIcon={<AirplaneTakeoff size={20} weight="bold" />}
-                                    placeholder={'Tour Name'}
-                                    value={destination.name}
+                                    placeholder={'Destination Name'}
+                                    value={destination?.name}
                                     onChange={(e) => setDestination({ ...destination, name: e.target.value })}
                                     type="text"
                                 />
@@ -109,7 +162,7 @@ export default function DestinationDetail() {
                                     classNameInput={cx('input')}
                                     leftIcon={<MapPin size={20} weight="bold" />}
                                     placeholder={'Trips'}
-                                    value={destination.trips}
+                                    value={destination?.trips}
                                     onChange={(e) => setDestination({ ...destination, trips: e.target.value })}
                                     type="number"
                                 />
@@ -131,8 +184,7 @@ export default function DestinationDetail() {
                                     disabled={true}
                                     classNameInput={cx('input')}
                                     className={cx('input_wraper')}
-                                    placeholder={formattedDate(new Date(destination.create_at))}
-                                    onChange={(e) => setDestination({ ...destination, create_at: e.target.value })}
+                                    placeholder={formattedDate(new Date(destination?.createdAt))}
                                     type="text"
                                 />
                             </div>
@@ -141,7 +193,7 @@ export default function DestinationDetail() {
                     <div className={cx('information')}>
                         <div className={cx('edit')}>
                             <QuillEditor
-                                value={destination.information}
+                                value={destination?.information}
                                 setValue={(content) => setDestination({ ...destination, information: content })}
                             />
                         </div>
@@ -149,10 +201,11 @@ export default function DestinationDetail() {
                             <Button primary large className={cx('btn')} type="submit">
                                 Submit
                             </Button>
-
-                            <Button primary large className={cx('btn')}>
-                                Delete
-                            </Button>
+                            {!create && (
+                                <Button primary large className={cx('btn')} type="button" onClick={handleDelete}>
+                                    Delete
+                                </Button>
+                            )}
                         </div>
                     </div>
                 </div>

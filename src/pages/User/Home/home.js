@@ -27,6 +27,7 @@ import routes from '~/config/routes';
 import Countdown from 'react-countdown';
 import { formattedDate } from '~/utils/constants';
 
+
 const cx = classNames.bind(styles);
 
 function Home() {

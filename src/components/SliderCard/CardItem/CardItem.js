@@ -25,7 +25,6 @@ export default function CardItem({
         large,
     });
     const heightValue = destination ? '374px' : categories ? '210px' : 'auto';
-
     return (
         <div className={classes}>
             <div className={cx('_wrap')}>
@@ -34,7 +33,7 @@ export default function CardItem({
                     <Image
                         height={heightValue}
                         animation={animation}
-                        src={data.img}
+                        src={data.image.url}
                         alt={data.name}
                         className={cx(window ? 'item_img' : 'item_img_square', textInImg && 'backgrond_linear')}
                     />

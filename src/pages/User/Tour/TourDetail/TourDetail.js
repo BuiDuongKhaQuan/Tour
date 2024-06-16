@@ -104,6 +104,7 @@ export default function TourDetail() {
                 });
                 return;
             }
+
             if (!review.message || !review.name || !review.email || !review.rate) {
                 showNotifications({
                     title: 'Validation Error',

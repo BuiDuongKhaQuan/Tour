@@ -1,31 +1,31 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
-import styles from './Destination.module.scss';
+import styles from './Ticket.module.scss';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Button from '~/components/Button';
-import { deleteDestination, getDestinations } from '~/utils/httpRequest';
+import { deleteTicket, getTickets } from '~/utils/httpRequest';
 import { formattedDate, showNotifications } from '~/utils/constants';
 import routes from '~/config/routes';
 
 const cx = classNames.bind(styles);
 
-export default function Destination() {
+export default function Ticket() {
     const navigate = useNavigate();
-    const [destinations, setDestinations] = useState([{}]);
+    const [destinations, setTickets] = useState([{}]);
 
     useEffect(() => {
         const getData = async () => {
-            const response = await getDestinations();
-            setDestinations(response.data);
+            const response = await getTickets();
+            setTickets(response.data);
         };
         getData();
     }, []);
     const handleDelete = async (id) => {
         try {
-            const response = await deleteDestination(id);
-            setDestinations(response.data);
+            const response = await deleteTicket(id);
+            setTickets(response.data);
             showNotifications({ message: response.message });
         } catch (error) {
             showNotifications({
@@ -39,40 +39,40 @@ export default function Destination() {
     const columns = useMemo(
         () => [
             {
-                accessorKey: 'name', //access nested data with dot notation
-                header: 'Destination Name',
-                size: 250,
+                accessorKey: 'id', //access nested data with dot notation
+                header: 'Stt',
+                size: 200,
                 Cell: ({ renderedCellValue, row }) => {
-                    const handleClick = () => {
-                        const destination = row.original;
-                        navigate(`/admin-destination/${destination.id}`, { state: destination }); // Pass as an object with a key
-                    };
                     return (
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '1rem',
-                                cursor: 'pointer',
-                            }}
-                            onClick={handleClick}
+                        <span
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => navigate(`/admin-ticket/${row.original.id}`)}
                         >
-                            <img
-                                alt="avatar"
-                                height={100}
-                                src={row.original.image && row.original.image.url}
-                                loading="lazy"
-                                style={{ borderRadius: '10px', width: '150px' }}
-                            />
-                            <span>{renderedCellValue}</span>
-                        </Box>
+                            {renderedCellValue}
+                        </span>
                     );
                 },
             },
             {
-                accessorKey: 'trips', //normal accessorKey
-                header: 'Trip',
+                accessorKey: 'type', //normal accessorKey
+                header: 'Type',
                 size: 200,
+                Cell: ({ renderedCellValue, row }) => {
+                    return (
+                        <span
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => navigate(`/admin-ticket/${row.original.id}`)}
+                        >
+                            {renderedCellValue}
+                        </span>
+                    );
+                },
+            },
+            {
+                accessorKey: 'value', //normal accessorKey
+                header: 'Value',
+                size: 200,
+                Cell: ({ renderedCellValue }) => <span>{renderedCellValue}%</span>,
             },
             {
                 accessorKey: 'status', //normal accessorKey
@@ -100,8 +100,8 @@ export default function Destination() {
                 accessorKey: 'createdAt', //normal accessorKey
                 header: 'Day created',
                 size: 200,
-                Cell: ({ row }) => {
-                    const date = new Date(row.original.createAt);
+                Cell: ({ renderedCellValue }) => {
+                    const date = new Date(renderedCellValue);
                     return <span>{formattedDate(date)}</span>;
                 },
             },
@@ -145,10 +145,10 @@ export default function Destination() {
                     primary
                     small
                     color="secondary"
-                    onClick={() => navigate(routes.admin_destination_create)}
+                    onClick={() => navigate(routes.admin_ticket_create)}
                     variant="contained"
                 >
-                    Create Destination
+                    Create Ticket
                 </Button>
                 <Button
                     primary
@@ -163,7 +163,7 @@ export default function Destination() {
                     }}
                     variant="contained"
                 >
-                    Delete Selected Destination
+                    Delete Selected Ticket
                 </Button>
                 <Button
                     primary
@@ -173,13 +173,13 @@ export default function Destination() {
                     onClick={() => {
                         const selectedRows = table.getSelectedRowModel().rows;
                         if (selectedRows.length > 0) {
-                            const destination = selectedRows[0].original; // Select the first destination
-                            navigate(`/admin-destination/${destination.id}`, { state: destination }); // Pass as an object with a key
+                            const ticket = selectedRows[0].original; // Select the first ticket
+                            navigate(`/admin-ticket/${ticket.id}`); // Pass as an object with a key
                         }
                     }}
                     variant="contained"
                 >
-                    Edit Selected Destination
+                    Edit Selected Ticket
                 </Button>
             </Box>
         ),

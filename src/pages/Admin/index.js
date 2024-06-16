@@ -9,3 +9,8 @@ export { default as AdminBlog } from '~/pages/Admin/Blog';
 export { default as AdminBlogDetail } from '~/pages/Admin/Blog/BlogDetail';
 export { default as AdminContact } from '~/pages/Admin/Contact';
 export { default as AdminContactDetail } from '~/pages/Admin/Contact/ContactDetail';
+export { default as AdminTicket } from '~/pages/Admin/Ticket';
+export { default as AdminTicketDetail } from '~/pages/Admin/Ticket/TicketDetail';
+export { default as AdminDeals } from '~/pages/Admin/Deals';
+export { default as AdminDealsDetail } from '~/pages/Admin/Deals/DealsDetail';
+export { default as AdminCompany } from '~/pages/Admin/Company';

@@ -1,31 +1,31 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
-import styles from './Destination.module.scss';
+import styles from './Deals.module.scss';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Button from '~/components/Button';
-import { deleteDestination, getDestinations } from '~/utils/httpRequest';
+import { deleteDeals, getDeals } from '~/utils/httpRequest';
 import { formattedDate, showNotifications } from '~/utils/constants';
 import routes from '~/config/routes';
 
 const cx = classNames.bind(styles);
 
-export default function Destination() {
+export default function Deals() {
     const navigate = useNavigate();
-    const [destinations, setDestinations] = useState([{}]);
+    const [destinations, setDealss] = useState([{}]);
 
     useEffect(() => {
         const getData = async () => {
-            const response = await getDestinations();
-            setDestinations(response.data);
+            const response = await getDeals();
+            setDealss(response.data);
         };
         getData();
     }, []);
     const handleDelete = async (id) => {
         try {
-            const response = await deleteDestination(id);
-            setDestinations(response.data);
+            const response = await deleteDeals(id);
+            setDealss(response.data);
             showNotifications({ message: response.message });
         } catch (error) {
             showNotifications({
@@ -39,39 +39,32 @@ export default function Destination() {
     const columns = useMemo(
         () => [
             {
-                accessorKey: 'name', //access nested data with dot notation
-                header: 'Destination Name',
-                size: 250,
+                accessorKey: 'id', //access nested data with dot notation
+                header: 'Stt',
+                size: 200,
                 Cell: ({ renderedCellValue, row }) => {
-                    const handleClick = () => {
-                        const destination = row.original;
-                        navigate(`/admin-destination/${destination.id}`, { state: destination }); // Pass as an object with a key
-                    };
                     return (
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '1rem',
-                                cursor: 'pointer',
-                            }}
-                            onClick={handleClick}
-                        >
-                            <img
-                                alt="avatar"
-                                height={100}
-                                src={row.original.image && row.original.image.url}
-                                loading="lazy"
-                                style={{ borderRadius: '10px', width: '150px' }}
-                            />
-                            <span>{renderedCellValue}</span>
-                        </Box>
+                        <span style={{ cursor: 'pointer' }} onClick={() => navigate(`/admin-deals/${row.original.id}`)}>
+                            {renderedCellValue}
+                        </span>
                     );
                 },
             },
             {
-                accessorKey: 'trips', //normal accessorKey
-                header: 'Trip',
+                accessorKey: 'offer', //normal accessorKey
+                header: 'Offer',
+                size: 200,
+                Cell: ({ renderedCellValue, row }) => {
+                    return (
+                        <span style={{ cursor: 'pointer' }} onClick={() => navigate(`/admin-deals/${row.original.id}`)}>
+                            {renderedCellValue}%
+                        </span>
+                    );
+                },
+            },
+            {
+                accessorKey: 'quantity', //normal accessorKey
+                header: 'Quantity',
                 size: 200,
             },
             {
@@ -80,28 +73,23 @@ export default function Destination() {
                 size: 200,
                 Cell: ({ row }) => {
                     let statusLabel;
-                    switch (row.original.status) {
-                        case 0:
-                            statusLabel = 'Not posted';
-                            break;
-                        case 1:
-                            statusLabel = 'Posted';
-                            break;
-                        case 3:
-                            statusLabel = 'Hide';
-                            break;
-                        default:
-                            statusLabel = 'Unknown';
+                    const currentDate = new Date();
+                    const expirationDate = new Date(row.original.dateExpiration);
+
+                    if (expirationDate < currentDate) {
+                        statusLabel = 'Expired';
+                    } else {
+                        statusLabel = 'Unexpired';
                     }
                     return <span>{statusLabel}</span>;
                 },
             },
             {
-                accessorKey: 'createdAt', //normal accessorKey
-                header: 'Day created',
+                accessorKey: 'dateExpiration', //normal accessorKey
+                header: 'Date Expiration',
                 size: 200,
-                Cell: ({ row }) => {
-                    const date = new Date(row.original.createAt);
+                Cell: ({ renderedCellValue }) => {
+                    const date = new Date(renderedCellValue);
                     return <span>{formattedDate(date)}</span>;
                 },
             },
@@ -145,10 +133,10 @@ export default function Destination() {
                     primary
                     small
                     color="secondary"
-                    onClick={() => navigate(routes.admin_destination_create)}
+                    onClick={() => navigate(routes.admin_deals_create)}
                     variant="contained"
                 >
-                    Create Destination
+                    Create Deals
                 </Button>
                 <Button
                     primary
@@ -163,7 +151,7 @@ export default function Destination() {
                     }}
                     variant="contained"
                 >
-                    Delete Selected Destination
+                    Delete Selected Deals
                 </Button>
                 <Button
                     primary
@@ -173,13 +161,13 @@ export default function Destination() {
                     onClick={() => {
                         const selectedRows = table.getSelectedRowModel().rows;
                         if (selectedRows.length > 0) {
-                            const destination = selectedRows[0].original; // Select the first destination
-                            navigate(`/admin-destination/${destination.id}`, { state: destination }); // Pass as an object with a key
+                            const deals = selectedRows[0].original; // Select the first deals
+                            navigate(`/admin-deals/${deals.id}`); // Pass as an object with a key
                         }
                     }}
                     variant="contained"
                 >
-                    Edit Selected Destination
+                    Edit Selected Deals
                 </Button>
             </Box>
         ),

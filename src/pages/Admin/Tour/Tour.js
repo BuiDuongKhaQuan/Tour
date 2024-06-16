@@ -5,8 +5,10 @@ import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import { Box } from '@mui/material';
 import Button from '~/components/Button';
 import { useNavigate } from 'react-router-dom';
-import { getTours } from '~/utils/httpRequest';
+import { deleteTour, getTours } from '~/utils/httpRequest';
 import CurrencyFormat from 'react-currency-format';
+import routes from '~/config/routes';
+import { showNotifications } from '~/utils/constants';
 
 const cx = classNames.bind(styles);
 
@@ -21,7 +23,20 @@ export default function Tour() {
         };
         getData();
     }, []);
-
+    const handleDelete = async (id) => {
+        try {
+            const response = await deleteTour(id);
+            setTours(response.data);
+            showNotifications({ message: response.message });
+        } catch (error) {
+            showNotifications({
+                title: 'Delete Error',
+                type: 'danger',
+                message: 'Network error, please try again later',
+            });
+            console.error(error);
+        }
+    };
     const columns = useMemo(
         () => [
             {
@@ -46,7 +61,7 @@ export default function Tour() {
                             <img
                                 alt="avatar"
                                 height={100}
-                                src={row.original.imgs && row.original.imgs[0]}
+                                src={row.original.images && row.original.images[0]?.url}
                                 loading="lazy"
                                 style={{ borderRadius: '10px', width: '150px' }}
                             />
@@ -59,9 +74,10 @@ export default function Tour() {
                 accessorKey: 'destination', //normal accessorKey
                 header: 'Position',
                 size: 200,
+                Cell: ({ renderedCellValue }) => <span>{renderedCellValue ? renderedCellValue.name : ''}</span>,
             },
             {
-                accessorKey: 'person_quantity',
+                accessorKey: 'personQuantity',
                 header: 'Persion',
                 size: 150,
             },
@@ -85,7 +101,7 @@ export default function Tour() {
                 ),
             },
         ],
-        [],
+        [navigate],
     );
 
     const table = useMaterialReactTable({
@@ -124,9 +140,7 @@ export default function Tour() {
                     primary
                     small
                     color="secondary"
-                    onClick={() => {
-                        alert('Create New Tour');
-                    }}
+                    onClick={() => navigate(routes.admin_tour_creat)}
                     variant="contained"
                 >
                     Create Tour
@@ -137,7 +151,10 @@ export default function Tour() {
                     color="error"
                     disabled={!table.getIsSomeRowsSelected()}
                     onClick={() => {
-                        alert('Delete Selected Tours');
+                        const selectedRows = table.getSelectedRowModel().rows;
+                        selectedRows.forEach((row) => {
+                            handleDelete(row.original.id);
+                        });
                     }}
                     variant="contained"
                 >

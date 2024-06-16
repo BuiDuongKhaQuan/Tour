@@ -19,7 +19,7 @@ export default function TourCardItem({ data, homeTour, profileTour }) {
                         width={width}
                         height={homeTour ? '205px' : '273px'}
                         animation
-                        src={data.imgs ? data.imgs[0] : ''}
+                        src={data.images ? data.images[0].url : ''}
                         alt={data.name}
                     />
                     <span className={cx('tour_like')}>
@@ -30,7 +30,7 @@ export default function TourCardItem({ data, homeTour, profileTour }) {
                     <div className={cx('location_re')}>
                         <div className={cx('location')}>
                             <MapPin size={20} weight="bold" color="#3cb371" />
-                            {data.destination}
+                            {data.destination.name}
                         </div>
                         <div className={cx('review')}>
                             <Star size={20} weight="fill" color="#FFB539" />
@@ -48,7 +48,7 @@ export default function TourCardItem({ data, homeTour, profileTour }) {
                         </span>
                         <span className={cx('day_persion_item')}>
                             <Users size={20} color="#3cb371" />
-                            {data.person_quantity}
+                            {data.personQuantity}
                         </span>
                     </div>
                     <div className={cx('tour_price')}>

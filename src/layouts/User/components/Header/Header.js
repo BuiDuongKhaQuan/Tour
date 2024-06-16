@@ -9,9 +9,8 @@ import { List, MagnifyingGlass, User, X } from '@phosphor-icons/react';
 import { useState } from 'react';
 import Modal from 'react-modal';
 import { FormSubmit } from '~/components/Modal';
-import { Avatar } from '@mui/material';
 import routes from '~/config/routes';
-import AvartarCustom from '~/components/AvartarCustom';
+import AvatarCustom from '~/components/AvatarCustom';
 
 const cx = classNames.bind(styles);
 
@@ -45,6 +44,7 @@ function Header() {
     const [modalSearchIsOpen, setModalSearchIsOpen] = useState(false);
     const [modalMenuIsOpen, setModalMenuIsOpen] = useState(false);
     const user = JSON.parse(sessionStorage.getItem('user'));
+    const company = JSON.parse(sessionStorage.getItem('company'));
     const body = document.body;
 
     const toggleModalLogin = () => {
@@ -81,7 +81,7 @@ function Header() {
                 leftIcon={<X size={20} weight="bold" />}
             />
             <Link to={config.routes.home} className={cx('mobile-logo')}>
-                <img src={images.logo} alt="logo" className={cx('logo_image')} />
+                <img src={company.logo} alt="logo" className={cx('logo_image')} />
             </Link>
             <div className={cx('ot-mobile-menu')}>
                 {MENU.map((result, index) => (
@@ -93,39 +93,16 @@ function Header() {
                         <h6>{result.title}</h6>
                     </Link>
                 ))}
+                {user ? (
+                    <Link to={routes.profile}>
+                        <AvatarCustom alt={user.name} src={user.avatar.url} stringAva={user.name} />
+                    </Link>
+                ) : (
+                    <Button onClick={toggleModalLogin} circle leftIcon={<User size={20} className={cx('icon')} />} />
+                )}
             </div>
         </div>
     );
-    const stringToColor = (string) => {
-        let hash = 0;
-        let i;
-
-        /* eslint-disable no-bitwise */
-        for (i = 0; i < string.length; i += 1) {
-            hash = string.charCodeAt(i) + ((hash << 5) - hash);
-        }
-
-        let color = '#';
-
-        for (i = 0; i < 3; i += 1) {
-            const value = (hash >> (i * 8)) & 0xff;
-            color += `00${value.toString(16)}`.slice(-2);
-        }
-        return color;
-    };
-
-    const stringAvatar = (name) => {
-        return {
-            sx: {
-                bgcolor: stringToColor(name),
-                width: 55,
-                height: 55,
-                fontSize: 25,
-                cursor: 'pointer',
-            },
-            children: name[0],
-        };
-    };
 
     return (
         <div className={cx('warpper')}>
@@ -161,7 +138,7 @@ function Header() {
                     />
                     {user ? (
                         <Link to={routes.profile}>
-                            <AvartarCustom alt={user.name} src={user.avatar} stringAva={user.name} />
+                            <AvatarCustom alt={user.name} src={user.avatar.url} stringAva={user.name} />
                         </Link>
                     ) : (
                         <Button

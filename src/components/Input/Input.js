@@ -25,9 +25,9 @@ export default function Input({
                 <input
                     value={value}
                     onChange={onChange}
-                    {...passProps}
                     className={cx('input', leftIcon && 'pading-left', classNameInput)}
                     placeholder={placeholder}
+                    {...passProps}
                 />
                 {rightIcon && <div className={cx('icon', 'right', classNameIconRight)}>{rightIcon}</div>}
                 {button && button}
