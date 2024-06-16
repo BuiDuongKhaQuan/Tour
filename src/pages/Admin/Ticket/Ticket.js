@@ -42,31 +42,11 @@ export default function Ticket() {
                 accessorKey: 'id', //access nested data with dot notation
                 header: 'Stt',
                 size: 200,
-                Cell: ({ renderedCellValue, row }) => {
-                    return (
-                        <span
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => navigate(`/admin-ticket/${row.original.id}`)}
-                        >
-                            {renderedCellValue}
-                        </span>
-                    );
-                },
             },
             {
                 accessorKey: 'type', //normal accessorKey
                 header: 'Type',
                 size: 200,
-                Cell: ({ renderedCellValue, row }) => {
-                    return (
-                        <span
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => navigate(`/admin-ticket/${row.original.id}`)}
-                        >
-                            {renderedCellValue}
-                        </span>
-                    );
-                },
             },
             {
                 accessorKey: 'value', //normal accessorKey
@@ -106,7 +86,7 @@ export default function Ticket() {
                 },
             },
         ],
-        [navigate],
+        [],
     );
 
     const table = useMaterialReactTable({
@@ -139,6 +119,14 @@ export default function Ticket() {
         },
         paginationDisplayMode: 'pages',
         enableRowSelection: true,
+        muiTableBodyRowProps: ({ row }) => ({
+            onClick: () => {
+                navigate(`/admin-ticket/${row.original.id}`);
+            },
+            sx: {
+                cursor: 'pointer',
+            },
+        }),
         renderTopToolbarCustomActions: ({ table }) => (
             <Box sx={{ display: 'flex', gap: '1rem', p: '4px' }}>
                 <Button

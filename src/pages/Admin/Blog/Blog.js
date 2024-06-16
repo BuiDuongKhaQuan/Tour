@@ -44,32 +44,25 @@ export default function Blog() {
                 accessorKey: 'topic', //access nested data with dot notation
                 header: 'Blog Name',
                 size: 250,
-                Cell: ({ renderedCellValue, row }) => {
-                    const handleClick = () => {
-                        const blog = row.original;
-                        navigate(`/admin-blog/${blog.id}`, { state: blog }); // Pass as an object with a key
-                    };
-                    return (
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '1rem',
-                                cursor: 'pointer',
-                            }}
-                            onClick={handleClick}
-                        >
-                            <img
-                                alt="avatar"
-                                height={100}
-                                src={row.original.image && row.original.image?.url}
-                                loading="lazy"
-                                style={{ borderRadius: '10px', width: '150px' }}
-                            />
-                            <span>{renderedCellValue}</span>
-                        </Box>
-                    );
-                },
+                Cell: ({ renderedCellValue, row }) => (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '1rem',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        <img
+                            alt="avatar"
+                            height={100}
+                            src={row.original.image && row.original.image?.url}
+                            loading="lazy"
+                            style={{ borderRadius: '10px', width: '150px' }}
+                        />
+                        <span>{renderedCellValue}</span>
+                    </Box>
+                ),
             },
             {
                 accessorKey: 'status',
@@ -103,7 +96,7 @@ export default function Blog() {
                 },
             },
         ],
-        [navigate],
+        [],
     );
 
     const table = useMaterialReactTable({
@@ -136,6 +129,14 @@ export default function Blog() {
         },
         paginationDisplayMode: 'pages',
         enableRowSelection: true,
+        muiTableBodyRowProps: ({ row }) => ({
+            onClick: () => {
+                navigate(`/admin-blog/${row.original.id}`);
+            },
+            sx: {
+                cursor: 'pointer',
+            },
+        }),
         renderTopToolbarCustomActions: ({ table }) => (
             <Box sx={{ display: 'flex', gap: '1rem', p: '4px' }}>
                 <Button

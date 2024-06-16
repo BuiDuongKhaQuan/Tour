@@ -6,6 +6,7 @@ const routes = {
     destination_detail: '/destination/:id',
     tour: '/tour',
     tour_detail: '/tour/:id',
+    tour_loved: '/loved',
     blog: '/blog',
     blog_detail: '/blog/:id',
     contact: '/contact',
@@ -17,6 +18,7 @@ const routes = {
     login: '/login',
     payment: '/payment',
     order: '/order',
+    order_detail: '/order/:id',
     //Admin
     admin: '/admin',
     admin_account: '/admin-account',
@@ -39,6 +41,8 @@ const routes = {
     admin_deals_detail: '/admin-deals/:id',
     admin_deals_create: '/admin-deals/create',
     admin_company: '/admin-company',
+    admin_order: '/admin-order',
+    admin_order_detail: '/admin-order/:id',
 };
 
 export default routes;

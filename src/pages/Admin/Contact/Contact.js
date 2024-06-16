@@ -121,6 +121,14 @@ export default function Contact() {
         },
         paginationDisplayMode: 'pages',
         enableRowSelection: true,
+        muiTableBodyRowProps: ({ row }) => ({
+            onClick: () => {
+                navigate(`/admin-contact/${row.original.id}`);
+            },
+            sx: {
+                cursor: 'pointer',
+            },
+        }),
         renderTopToolbarCustomActions: ({ table }) => (
             <Box sx={{ display: 'flex', gap: '1rem', p: '4px' }}>
                 <Button

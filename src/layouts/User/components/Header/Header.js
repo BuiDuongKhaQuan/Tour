@@ -1,16 +1,17 @@
+import { Heart, List, MagnifyingGlass, User, X } from '@phosphor-icons/react';
 import classNames from 'classnames/bind';
-import styles from './Header.module.scss';
-import images from '~/assets/images';
-import 'tippy.js/dist/tippy.css';
-import { Link, NavLink } from 'react-router-dom';
-import Button from '~/components/Button';
-import config from '~/config';
-import { List, MagnifyingGlass, User, X } from '@phosphor-icons/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
-import { FormSubmit } from '~/components/Modal';
-import routes from '~/config/routes';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import 'tippy.js/dist/tippy.css';
 import AvatarCustom from '~/components/AvatarCustom';
+import Button from '~/components/Button';
+import { FormSubmit } from '~/components/Modal';
+import config from '~/config';
+import routes from '~/config/routes';
+import { findCompanyById } from '~/utils/httpRequest';
+import styles from './Header.module.scss';
+import roles from '~/config/roles';
 
 const cx = classNames.bind(styles);
 
@@ -40,11 +41,26 @@ const MENU = [
 
 Modal.setAppElement('#root');
 function Header() {
+    const navigate = useNavigate();
     const [modalLoginIsOpen, setModalLoginIsOpen] = useState(false);
     const [modalSearchIsOpen, setModalSearchIsOpen] = useState(false);
     const [modalMenuIsOpen, setModalMenuIsOpen] = useState(false);
+    const [company, setCompany] = useState({});
     const user = JSON.parse(sessionStorage.getItem('user'));
-    const company = JSON.parse(sessionStorage.getItem('company'));
+
+    useEffect(() => {
+        getCompany();
+    }, []);
+
+    const getCompany = async () => {
+        try {
+            const response = await findCompanyById();
+            sessionStorage.setItem('company', JSON.stringify(response.data));
+            setCompany(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
     const body = document.body;
 
     const toggleModalLogin = () => {
@@ -81,7 +97,7 @@ function Header() {
                 leftIcon={<X size={20} weight="bold" />}
             />
             <Link to={config.routes.home} className={cx('mobile-logo')}>
-                <img src={company.logo} alt="logo" className={cx('logo_image')} />
+                <img src={company?.logo} alt="logo" className={cx('logo_image')} />
             </Link>
             <div className={cx('ot-mobile-menu')}>
                 {MENU.map((result, index) => (
@@ -108,7 +124,7 @@ function Header() {
         <div className={cx('warpper')}>
             <div className={cx('row')}>
                 <Link to={config.routes.home} className={cx('logo')}>
-                    <img src={images.logo} alt="logo" className={cx('logo_image')} />
+                    <img src={company?.logo} alt="logo" className={cx('logo_image')} />
                 </Link>
 
                 <div className={cx('center')}>
@@ -136,9 +152,14 @@ function Header() {
                         circle
                         leftIcon={<MagnifyingGlass size={20} className={cx('icon')} />}
                     />
+                    <Button
+                        onClick={() => navigate(routes.tour_loved)}
+                        circle
+                        leftIcon={<Heart size={20} className={cx('icon')} />}
+                    />
                     {user ? (
-                        <Link to={routes.profile}>
-                            <AvatarCustom alt={user.name} src={user.avatar.url} stringAva={user.name} />
+                        <Link to={user?.roles.includes(roles.admin) ? routes.admin : routes.profile}>
+                            <AvatarCustom alt={user.name} src={user?.avatar?.url} stringAva={user.name} />
                         </Link>
                     ) : (
                         <Button
@@ -147,7 +168,7 @@ function Header() {
                             leftIcon={<User size={20} className={cx('icon')} />}
                         />
                     )}
-                    <Button primary large className={cx('button')}>
+                    <Button primary large className={cx('button')} type="button" onClick={() => navigate(routes.tour)}>
                         BOOK YOUR STAY
                     </Button>
                 </div>

@@ -42,24 +42,13 @@ export default function Deals() {
                 accessorKey: 'id', //access nested data with dot notation
                 header: 'Stt',
                 size: 200,
-                Cell: ({ renderedCellValue, row }) => {
-                    return (
-                        <span style={{ cursor: 'pointer' }} onClick={() => navigate(`/admin-deals/${row.original.id}`)}>
-                            {renderedCellValue}
-                        </span>
-                    );
-                },
             },
             {
                 accessorKey: 'offer', //normal accessorKey
                 header: 'Offer',
                 size: 200,
                 Cell: ({ renderedCellValue, row }) => {
-                    return (
-                        <span style={{ cursor: 'pointer' }} onClick={() => navigate(`/admin-deals/${row.original.id}`)}>
-                            {renderedCellValue}%
-                        </span>
-                    );
+                    return <span style={{ cursor: 'pointer' }}>{renderedCellValue}%</span>;
                 },
             },
             {
@@ -74,7 +63,7 @@ export default function Deals() {
                 Cell: ({ row }) => {
                     let statusLabel;
                     const currentDate = new Date();
-                    const expirationDate = new Date(row.original.dateExpiration);
+                    const expirationDate = new Date(row.original.expiryDate);
 
                     if (expirationDate < currentDate) {
                         statusLabel = 'Expired';
@@ -85,7 +74,7 @@ export default function Deals() {
                 },
             },
             {
-                accessorKey: 'dateExpiration', //normal accessorKey
+                accessorKey: 'expiryDate', //normal accessorKey
                 header: 'Date Expiration',
                 size: 200,
                 Cell: ({ renderedCellValue }) => {
@@ -127,6 +116,14 @@ export default function Deals() {
         },
         paginationDisplayMode: 'pages',
         enableRowSelection: true,
+        muiTableBodyRowProps: ({ row }) => ({
+            onClick: () => {
+                navigate(`/admin-deals/${row.original.id}`);
+            },
+            sx: {
+                cursor: 'pointer',
+            },
+        }),
         renderTopToolbarCustomActions: ({ table }) => (
             <Box sx={{ display: 'flex', gap: '1rem', p: '4px' }}>
                 <Button

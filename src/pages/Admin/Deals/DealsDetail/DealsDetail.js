@@ -20,7 +20,7 @@ export default function DealsDetail({ create }) {
     const [deals, setDeals] = useState({
         offer: '',
         quantity: 0,
-        dateExpiration: '',
+        expiryDate: '',
         status: DATA_STATUS_SELECT.items[0].value,
     });
     const [loading, setLoading] = useState(false);
@@ -102,8 +102,8 @@ export default function DealsDetail({ create }) {
     };
 
     // Format the dateExpiration to YYYY-MM-DDTHH:MM if it exists
-    const formattedDateExpiration = deals.dateExpiration
-        ? moment(deals.dateExpiration).format('YYYY-MM-DDTHH:mm')
+    const formattedDateExpiration = deals.expiryDate
+        ? moment(deals.expiryDate).format('YYYY-MM-DDTHH:mm')
         : getFormattedDateTime();
 
     return (
@@ -151,7 +151,7 @@ export default function DealsDetail({ create }) {
                                     classNameInput={cx('input')}
                                     className={cx('input_wraper')}
                                     value={formattedDateExpiration}
-                                    onChange={(e) => setDeals({ ...deals, dateExpiration: e.target.value })}
+                                    onChange={(e) => setDeals({ ...deals, expiryDate: e.target.value })}
                                     type="datetime-local"
                                     min={getFormattedDateTime()}
                                 />

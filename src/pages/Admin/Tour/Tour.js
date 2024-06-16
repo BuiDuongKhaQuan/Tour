@@ -43,32 +43,24 @@ export default function Tour() {
                 accessorKey: 'name', //access nested data with dot notation
                 header: 'Tour Name',
                 size: 250,
-                Cell: ({ renderedCellValue, row }) => {
-                    const handleClick = () => {
-                        const tour = row.original;
-                        navigate(`/admin-tour/${tour.id}`); // Pass as an object with a key
-                    };
-                    return (
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '1rem',
-                                cursor: 'pointer',
-                            }}
-                            onClick={handleClick}
-                        >
-                            <img
-                                alt="avatar"
-                                height={100}
-                                src={row.original.images && row.original.images[0]?.url}
-                                loading="lazy"
-                                style={{ borderRadius: '10px', width: '150px' }}
-                            />
-                            <span>{renderedCellValue}</span>
-                        </Box>
-                    );
-                },
+                Cell: ({ renderedCellValue, row }) => (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '1rem',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        <img
+                            alt="avatar"
+                            src={row.original.images && row.original.images[0]?.url}
+                            loading="lazy"
+                            style={{ borderRadius: '10px', width: '150px', height: '100px' }}
+                        />
+                        <span>{renderedCellValue}</span>
+                    </Box>
+                ),
             },
             {
                 accessorKey: 'destination', //normal accessorKey
@@ -101,7 +93,7 @@ export default function Tour() {
                 ),
             },
         ],
-        [navigate],
+        [],
     );
 
     const table = useMaterialReactTable({
@@ -134,6 +126,14 @@ export default function Tour() {
         },
         paginationDisplayMode: 'pages',
         enableRowSelection: true,
+        muiTableBodyRowProps: ({ row }) => ({
+            onClick: () => {
+                navigate(`/admin-tour/${row.original.id}`);
+            },
+            sx: {
+                cursor: 'pointer',
+            },
+        }),
         renderTopToolbarCustomActions: ({ table }) => (
             <Box sx={{ display: 'flex', gap: '1rem', p: '4px' }}>
                 <Button

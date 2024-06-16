@@ -5,10 +5,24 @@ const request = axios.create({
     withCredentials: true, // Bật gửi cookie kèm theo yêu cầu
 });
 
+request.interceptors.request.use(
+    (config) => {
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        if (user && user.accessToken) {
+            config.headers['x-access-token'] = user.accessToken;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    },
+);
+
 export const get = async (path, options = {}) => {
     const response = await request.get(path, options);
     return response.data;
 };
+
 export const getUsers = async () => {
     try {
         const response = await request.get('/users/all');
@@ -17,6 +31,7 @@ export const getUsers = async () => {
         throw new Error('Error uploading image: ' + error.message);
     }
 };
+
 export const updateRoles = async (userId, selectedRoles) => {
     try {
         const response = await request.put(`/users/${userId}/roles`, { roles: selectedRoles });
@@ -90,10 +105,25 @@ export const logout = async () => {
         throw error;
     }
 };
-
+export const getCategories = async () => {
+    try {
+        const response = await request.get('/categories/all');
+        return response.data;
+    } catch (error) {
+        throw new Error('Error uploading image: ' + error.message);
+    }
+};
 export const getDestinations = async () => {
     try {
         const response = await request.get('/destinations/all');
+        return response.data;
+    } catch (error) {
+        throw new Error('Error uploading image: ' + error.message);
+    }
+};
+export const searchTours = async (data) => {
+    try {
+        const response = await request.post('/tours/search', data);
         return response.data;
     } catch (error) {
         throw new Error('Error uploading image: ' + error.message);
@@ -173,6 +203,14 @@ export const findTourById = async (id) => {
         throw new Error('Error uploading image: ' + error.message);
     }
 };
+export const findTourByDeal = async (id) => {
+    try {
+        const response = await request.get(`/tours/deal`);
+        return response.data;
+    } catch (error) {
+        throw new Error('Error uploading image: ' + error.message);
+    }
+};
 export const findAllTourByColumn = async (column, value) => {
     try {
         const response = await request.get(`/tours?column=${column}&value=${value}`);
@@ -207,7 +245,7 @@ export const getToursLimit = async (start, page) => {
 };
 export const updateTour = async (id, data) => {
     try {
-        const response = await request.post(`/tours/${id}/edit`, data);
+        const response = await request.put(`/tours/${id}/edit`, data);
         return response.data;
     } catch (error) {
         throw error;
@@ -259,28 +297,45 @@ export const addImgTour = async (id, data) => {
 };
 export const book = async (data) => {
     try {
-        const response = await request.post('/book', data);
+        const response = await request.post('/bookings', data);
         return response.data;
     } catch (error) {
         throw new Error('Error uploading image: ' + error.message);
     }
 };
-export const getWattingTour = async () => {
+export const getBookings = async (data) => {
     try {
-        const response = await request.get('/book/watting');
+        const response = await request.get('/bookings/all', data);
         return response.data;
     } catch (error) {
         throw new Error('Error uploading image: ' + error.message);
     }
 };
-export const getCompletedTour = async () => {
+export const updateBookings = async (id, data) => {
     try {
-        const response = await request.get('/book/completed');
+        const response = await request.put(`/bookings/${id}/edit`, data);
         return response.data;
     } catch (error) {
         throw new Error('Error uploading image: ' + error.message);
     }
 };
+export const findOrderById = async (id) => {
+    try {
+        const response = await request.get(`/bookings/${id}}`);
+        return response.data;
+    } catch (error) {
+        throw new Error('Error uploading image: ' + error.message);
+    }
+};
+export const getBookingsByStatus = async (userId, status) => {
+    try {
+        const response = await request.get(`/bookings?userId=${userId}&status=${status}`);
+        return response.data;
+    } catch (error) {
+        throw new Error('Error uploading image: ' + error.message);
+    }
+};
+
 export const paypalOrder = async (tourId, price) => {
     try {
         const data = {
@@ -522,6 +577,14 @@ export const getTicketLimit = async (start, page) => {
 export const getDeals = async () => {
     try {
         const response = await request.get('/deals/all');
+        return response.data;
+    } catch (error) {
+        throw new Error('Error uploading image: ' + error.message);
+    }
+};
+export const findDealsByExpiry = async () => {
+    try {
+        const response = await request.get(`/deals/expiry-date`);
         return response.data;
     } catch (error) {
         throw new Error('Error uploading image: ' + error.message);

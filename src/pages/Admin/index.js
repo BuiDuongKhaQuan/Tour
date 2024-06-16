@@ -14,3 +14,5 @@ export { default as AdminTicketDetail } from '~/pages/Admin/Ticket/TicketDetail'
 export { default as AdminDeals } from '~/pages/Admin/Deals';
 export { default as AdminDealsDetail } from '~/pages/Admin/Deals/DealsDetail';
 export { default as AdminCompany } from '~/pages/Admin/Company';
+export { default as AdminOrder } from '~/pages/Admin/Order';
+export { default as AdminOrderDetail } from '~/pages/Admin/Order/OrderDetail';

@@ -165,16 +165,32 @@
         }
     }
     .post_img {
-        border-radius: 10px;
         cursor: pointer;
-        width: 40%;
+        flex: 35%;
+        .img {
+            border-radius: 10px;
+        }
+    }
+    .post-info {
+        flex: 65%;
+        .post-topic {
+            font-family: 'PlayfairDisplay';
+            color: var(--white);
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* Số dòng tối đa */
+            -webkit-box-orient: vertical;
+            text-overflow: ellipsis;
+            line-height: 1.5em; /* Chiều cao của một dòng */
+            max-height: 3em; /* 2 dòng * chiều cao của một dòng */
+        }
     }
     .post_time {
         color: var(--white);
         transition: 0.4s transform;
         transition: all ease 0.4s;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 5px;
 
         &:hover {
@@ -186,10 +202,6 @@
     color: var(--white);
     transition: 0.4s transform;
     transition: all ease 0.4s;
-
-    &:hover {
-        color: var(--primary-color);
-    }
 }
 .copyright {
     color: var(--white);

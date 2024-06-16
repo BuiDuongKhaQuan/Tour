@@ -1,4 +1,4 @@
-import { ArrowRight, EnvelopeSimple, MagnifyingGlass, Phone, User } from '@phosphor-icons/react';
+import { EnvelopeSimple, Phone, User } from '@phosphor-icons/react';
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import { FaChild } from 'react-icons/fa6';
@@ -12,9 +12,10 @@ import Input from '~/components/Input';
 import Select from '~/components/Select';
 import TextArea from '~/components/TextArea';
 import routes from '~/config/routes';
-import { DATA_CATE, DATA_DEAL, getTodayDate, showNotifications } from '~/utils/constants';
-import { getTickets } from '~/utils/httpRequest';
+import { DATA_DEAL, getTodayDate, showNotifications } from '~/utils/constants';
+import { findTourById, getTickets } from '~/utils/httpRequest';
 import styles from './SideBar.module.scss';
+import CurrencyFormat from 'react-currency-format';
 
 const cx = classNames.bind(styles);
 
@@ -23,6 +24,7 @@ export default function SideBar({
     bookTour,
     showButtonTour = true,
     category,
+    filterBar,
     formDataOrder,
     onFormDataChange,
     className,
@@ -30,6 +32,7 @@ export default function SideBar({
     const { id } = useParams();
     const navigate = useNavigate();
     const user = JSON.parse(sessionStorage.getItem('user'));
+    const [tour, setTour] = useState();
     const [ticketSelect, setTicketSelect] = useState({
         id: 2,
         title: 'Ticket',
@@ -44,8 +47,8 @@ export default function SideBar({
                   name: user?.name,
                   email: user?.email,
                   phone: user?.phone,
-                  adultQuantity: '',
-                  childQuantity: '',
+                  adultQuantity: 1,
+                  childQuantity: 1,
                   date: '',
                   totalPrice: '',
                   message: '',
@@ -58,10 +61,20 @@ export default function SideBar({
             onFormDataChange(formData);
         }
     }, [formData, onFormDataChange]);
-    useEffect(() => {
-        getAllTicket();
-    }, [id]);
 
+    useEffect(() => {
+        getTourData(formData.tourId);
+        getAllTicket();
+    }, [formData]);
+
+    const getTourData = async (id) => {
+        try {
+            const response = await findTourById(id);
+            setTour(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
     const getAllTicket = async () => {
         try {
             const response = await getTickets();
@@ -125,27 +138,20 @@ export default function SideBar({
     };
     return (
         <div className={cx('information_cate', className)}>
-            {search && (
-                <div className={cx('tour_search', 'background_item')}>
-                    <form className={cx('search-form')}>
-                        <Input
-                            placeholder={'Enter Keyword'}
-                            button={
-                                <Button
-                                    primary
-                                    className={cx('icon')}
-                                    leftIcon={<MagnifyingGlass size={20} color="#ffffff" />}
-                                />
-                            }
-                        />
-                    </form>
-                </div>
-            )}
+            {search}
             {bookTour && (
                 <div className={cx('book_tour_search')}>
                     <div className={cx('tour_search-top')}>
                         <h2>Book This Tour</h2>
-                        <p>$250.00 per person</p>
+                        <p>
+                            <CurrencyFormat
+                                value={tour?.price}
+                                displayType={'text'}
+                                thousandSeparator={true}
+                                suffix={'đ/Người'}
+                                decimalScale={2}
+                            />
+                        </p>
                     </div>
                     <form className={cx('search-form')} onSubmit={handleSubmit}>
                         <Input
@@ -220,7 +226,8 @@ export default function SideBar({
             )}
             {category && (
                 <>
-                    <div className={cx('tour_categories', 'background_item')}>
+                    {filterBar}
+                    {/* <div className={cx('tour_categories', 'background_item')}>
                         <H2Decoration>Tour Categories</H2Decoration>
                         {DATA_CATE.map((result, index) => (
                             <Button
@@ -232,7 +239,7 @@ export default function SideBar({
                                 {result.title}
                             </Button>
                         ))}
-                    </div>
+                    </div> */}
                     <div className={cx('minute_deals', 'background_item')}>
                         <H2Decoration>Last Minute Deals</H2Decoration>
                         <div className={cx('deal_list')}>
