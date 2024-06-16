@@ -1,0 +1,28 @@
+.background_item {
+    padding: 40px;
+    background-color: var(--smoke-color);
+    margin-bottom: 40px;
+    border-radius: 10px;
+}
+.filter {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    .filter-title {
+        font-weight: 600;
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+    .filter-item {
+        display: flex;
+        flex-direction: column;
+    }
+    .content {
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 3px;
+    }
+}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './FormSubmit.module.scss';
 import { login, register, verify } from '~/utils/httpRequest';
@@ -6,6 +6,7 @@ import { EnvelopeSimple, FacebookLogo, GoogleLogo, Lock, User, X } from '@phosph
 import Button from '~/components/Button';
 import Input from '~/components/Input';
 import Loading from '~/components/Loading';
+import { useAuth } from '~/hooks/useAuth';
 
 const cx = classNames.bind(styles);
 
@@ -21,6 +22,7 @@ export default function FormSubmit({ toggleModalLogin, setCloseModal }) {
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState();
     const [error, setError] = useState(false);
+    const { saveData } = useAuth();
 
     const handleShowLoginForm = () => {
         setShowLogin(true);
@@ -46,6 +48,17 @@ export default function FormSubmit({ toggleModalLogin, setCloseModal }) {
         setShowForgot(false);
         setShowVerify(true);
     };
+    const [saveLoginInfo, setSaveLoginInfo] = useState(false);
+    useEffect(() => {
+        const loginInfo = localStorage.getItem('loginInfo');
+        if (loginInfo) {
+            const { password, email } = JSON.parse(loginInfo);
+            setEmail(email);
+            setPassword(password);
+            setSaveLoginInfo(true);
+        }
+    }, []);
+
     const handleRigister = async (event) => {
         event.preventDefault();
         setIsLoading(true);
@@ -78,16 +91,21 @@ export default function FormSubmit({ toggleModalLogin, setCloseModal }) {
         }
     };
 
-    const handleLogin = async (event) => {
-        event.preventDefault();
+    const handleLogin = async (e) => {
+        e.preventDefault();
         setIsLoading(true);
-        console.log(email, password);
         try {
+            if (saveLoginInfo) {
+                localStorage.setItem('loginInfo', JSON.stringify({ email, password }));
+            } else {
+                localStorage.removeItem('loginInfo');
+            }
             const response = await login(email, password);
-            sessionStorage.setItem('user', JSON.stringify(response.data));
+            await saveData(response.data);
             setCloseModal();
         } catch (error) {
             setError(true);
+            console.log('sjsss', error);
             setMessage(error.response.data.error);
         } finally {
             setIsLoading(false);
@@ -101,7 +119,7 @@ export default function FormSubmit({ toggleModalLogin, setCloseModal }) {
                 <div className={cx('login-form')}>
                     <h2>Login</h2>
                     <Button className={cx('btn-close')} onClick={toggleModalLogin} circle leftIcon={<X size={20} />} />
-                    <form className={cx('form')}>
+                    <form className={cx('form')} onSubmit={handleLogin}>
                         <label>Email</label>
                         <Input
                             type={'email'}
@@ -122,7 +140,11 @@ export default function FormSubmit({ toggleModalLogin, setCloseModal }) {
                         />
                         <div className={cx('form-action')}>
                             <span className={cx('remember')}>
-                                <input type="checkbox" />
+                                <input
+                                    type="checkbox"
+                                    checked={saveLoginInfo}
+                                    onChange={(e) => setSaveLoginInfo(e.target.checked)}
+                                />
                                 Remember me
                             </span>
                             <span onClick={handleShowForgotForm} className={cx('action-btn')}>
@@ -130,7 +152,7 @@ export default function FormSubmit({ toggleModalLogin, setCloseModal }) {
                             </span>
                         </div>
                         {message && <span className={cx('success', error && 'error')}>{message}</span>}
-                        <Button className={cx('submit-btn')} primary large onClick={handleLogin}>
+                        <Button className={cx('submit-btn')} primary large type="submit">
                             Login
                         </Button>
                     </form>
