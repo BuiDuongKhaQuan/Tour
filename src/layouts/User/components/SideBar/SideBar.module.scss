@@ -6,22 +6,7 @@
         margin-bottom: 40px;
         border-radius: 10px;
     }
-    .tour_search {
-        position: relative;
-        .search-form {
-            .icon {
-                top: 0;
-                right: 0;
-                border-radius: 0 5px 5px 0;
-                &:hover {
-                    background-color: var(--black);
-                }
-                &:hover::before {
-                    border-radius: 0 5px 5px 0;
-                }
-            }
-        }
-    }
+
     .tour_categories {
         display: flex;
         flex-direction: column;

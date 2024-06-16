@@ -1,9 +1,3 @@
-import React from 'react';
-import classNames from 'classnames/bind';
-import styles from './Footer.module.scss';
-import images from '~/assets/images';
-import Image from '~/components/Image';
-import { Link } from 'react-router-dom';
 import {
     ArrowRight,
     Calendar,
@@ -16,15 +10,46 @@ import {
     TwitterLogo,
     WhatsappLogo,
 } from '@phosphor-icons/react';
+import classNames from 'classnames/bind';
+import { Link } from 'react-router-dom';
+import images from '~/assets/images';
 import Button from '~/components/Button';
 import H2Decoration from '~/components/H2Decoration';
+import Image from '~/components/Image';
 import routes from '~/config/routes';
+import styles from './Footer.module.scss';
+import { useEffect, useState } from 'react';
+import { findCompanyById, getBlogLimit } from '~/utils/httpRequest';
+import { formattedDate, formattedDay } from '~/utils/constants';
 
 const cx = classNames.bind(styles);
 
 export default function Footer() {
-    const company = JSON.parse(sessionStorage.getItem('company'));
+    const [company, setCompany] = useState({});
+    const [blogs, setBlogs] = useState([]);
 
+    useEffect(() => {
+        getCompany();
+        getAllBlog();
+    }, []);
+
+    const getCompany = async () => {
+        try {
+            const response = await findCompanyById();
+            sessionStorage.setItem('company', JSON.stringify(response.data));
+            setCompany(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const getAllBlog = async () => {
+        try {
+            const response = await getBlogLimit(0, 2);
+            setBlogs(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
     return (
         <div className={cx('footer_wrapper')} style={{ backgroundImage: `url(${images.footer_bg_1})` }}>
             <div className={cx('form_offer')}>
@@ -111,45 +136,49 @@ export default function Footer() {
                             <span className={cx('item_icon')}>
                                 <MapPin size={13} weight="fill" />
                             </span>
-                            <span className={cx('item_text')}>{company.address}</span>
+                            <span className={cx('item_text')}>{company?.address}</span>
                         </div>
                         <div className={cx('contact_item')}>
                             <span className={cx('item_icon')}>
                                 <Phone size={13} weight="fill" />
                             </span>
-                            <span className={cx('item_text')}>{company.phone}</span>
+                            <span className={cx('item_text')}>{company?.phone}</span>
                         </div>
                         <div className={cx('contact_item')}>
                             <span className={cx('item_icon')}>
                                 <EnvelopeSimple size={13} weight="fill" />
                             </span>
-                            <span className={cx('item_text')}>{company.email}</span>
+                            <span className={cx('item_text')}>{company?.email}</span>
                         </div>
                     </div>
                 </div>
                 <div className={cx('recent', 'p_15')}>
                     <H2Decoration>Recent Posts</H2Decoration>
                     <div className={cx('list')}>
-                        <div className={cx('recent_item')}>
-                            <Image className={cx('post_img')} animation src={images.about_2_2} />
-                            <div>
-                                <h2>5 Ways To Get Your Dream Photos On Picnic</h2>
-                                <Link className={cx('post_time')}>
-                                    <Calendar size={18} weight="bold" color="#3cb371" />
-                                    21 June, 2023
-                                </Link>
+                        {blogs.map((blog, index) => (
+                            <div className={cx('recent_item')} key={index}>
+                                <div className={cx('post_img')}>
+                                    <Image
+                                        // width={200}
+                                        className={cx('img')}
+                                        height={100}
+                                        animation
+                                        src={blog.image.url}
+                                    />
+                                </div>
+                                <div className={cx('post-info')}>
+                                    <Link to={`/blog/${blog.id}`} className={cx('post-topic')}>
+                                        <h2>{blog.topic}</h2>
+                                    </Link>
+                                    <p className={cx('post_time')}>
+                                        <span>
+                                            <Calendar size={18} weight="bold" color="#3cb371" />
+                                        </span>
+                                        {formattedDay(new Date(blog.createdAt))}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                        <div className={cx('recent_item')}>
-                            <Image className={cx('post_img')} animation src={images.about_2_2} />
-                            <div>
-                                <h2>5 Ways To Get Your Dream Photos On Picnic</h2>
-                                <Link className={cx('post_time')}>
-                                    <Calendar size={18} weight="bold" color="#3cb371" />
-                                    21 June, 2023
-                                </Link>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </div>

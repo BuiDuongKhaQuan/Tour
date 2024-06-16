@@ -123,7 +123,7 @@ export default function Profile() {
     };
     return (
         <div className={cx('wrapper')}>
-            <AvatarCustom width={250} height={250} src={user.avatar.url} stringAva={user.name} />
+            <AvatarCustom width={250} height={250} src={user?.avatar?.url} stringAva={user.name} />
             <form className={cx('form')} onSubmit={handleSubmit}>
                 <h2>Information</h2>
                 <div className={cx('input_list')}>

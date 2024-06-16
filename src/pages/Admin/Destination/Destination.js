@@ -42,32 +42,25 @@ export default function Destination() {
                 accessorKey: 'name', //access nested data with dot notation
                 header: 'Destination Name',
                 size: 250,
-                Cell: ({ renderedCellValue, row }) => {
-                    const handleClick = () => {
-                        const destination = row.original;
-                        navigate(`/admin-destination/${destination.id}`, { state: destination }); // Pass as an object with a key
-                    };
-                    return (
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '1rem',
-                                cursor: 'pointer',
-                            }}
-                            onClick={handleClick}
-                        >
-                            <img
-                                alt="avatar"
-                                height={100}
-                                src={row.original.image && row.original.image.url}
-                                loading="lazy"
-                                style={{ borderRadius: '10px', width: '150px' }}
-                            />
-                            <span>{renderedCellValue}</span>
-                        </Box>
-                    );
-                },
+                Cell: ({ renderedCellValue, row }) => (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '1rem',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        <img
+                            alt="avatar"
+                            height={100}
+                            src={row.original.image && row.original.image.url}
+                            loading="lazy"
+                            style={{ borderRadius: '10px', width: '150px' }}
+                        />
+                        <span>{renderedCellValue}</span>
+                    </Box>
+                ),
             },
             {
                 accessorKey: 'trips', //normal accessorKey
@@ -101,12 +94,12 @@ export default function Destination() {
                 header: 'Day created',
                 size: 200,
                 Cell: ({ row }) => {
-                    const date = new Date(row.original.createAt);
+                    const date = new Date(row.original.createdAt);
                     return <span>{formattedDate(date)}</span>;
                 },
             },
         ],
-        [navigate],
+        [],
     );
 
     const table = useMaterialReactTable({
@@ -139,6 +132,14 @@ export default function Destination() {
         },
         paginationDisplayMode: 'pages',
         enableRowSelection: true,
+        muiTableBodyRowProps: ({ row }) => ({
+            onClick: () => {
+                navigate(`/admin-destination/${row.original.id}`);
+            },
+            sx: {
+                cursor: 'pointer',
+            },
+        }),
         renderTopToolbarCustomActions: ({ table }) => (
             <Box sx={{ display: 'flex', gap: '1rem', p: '4px' }}>
                 <Button

@@ -1,8 +1,10 @@
 import { GenderIntersex } from '@phosphor-icons/react';
-import { GrStatusDisabled } from 'react-icons/gr';
+import moment from 'moment-timezone';
 import { AiOutlineBorderInner } from 'react-icons/ai';
-import images from '~/assets/images';
+import { GrStatusDisabled } from 'react-icons/gr';
+import { IoMdCheckboxOutline } from 'react-icons/io';
 import { Store } from 'react-notifications-component';
+import images from '~/assets/images';
 
 const notification = {
     title: 'Successfully!',
@@ -150,7 +152,7 @@ const DATA_GENDER_SELECT = {
 const DATA_STATUS_SELECT = {
     id: 1,
     title: 'Status',
-    icon: <GrStatusDisabled size={23} />,
+    icon: <GrStatusDisabled size={18} />,
     items: [
         {
             value: 1,
@@ -166,6 +168,7 @@ const DATA_STATUS_SELECT = {
         },
     ],
 };
+
 const DATA_STATUS_USER_SELECT = {
     id: 1,
     title: 'Status',
@@ -229,19 +232,17 @@ const toTitleCase = (str) => {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
 };
+
 const formattedDate = (date) => {
-    const formatted = date.toLocaleString('vi-VN', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false,
-        timeZone: 'UTC',
-    });
+    const formatted = moment(date).tz('Asia/Ho_Chi_Minh').format('YYYY MMMM DD, HH:mm:ss');
     return toTitleCase(formatted);
 };
+
+const formattedDay = (date) => {
+    const formatted = moment(date).tz('Asia/Ho_Chi_Minh').format('YYYY MMMM DD');
+    return toTitleCase(formatted);
+};
+
 const getTodayDate = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -250,18 +251,19 @@ const getTodayDate = () => {
     return `${year}-${month}-${day}`;
 };
 export {
-    notification,
-    initialOptions,
     DATA_CATE,
     DATA_DEAL,
+    DATA_GENDER_SELECT,
+    DATA_ROLE_SELECT,
     DATA_SELECT,
     DATA_STATUS_SELECT,
-    DATA_GENDER_SELECT,
     DATA_STATUS_USER_SELECT,
-    DATA_ROLE_SELECT,
-    modulesQuill,
-    toTitleCase,
     formattedDate,
-    showNotifications,
+    formattedDay,
     getTodayDate,
+    initialOptions,
+    modulesQuill,
+    notification,
+    showNotifications,
+    toTitleCase,
 };

@@ -6,13 +6,16 @@ import GlobalStyles from '~/components/GlobalStyles';
 import { ReactNotifications } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import 'animate.css/animate.min.css';
+import { AuthProvider } from './hooks/useAuth';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
         <ReactNotifications />
         <GlobalStyles>
-            <App />
+            <AuthProvider>
+                <App />
+            </AuthProvider>
         </GlobalStyles>
     </React.StrictMode>,
 );

@@ -28,29 +28,22 @@ export default function Account() {
                 accessorKey: 'name',
                 header: 'Last Name',
                 size: 200,
-                Cell: ({ renderedCellValue, row }) => {
-                    const handleClick = () => {
-                        const user = row.original;
-                        navigate(`/admin-account/${user.id}`);
-                    };
-                    return (
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '1rem',
-                                cursor: 'pointer',
-                            }}
-                            onClick={handleClick}
-                        >
-                            <AvatarCustom
-                                src={row.original.avatar && row.original.avatar.url}
-                                stringAva={renderedCellValue ? renderedCellValue : ''}
-                            />
-                            <span>{renderedCellValue}</span>
-                        </Box>
-                    );
-                },
+                Cell: ({ renderedCellValue, row }) => (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '1rem',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        <AvatarCustom
+                            src={row.original.avatar && row.original.avatar.url}
+                            stringAva={renderedCellValue ? renderedCellValue : ''}
+                        />
+                        <span>{renderedCellValue}</span>
+                    </Box>
+                ),
             },
             {
                 accessorKey: 'email',
@@ -74,7 +67,7 @@ export default function Account() {
                 size: 150,
             },
         ],
-        [navigate],
+        [],
     );
 
     const table = useMaterialReactTable({
@@ -107,6 +100,14 @@ export default function Account() {
         },
         paginationDisplayMode: 'pages',
         enableRowSelection: true,
+        muiTableBodyRowProps: ({ row }) => ({
+            onClick: () => {
+                navigate(`/admin-account/${row.original.id}`);
+            },
+            sx: {
+                cursor: 'pointer',
+            },
+        }),
         renderTopToolbarCustomActions: ({ table }) => (
             <Box sx={{ display: 'flex', gap: '1rem', p: '4px' }}>
                 <Button

@@ -19,12 +19,15 @@ import {
     createTour,
     deleteImgTour,
     deleteTour,
+    findDealsByExpiry,
     findTourById,
+    getDeals,
     getDestinations,
     updateImgTour,
     updateTour,
 } from '~/utils/httpRequest';
 import styles from './TourDetail.module.scss';
+import { MdOutlineLocalOffer } from 'react-icons/md';
 
 const cx = classNames.bind(styles);
 
@@ -54,16 +57,23 @@ export default function TourDetail({ create }) {
         destination: '',
         information: '',
         images: [],
+        dealId: null,
     });
     const [valuePanel, setValuePanel] = useState(0);
     const [destinationsSelect, setDestinationsSelect] = useState({
         id: 2,
-        title: 'Adult',
+        title: 'Destination',
         icon: <MapPin size={20} weight="bold" />,
         items: [],
     });
+    const [dealsSelect, setDealsSelect] = useState({
+        id: 2,
+        title: 'Deals',
+        icon: <MdOutlineLocalOffer size={20} />,
+        items: [],
+    });
     const [selectedOption, setSelectedOption] = useState(null);
-
+    const [selectedDealsOption, setSelectedDealsOption] = useState(null);
     const findSelectedStatusOption = (statusValue) => {
         return DATA_STATUS_SELECT.items.find((item) => item.value === statusValue);
     };
@@ -71,19 +81,25 @@ export default function TourDetail({ create }) {
     const findSelectedOption = (destinationID) => {
         return destinationsSelect.items.find((item) => item.value === destinationID);
     };
-
+    const findSelecteDealsdOption = (dealsId) => {
+        return dealsSelect.items.find((item) => item.value === dealsId);
+    };
     useEffect(() => {
         if (!create) {
             getTourByID(id);
         }
         getAllDestination();
+        getAllDeals();
     }, [id, create]);
 
     useEffect(() => {
         if (destinationsSelect.items.length > 0 && !create) {
             setSelectedOption(findSelectedOption(tour.destination.id));
         }
-    }, [destinationsSelect, create]);
+        if (dealsSelect.items.length > 0 && !create) {
+            setSelectedDealsOption(findSelecteDealsdOption(tour.dealId));
+        }
+    }, [destinationsSelect, dealsSelect, create]);
 
     useEffect(() => {
         setSelectedStatusOption(findSelectedStatusOption(tour.status));
@@ -118,6 +134,30 @@ export default function TourDetail({ create }) {
         }
     };
 
+    const getAllDeals = async () => {
+        try {
+            const response = await findDealsByExpiry();
+            const items = response.data.map((deals) => ({
+                value: deals.id,
+                label: `${deals.offer}% (Quantity: ${deals.quantity})`,
+            }));
+            items.push({
+                value: null,
+                label: 'Không áp dụng deal',
+            });
+            setDealsSelect((prev) => {
+                const existingItems = new Set(prev.items.map((item) => item.value));
+                const newItems = items.filter((item) => !existingItems.has(item.value));
+                return {
+                    ...prev,
+                    items: [...prev.items, ...newItems],
+                };
+            });
+        } catch (error) {
+            console.error('Error fetching destinations:', error);
+        }
+    };
+
     const handleDestinationChange = (selectedOption) => {
         setSelectedOption(selectedOption);
         setTour((prev) => ({
@@ -133,7 +173,13 @@ export default function TourDetail({ create }) {
             status: selectedOption.value,
         }));
     };
-
+    const handleDealsChange = (selectedOption) => {
+        setSelectedDealsOption(selectedOption);
+        setTour((prev) => ({
+            ...prev,
+            dealId: selectedOption.value,
+        }));
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -483,12 +529,33 @@ export default function TourDetail({ create }) {
                                     label={'Status'}
                                     classNameSelect={cx('select-content')}
                                 />
+                                <Select
+                                    data={dealsSelect}
+                                    defaultValue={selectedDealsOption}
+                                    onChange={handleDealsChange}
+                                    placeholder={'Deals'}
+                                    className={cx('select')}
+                                    label={'Deals'}
+                                    classNameSelect={cx('select-content')}
+                                />
+                            </div>
+                            <div className={cx('input_list')}>
                                 <Input
                                     disabled={true}
                                     label={'Day create'}
                                     className={cx('input_wraper')}
                                     classNameInput={cx('input')}
+                                    value={formattedDate(new Date(tour.createdAt))}
                                     placeholder={formattedDate(new Date(tour.createdAt))}
+                                    type="text"
+                                />
+                                <Input
+                                    disabled={true}
+                                    label={'Day update'}
+                                    className={cx('input_wraper')}
+                                    classNameInput={cx('input')}
+                                    value={formattedDate(new Date(tour.updatedAt))}
+                                    placeholder={formattedDate(new Date(tour.updatedAt))}
                                     type="text"
                                 />
                             </div>

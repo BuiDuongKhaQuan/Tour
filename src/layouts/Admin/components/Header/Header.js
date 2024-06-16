@@ -8,6 +8,7 @@ import routes from '~/config/routes';
 import { IoTicketOutline } from 'react-icons/io5';
 import { MdOutlineLocalOffer } from 'react-icons/md';
 import { FaRegBuilding } from 'react-icons/fa';
+import { FaAmazonPay } from 'react-icons/fa6';
 
 const cx = classNames.bind(styles);
 
@@ -17,6 +18,11 @@ export default function Header() {
             title: 'Dashboard',
             icon: <House weight="bold" />,
             to: routes.admin,
+        },
+        {
+            title: 'Order',
+            icon: <FaAmazonPay />,
+            to: routes.admin_order,
         },
         {
             title: 'Company',
