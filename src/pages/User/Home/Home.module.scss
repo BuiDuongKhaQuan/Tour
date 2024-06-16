@@ -564,7 +564,6 @@
 
     .offers_left {
         min-width: 580px;
-        height: 100%;
         background-color: var(--title-color);
         background-size: auto;
         background-repeat: repeat;
@@ -611,7 +610,7 @@
     }
 
     .offers_right {
-        padding: 120px 15px 0 0;
+        padding: 50px 70px 50px 0;
         width: 100%;
         max-width: calc(100% - 600px);
         margin-left: 20px;
@@ -809,7 +808,7 @@
 
 //featured
 .featured {
-    padding: 120px 0;
+    padding: 100px 0;
     background-color: var(--smoke-color);
     background-repeat: no-repeat;
     background-size: auto;
@@ -855,13 +854,18 @@
         margin-top: 35px;
         width: 60%;
         display: flex;
-        justify-content: space-around;
+        justify-content: space-between;
         align-items: center;
         flex-direction: row;
+        overflow: hidden;
 
         .team_box_slider {
-            width: 100%;
-            display: inline-block;
+            width: 80%;
+            overflow: hidden;
+            flex: 1 1 auto;
+        }
+        .team_box_arrow {
+            flex: 0 0 auto;
         }
         .team_box_account {
             display: flex !important;
@@ -875,7 +879,7 @@
                 color: var(--primary-color);
             }
             .information {
-                padding: 0 100px;
+                padding: 0 70px;
                 margin-bottom: 30px;
                 text-align: center;
                 p {
@@ -910,6 +914,7 @@
             flex-direction: row;
             margin: 0 auto;
             align-items: center;
+            background-color: var(--white);
             justify-content: center;
             box-shadow: 0px 10px 50px rgba(22, 25, 33, 0.07);
             .form_img {
@@ -922,7 +927,6 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background-color: var(--white);
 
             h2 {
                 text-align: center;
@@ -977,7 +981,9 @@
     }
 
     .new_information {
-        padding: 65px 52px;
+        padding: 40px;
+        width: 100%;
+        height: 270px;
         background-color: var(--smoke-color);
         .new_item_time {
             margin-bottom: 20px;
@@ -998,6 +1004,13 @@
             font-weight: 600;
             font-family: 'PlayfairDisplay';
             margin-bottom: 25px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* Số dòng tối đa */
+            -webkit-box-orient: vertical;
+            text-overflow: ellipsis;
+            line-height: 1.5em; /* Chiều cao của một dòng */
+            max-height: 3em; /* 2 dòng * chiều cao của một dòng */
         }
         .new_read_more {
             font-weight: 600;

@@ -10,37 +10,6 @@ import { getDestinationsLimit, getDestinationsSize } from '~/utils/httpRequest';
 
 const cx = classNames.bind(styles);
 
-const DATA_SELECT = {
-    id: 1,
-    title: 'Default Sorting',
-    items: [
-        {
-            value: '1',
-            label: 'Default Sorting',
-        },
-        {
-            value: '2',
-            label: 'Sort by popularity',
-        },
-        {
-            value: '3',
-            label: 'Sort by average rating',
-        },
-        {
-            value: '4',
-            label: 'Sort by latest',
-        },
-        {
-            value: '5',
-            label: 'Sort by price: low to high',
-        },
-        {
-            value: '6',
-            label: 'Sort by price: high to low',
-        },
-    ],
-};
-
 export default function Destination() {
     const [destinations, setDestinations] = useState([]);
     const [destinationsSize, setDestinationsSize] = useState(0);
@@ -67,11 +36,9 @@ export default function Destination() {
     };
     return (
         <div className={cx('destination_wrapper')}>
-            <Breadcumb />
             <div className={cx('destination_container')}>
                 <div className={cx('dest_sort_bar')}>
                     <p>Showing 8 out of {destinationsSize} destination</p>
-                    <Select data={DATA_SELECT} />
                 </div>
                 <div className={cx('content')}>
                     {destinations.map((result, index) => (

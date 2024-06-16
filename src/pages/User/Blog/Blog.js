@@ -34,7 +34,7 @@ export default function Blog() {
     useEffect(() => {
         const fetchBlogs = async () => {
             try {
-                const response = await getBlogLimit(itemOffset, 8);
+                const response = await getBlogLimit(itemOffset, 5);
                 setBlogs(response.data);
                 console.log(response.data);
             } catch (error) {
@@ -44,10 +44,10 @@ export default function Blog() {
         fetchBlogs();
     }, [itemOffset]);
 
-    const pageCount = Math.ceil(blogsSize / 8);
+    const pageCount = Math.ceil(blogsSize / 5);
 
     const handlePageClick = (event) => {
-        const newOffset = event.selected * 8;
+        const newOffset = event.selected * 5;
         setItemOffset(newOffset);
     };
 
