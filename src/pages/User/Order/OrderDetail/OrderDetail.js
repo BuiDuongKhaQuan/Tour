@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import { IoTicketOutline } from 'react-icons/io5';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Button from '~/components/Button';
 import Input from '~/components/Input';
 import Loading from '~/components/Loading';
@@ -15,7 +15,6 @@ const cx = classNames.bind(styles);
 
 export default function OrderDetail({ create }) {
     const { id } = useParams();
-    const navigate = useNavigate();
     const [order, setOrder] = useState({
         userId: '',
         tourId: '',

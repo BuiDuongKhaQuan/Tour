@@ -2,7 +2,6 @@ import { GenderIntersex } from '@phosphor-icons/react';
 import moment from 'moment-timezone';
 import { AiOutlineBorderInner } from 'react-icons/ai';
 import { GrStatusDisabled } from 'react-icons/gr';
-import { IoMdCheckboxOutline } from 'react-icons/io';
 import { Store } from 'react-notifications-component';
 import images from '~/assets/images';
 

@@ -45,7 +45,7 @@
     }
     h6 {
         font-weight: 600;
-        font-size: 14px;
+        font-size: 16px;
     }
     &.active {
         color: var(--primary-color);
@@ -98,6 +98,7 @@
     border: 2px solid var(--white) !important;
     width: 440px;
     backdrop-filter: blur(20px);
+    overflow: hidden;
 }
 .search-modal {
     width: 100.1%;
@@ -215,5 +216,14 @@
     .logo_image {
         width: 189px;
         height: 80px;
+    }
+}
+
+//language
+.btn-language {
+    padding: 14px;
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.1) !important;
+        color: var(--black);
     }
 }

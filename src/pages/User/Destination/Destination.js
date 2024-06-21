@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import classNames from 'classnames/bind';
-import styles from './Destination.module.scss';
-import Breadcumb from '~/components/Breadcumb';
-import Select from '~/components/Select';
 import { MapPin } from '@phosphor-icons/react';
+import classNames from 'classnames/bind';
+import { useEffect, useState } from 'react';
 import Pagination from '~/components/Pagination';
 import { CardItem } from '~/components/SliderCard';
 import { getDestinationsLimit, getDestinationsSize } from '~/utils/httpRequest';
+import styles from './Destination.module.scss';
 
 const cx = classNames.bind(styles);
 

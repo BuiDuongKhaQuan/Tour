@@ -1,0 +1,39 @@
+.language {
+    padding: 10px;
+    overflow: hidden;
+    background-color: var(--white);
+}
+.languages {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: 200px;
+    .language-option {
+        padding: 7px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #f0f0f0;
+        }
+
+        .language-item {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+        }
+    }
+
+    .selected {
+        background-color: #e0e0e0;
+    }
+}
+.title {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 5px 10px;
+    background-color: var(--white);
+}

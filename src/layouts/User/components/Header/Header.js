@@ -1,52 +1,57 @@
-import { Heart, List, MagnifyingGlass, User, X } from '@phosphor-icons/react';
+import { CaretDown, Heart, List, MagnifyingGlass, User, X } from '@phosphor-icons/react';
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Modal from 'react-modal';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import 'tippy.js/dist/tippy.css';
+import images from '~/assets/images';
 import AvatarCustom from '~/components/AvatarCustom';
 import Button from '~/components/Button';
+import LanguageSelector from '~/components/LanguageSelector';
 import { FormSubmit } from '~/components/Modal';
 import config from '~/config';
+import roles from '~/config/roles';
 import routes from '~/config/routes';
 import { findCompanyById } from '~/utils/httpRequest';
 import styles from './Header.module.scss';
-import roles from '~/config/roles';
 
 const cx = classNames.bind(styles);
 
 const MENU = [
     {
-        title: 'HOME',
+        title: 'home',
         to: config.routes.home,
     },
     {
-        title: 'DESTINATION',
+        title: 'destination',
         to: config.routes.destination,
     },
     {
-        title: 'TOUR',
+        title: 'tour',
         to: config.routes.tour,
     },
 
     {
-        title: 'BLOG',
+        title: 'blog',
         to: config.routes.blog,
     },
     {
-        title: 'CONTACT US',
+        title: 'contactUs',
         to: config.routes.contact,
     },
 ];
 
 Modal.setAppElement('#root');
 function Header() {
+    const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     const [modalLoginIsOpen, setModalLoginIsOpen] = useState(false);
     const [modalSearchIsOpen, setModalSearchIsOpen] = useState(false);
     const [modalMenuIsOpen, setModalMenuIsOpen] = useState(false);
+    const [modalLanguageIsOpen, setModalLanguageIsOpen] = useState(false);
     const [company, setCompany] = useState({});
     const user = JSON.parse(sessionStorage.getItem('user'));
+    const [selectedLanguage, setSelectedLanguageName] = useState(null); // Default language name
 
     useEffect(() => {
         getCompany();
@@ -75,6 +80,25 @@ function Header() {
     const toggleModalMenu = () => {
         setModalMenuIsOpen(!modalMenuIsOpen);
     };
+
+    const showModalLanguage = () => {
+        setModalLanguageIsOpen(!modalLanguageIsOpen);
+    };
+    const handleLanguageChange = (languageCode) => {
+        // Logic to set the selected language name based on languageCode
+        const languages = {
+            th: { name: 'ประเทศไทย', flag: images.thailan },
+            vn: { name: 'Tiếng Việt', flag: images.vi },
+            en: { name: 'English', flag: images.global },
+            sg: { name: 'English', flag: images.sin },
+        };
+        setSelectedLanguageName(languages[languageCode]);
+        setModalLanguageIsOpen(false); // Đóng hộp thoại ngôn ngữ
+    };
+
+    useEffect(() => {
+        handleLanguageChange(i18n.language);
+    }, [i18n.language]);
 
     const Search = () => (
         <div className={cx('popup-search-box')}>
@@ -106,7 +130,7 @@ function Header() {
                         className={(nav) => cx('ot-mobile-menu_item', { active: nav.isActive })}
                         key={index}
                     >
-                        <h6>{result.title}</h6>
+                        <h6>{t(`common.${result.title}`)}</h6>
                     </Link>
                 ))}
                 {user ? (
@@ -134,7 +158,7 @@ function Header() {
                             className={(nav) => cx('menu_item', { active: nav.isActive })}
                             key={index}
                         >
-                            <h6>{result.title}</h6>
+                            <h6>{t(`common.${result.title}`)}</h6>
                         </NavLink>
                     ))}
                     <Button
@@ -168,10 +192,33 @@ function Header() {
                             leftIcon={<User size={20} className={cx('icon')} />}
                         />
                     )}
-                    <Button primary large className={cx('button')} type="button" onClick={() => navigate(routes.tour)}>
-                        BOOK YOUR STAY
+
+                    <Button
+                        outline
+                        className={cx('btn-language')}
+                        onClick={showModalLanguage}
+                        leftIcon={
+                            <AvatarCustom
+                                width={25}
+                                height={25}
+                                src={selectedLanguage?.flag}
+                                stringAva={selectedLanguage?.name || 'Ngôn ngữ'}
+                            />
+                        }
+                        rightIcon={<CaretDown size={20} />}
+                    >
+                        {selectedLanguage?.name}
                     </Button>
+                    <Modal
+                        isOpen={modalLanguageIsOpen}
+                        onRequestClose={showModalLanguage}
+                        className={cx('modal')}
+                        contentLabel="Example Modal"
+                    >
+                        <LanguageSelector onLanguageChange={handleLanguageChange} />
+                    </Modal>
                 </div>
+
                 <Modal
                     isOpen={modalLoginIsOpen}
                     onRequestClose={toggleModalLogin}
