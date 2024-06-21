@@ -58,6 +58,11 @@ const images = {
     contact_shape: require('~/assets/images/contact_shape.png'),
     error_img: require('~/assets/images/error_img.svg').default,
     hero_bg_2_1: require('~/assets/images/hero_bg_2_1.jpg'),
+
+    vi: require('~/assets/images/flag/vi.svg').default,
+    global: require('~/assets/images/flag/global.svg').default,
+    sin: require('~/assets/images/flag/sin.svg').default,
+    thailan: require('~/assets/images/flag/thailan.svg').default,
 };
 
 export default images;

@@ -3,28 +3,19 @@ import { AppBar, Tab, Tabs } from '@mui/material';
 import { Camera, EnvelopeSimple, MapPin, Phone, User } from '@phosphor-icons/react';
 import classNames from 'classnames/bind';
 import { useEffect, useRef, useState } from 'react';
+import CurrencyFormat from 'react-currency-format';
 import { useNavigate } from 'react-router-dom';
 import AvatarCustom from '~/components/AvatarCustom';
 import Button from '~/components/Button';
 import Input from '~/components/Input';
 import Loading from '~/components/Loading';
 import Select from '~/components/Select';
-import { TourCardItem } from '~/components/SliderCard';
 import TabPanel from '~/components/TabPanel';
 import routes from '~/config/routes';
-import { DATA_GENDER_SELECT, showNotifications } from '~/utils/constants';
-import {
-    findTourById,
-    getBookings,
-    getBookingsByStatus,
-    getCompletedTour,
-    getWattingTour,
-    logout,
-    updateUser,
-} from '~/utils/httpRequest';
-import styles from './Profile.module.scss';
 import { useAuth } from '~/hooks/useAuth';
-import CurrencyFormat from 'react-currency-format';
+import { DATA_GENDER_SELECT, showNotifications } from '~/utils/constants';
+import { getBookingsByStatus, logout, updateUser } from '~/utils/httpRequest';
+import styles from './Profile.module.scss';
 const cx = classNames.bind(styles);
 
 function a11yProps(index) {
@@ -137,18 +128,7 @@ export default function Profile() {
             [field]: event.target.value,
         }));
     };
-    const getPaymentMethod = (paymentID) => {
-        if (paymentID === 1) return 'Paypal';
-        if (paymentID === 2) return 'VN Pay';
-        if (paymentID === 3) return 'Masster cards';
-        if (paymentID === 4) return 'Tiền mặt';
-    };
 
-    const getStatusOrrder = (status) => {
-        if (status === 1) return 'Not received';
-        if (status === 2) return 'Complete';
-        if (status === 3) return 'Cancelled';
-    };
     const getCheckoutStatusOrrder = (status) => {
         if (status === 1) return 'Chưa thanh toán';
         if (status === 2) return 'Đã thanh toán';
