@@ -129,6 +129,22 @@ export const searchTours = async (data) => {
         throw new Error('Error uploading image: ' + error.message);
     }
 };
+export const searchBlog = async (data) => {
+    try {
+        const response = await request.post('/blogs/search', data);
+        return response.data;
+    } catch (error) {
+        throw new Error('Error uploading image: ' + error.message);
+    }
+};
+export const searchDestination = async (data) => {
+    try {
+        const response = await request.post('/destinations/search', data);
+        return response.data;
+    } catch (error) {
+        throw new Error('Error uploading image: ' + error.message);
+    }
+};
 export const findDestinationById = async (id) => {
     try {
         const response = await request.get(`/destinations/${id}`);

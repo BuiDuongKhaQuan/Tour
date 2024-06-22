@@ -21,109 +21,46 @@ import SupTitle from '~/components/SupTitle';
 import SliderCard, { CardItem, TourCardItem } from '~/components/SliderCard';
 import { Link, useNavigate } from 'react-router-dom';
 import Image from '~/components/Image';
-import { useEffect, useRef, useState } from 'react';
-import { findTourByDeal, getBlogLimit, getDestinationsLimit, getToursLimit } from '~/utils/httpRequest';
+import { memo, useEffect, useRef, useState } from 'react';
+import {
+    findTourByDeal,
+    getBlogLimit,
+    getDestinationsLimit,
+    getToursLimit,
+    searchBlog,
+    searchDestination,
+    searchTours,
+} from '~/utils/httpRequest';
 import routes from '~/config/routes';
 import Countdown from 'react-countdown';
-import { formattedDate } from '~/utils/constants';
+import { formattedDate, showNotifications } from '~/utils/constants';
+import Input from '~/components/Input';
+import { MdOutlineTravelExplore } from 'react-icons/md';
+import { debounce } from 'lodash'; // Import debounce từ thư viện lodash
+import Search from '~/components/Search/Search';
 
 const cx = classNames.bind(styles);
 
-function Home() {
-    const DATA_SELECT = [
-        {
-            id: 1,
-            title: 'Destination',
-            icon: <MapPin size={20} weight="fill" color="#3cb371" />,
-            items: [
-                {
-                    value: 'switzerland',
-                    label: 'Switzerland',
-                },
-                {
-                    value: 'barcelona',
-                    label: 'Barcelona',
-                },
-                {
-                    value: 'amsterdam',
-                    label: 'Amsterdam',
-                },
-                {
-                    value: 'budapestCity',
-                    label: 'Budapest City',
-                },
-            ],
-        },
-        {
-            id: 2,
-            title: 'Activities',
-            icon: <PersonSimpleBike size={20} weight="fill" color="#3cb371" />,
-            items: [
-                {
-                    value: 'travel',
-                    label: 'Travel',
-                },
-                {
-                    value: 'hiking',
-                    label: 'Hiking',
-                },
-                {
-                    value: 'airBallon',
-                    label: 'Air Ballon',
-                },
-                {
-                    value: 'peakClimbing',
-                    label: 'Peak Climbing',
-                },
-            ],
-        },
-        {
-            id: 3,
-            title: 'Duration',
-            icon: <CalendarBlank size={20} weight="fill" color="#3cb371" />,
-            items: [
-                {
-                    value: '3',
-                    label: '0 - 3 Days',
-                },
-                {
-                    value: '7',
-                    label: '0 - 7 Days',
-                },
-                {
-                    value: '8',
-                    label: '3 - 8 Days',
-                },
-                {
-                    value: '12',
-                    label: '7 - 12 Days',
-                },
-            ],
-        },
-        {
-            id: 4,
-            title: 'Budget',
-            icon: <CurrencyDollarSimple size={20} weight="fill" color="#3cb371" />,
-            items: [
-                {
-                    value: '1',
-                    label: '100$ - 300$',
-                },
-                {
-                    value: '3',
-                    label: '300$ - 700$',
-                },
-                {
-                    value: '7',
-                    label: '700 - 1000$',
-                },
-                {
-                    value: '10',
-                    label: '1000$ - 1500$',
-                },
-            ],
-        },
-    ];
+const Home = memo(() => {
+    const DATA_SELECT = {
+        id: 1,
+        title: 'Select criteria',
+        icon: <MdOutlineTravelExplore size={20} color="#3cb371" />,
+        items: [
+            {
+                value: 'tour',
+                label: 'Tour',
+            },
+            {
+                value: 'destination',
+                label: 'Destination',
+            },
+            {
+                value: 'blog',
+                label: 'Blog',
+            },
+        ],
+    };
 
     const DATA_SERVICE = {
         content:
@@ -182,7 +119,8 @@ function Home() {
                 'The advance of technology is based on making it fit in so that you don"t really even notice it, so it"s part of everyday life.',
         },
     ];
-
+    const [searchCriteria, setSearchCriteria] = useState(DATA_SELECT.items[0].value);
+    const [keyword, setKeyword] = useState('');
     const [tours, setTours] = useState([]);
     const [blogs, setBlogs] = useState([]);
     const [toursOfDeal, setToursOfDeal] = useState([]);
@@ -226,6 +164,38 @@ function Home() {
             setBlogs(response.data);
         } catch (error) {
             console.log(error);
+        }
+    };
+
+    const handleSearchByCriteria = async (e) => {
+        e.preventDefault();
+        // Logic tìm kiếm theo tiêu chí và từ khóa
+        console.log('Searching for:', keyword, 'in', searchCriteria.value);
+        if (!searchCriteria.value) {
+            showNotifications({
+                title: 'Warning',
+                type: 'warning',
+                message: 'Please select criteria!!',
+            });
+            return;
+        }
+        // Giả sử có các hàm tìm kiếm cụ thể cho từng tiêu chí
+        switch (searchCriteria.value) {
+            case 'tour':
+                // Gọi hàm tìm kiếm tour
+                const response = await searchTours({ name: keyword });
+                navigate(routes.tour, { state: response.data });
+                break;
+            case 'destination':
+                const response1 = await searchDestination({ name: keyword });
+                navigate(routes.destination, { state: response1.data });
+                break;
+            case 'blog':
+                const response2 = await searchBlog({ name: keyword });
+                navigate(routes.blog, { state: response2.data });
+                break;
+            default:
+                break;
         }
     };
 
@@ -447,20 +417,13 @@ function Home() {
                     <img src={images.cloud_3} alt="cloud" />
                 </div>
             </div>
-            <div className={cx('search')}>
-                <div className={cx('search_container')}>
-                    <div className={cx('search_box')}>
-                        <form action="mail.php" method="POST" className={cx('tour_search')}>
-                            {DATA_SELECT.map((result) => (
-                                <Select className={cx('search_box-select')} data={result} key={result.id} />
-                            ))}
-                            <Button large primary>
-                                SEARCH
-                            </Button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            <Search
+                DATA_SELECT={DATA_SELECT}
+                handleSearchByCriteria={handleSearchByCriteria}
+                setKeyword={setKeyword}
+                keyword={keyword}
+                setSearchCriteria={setSearchCriteria}
+            />
             <div className={cx('service')}>
                 <ServiceItem data={DATA_SERVICE.data} content={DATA_SERVICE.content} />
             </div>
@@ -665,6 +628,6 @@ function Home() {
             </div>
         </div>
     );
-}
+});
 
 export default Home;

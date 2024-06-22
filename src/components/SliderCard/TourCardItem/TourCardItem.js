@@ -6,20 +6,25 @@ import { Link } from 'react-router-dom';
 import Image from '~/components/Image';
 import styles from './TourCardItem.module.scss';
 import { useState } from 'react';
+import { Rating } from '@mui/material';
 
 const cx = classNames.bind(styles);
 
 export default function TourCardItem({ data, sellOff, homeTour, profileTour }) {
     const [isLiked, setIsLiked] = useState(false);
+    const [averageStars, setAverageStars] = useState(0);
     const width = homeTour ? '405px' : profileTour ? '' : undefined;
     const home_tour = homeTour ? 'home-tour' : profileTour ? 'home-tour' : undefined;
     const price = sellOff ? data.price - (data.price * data.deal.offer) / 100 : data.price;
-
     useState(() => {
         const toursLoved = JSON.parse(localStorage.getItem('tours-loved')) || [];
         const isTourLiked = toursLoved.some((tour) => tour.id === data.id);
         setIsLiked(isTourLiked);
-    }, []);
+        if (data.reviews && data.reviews.length > 0) {
+            const totalStars = data.reviews.reduce((acc, review) => acc + review.rate, 0);
+            setAverageStars((totalStars / data.reviews.length).toFixed(1));
+        }
+    }, [data]);
 
     const handleAddHeart = () => {
         const toursLoved = JSON.parse(localStorage.getItem('tours-loved')) || [];
@@ -67,11 +72,13 @@ export default function TourCardItem({ data, sellOff, homeTour, profileTour }) {
                             {data.destination.name}
                         </div>
                         <div className={cx('review')}>
-                            <Star size={20} weight="fill" color="#FFB539" />
-                            <Star size={20} weight="fill" color="#FFB539" />
-                            <Star size={20} weight="fill" color="#FFB539" />
-                            <Star size={20} weight="fill" color="#FFB539" />
-                            <Star size={20} weight="fill" color="#FFB539" />
+                            <Rating
+                                name="half-rating-read"
+                                readOnly
+                                value={Number(averageStars)}
+                                precision={0.5}
+                                size="large"
+                            />
                         </div>
                     </div>
                     <h3 className={cx(sellOff && 'sellOff')}>{data.name}</h3>

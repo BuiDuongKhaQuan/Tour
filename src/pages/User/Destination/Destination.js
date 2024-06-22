@@ -5,6 +5,7 @@ import Pagination from '~/components/Pagination';
 import { CardItem } from '~/components/SliderCard';
 import { getDestinationsLimit, getDestinationsSize } from '~/utils/httpRequest';
 import styles from './Destination.module.scss';
+import { useLocation } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -12,6 +13,7 @@ export default function Destination() {
     const [destinations, setDestinations] = useState([]);
     const [destinationsSize, setDestinationsSize] = useState(0);
     const [itemOffset, setItemOffset] = useState(0);
+    const location = useLocation();
 
     useEffect(() => {
         const fetchDestinations = async () => {
@@ -24,8 +26,13 @@ export default function Destination() {
                 console.log(error);
             }
         };
-        fetchDestinations();
-    }, [itemOffset]);
+        const data = location.state;
+        if (data) {
+            setDestinations(data);
+        } else {
+            fetchDestinations();
+        }
+    }, [itemOffset, location]);
 
     const pageCount = Math.ceil(destinationsSize / 8);
     const handlePageClick = (event) => {
