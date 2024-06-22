@@ -61,7 +61,7 @@ const images = {
 
     vi: require('~/assets/images/flag/vi.svg').default,
     global: require('~/assets/images/flag/global.svg').default,
-    sin: require('~/assets/images/flag/sin.svg').default,
+    china: require('~/assets/images/flag/china.svg').default,
     thailan: require('~/assets/images/flag/thailan.svg').default,
 };
 

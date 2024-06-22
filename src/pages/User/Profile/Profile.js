@@ -29,7 +29,7 @@ export default function Profile() {
     const theme = useTheme();
     const navigate = useNavigate();
     const [value, setValue] = useState(0);
-    const user = JSON.parse(sessionStorage.getItem('user'));
+    const { user, saveData } = useAuth();
     const [formData, setFormData] = useState({
         name: user?.name,
         email: user?.email,
@@ -80,7 +80,10 @@ export default function Profile() {
                 gender: selectedOption.label,
             };
             const response = await updateUser(user.id, newData);
-            sessionStorage.setItem('user', JSON.stringify(response.data));
+            await saveData({
+                ...user,
+                ...response.data,
+            });
             showNotifications({
                 message: response.message,
             });

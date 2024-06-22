@@ -12,7 +12,7 @@ export default function LanguageSelector({ onLanguageChange }) {
         { code: 'th', name: 'Thailand (ประเทศไทย)', flag: images.thailan },
         { code: 'vn', name: 'Việt Nam (Tiếng Việt)', flag: images.vi },
         { code: 'en', name: 'Global (English)', flag: images.global },
-        { code: 'sg', name: 'Singabore (English)', flag: images.sin },
+        { code: 'cn', name: 'China (中国)', flag: images.china },
     ];
 
     const { t, i18n } = useTranslation();

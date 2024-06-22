@@ -90,7 +90,7 @@ function Header() {
             th: { name: 'ประเทศไทย', flag: images.thailan },
             vn: { name: 'Tiếng Việt', flag: images.vi },
             en: { name: 'English', flag: images.global },
-            sg: { name: 'English', flag: images.sin },
+            cn: { name: '中国', flag: images.china },
         };
         setSelectedLanguageName(languages[languageCode]);
         setModalLanguageIsOpen(false); // Đóng hộp thoại ngôn ngữ
@@ -171,11 +171,6 @@ function Header() {
                 </div>
 
                 <div className={cx('right')}>
-                    <Button
-                        onClick={toggleModalSearch}
-                        circle
-                        leftIcon={<MagnifyingGlass size={20} className={cx('icon')} />}
-                    />
                     <Button
                         onClick={() => navigate(routes.tour_loved)}
                         circle
