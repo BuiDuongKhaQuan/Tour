@@ -1,5 +1,6 @@
 {
     "common": {
+        "selectCriteria": "Select Criteria",
         "language": "Language & Country",
         "home": "Home",
         "destination": "Destination",

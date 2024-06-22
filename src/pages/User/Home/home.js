@@ -38,26 +38,28 @@ import Input from '~/components/Input';
 import { MdOutlineTravelExplore } from 'react-icons/md';
 import { debounce } from 'lodash'; // Import debounce từ thư viện lodash
 import Search from '~/components/Search/Search';
+import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
 
 const Home = memo(() => {
+    const { t } = useTranslation();
     const DATA_SELECT = {
         id: 1,
-        title: 'Select criteria',
+        title: t('common.selectCriteria'),
         icon: <MdOutlineTravelExplore size={20} color="#3cb371" />,
         items: [
             {
                 value: 'tour',
-                label: 'Tour',
+                label: t('common.tour'),
             },
             {
                 value: 'destination',
-                label: 'Destination',
+                label: t('common.destination'),
             },
             {
                 value: 'blog',
-                label: 'Blog',
+                label: t('common.blog'),
             },
         ],
     };

@@ -1,5 +1,6 @@
 {
     "common": {
+        "selectCriteria": "Chọn Tiêu Chí",
         "language": "Quốc gia & Ngôn ngữ",
         "home": "Trang Chủ",
         "destination": "Điểm Đến",
