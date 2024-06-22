@@ -6,10 +6,12 @@ import { CardItem } from '~/components/SliderCard';
 import { getDestinationsLimit, getDestinationsSize } from '~/utils/httpRequest';
 import styles from './Destination.module.scss';
 import { useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
 
 export default function Destination() {
+    const { t } = useTranslation();
     const [destinations, setDestinations] = useState([]);
     const [destinationsSize, setDestinationsSize] = useState(0);
     const [itemOffset, setItemOffset] = useState(0);
@@ -43,7 +45,9 @@ export default function Destination() {
         <div className={cx('destination_wrapper')}>
             <div className={cx('destination_container')}>
                 <div className={cx('dest_sort_bar')}>
-                    <p>Showing 8 out of {destinationsSize} destination</p>
+                    <p>
+                        {t('common.showing')} {destinationsSize} {t('common.destination')}
+                    </p>
                 </div>
                 <div className={cx('content')}>
                     {destinations.map((result, index) => (
