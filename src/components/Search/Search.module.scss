@@ -1,0 +1,29 @@
+.search {
+    position: relative;
+    z-index: 5;
+    .search_container {
+        background-color: var(--white);
+        margin: 0 100px;
+        border-radius: 15px;
+    }
+    .search_box {
+        box-shadow: 0px 6px 100px rgba(21, 29, 53, 0.12);
+        border-radius: 10px;
+        margin-top: -68px;
+        padding: 40px;
+        .search_box-select {
+            flex: calc(50% - 8px);
+        }
+        .search_box-input {
+            border: 1px solid hsl(0, 0%, 80%);
+        }
+    }
+    .tour_search {
+        display: flex;
+        gap: 5px;
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
