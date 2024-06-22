@@ -43,27 +43,26 @@ import Search from '~/components/Search/Search';
 const cx = classNames.bind(styles);
 
 const Home = memo(() => {
-      const { t } = useTranslation();
+    const { t } = useTranslation();
     const DATA_SELECT = {
         id: 1,
-        title: 'Select criteria',
+        title: t('common.selectCriteria'),
         icon: <MdOutlineTravelExplore size={20} color="#3cb371" />,
         items: [
             {
                 value: 'tour',
-                label: 'Tour',
+                label: t('common.tour'),
             },
             {
                 value: 'destination',
-                label: 'Destination',
+                label: t('common.destination'),
             },
             {
                 value: 'blog',
-                label: 'Blog',
+                label: t('common.blog'),
             },
         ],
     };
-
 
     const DATA_SERVICE = {
         content: t('common.completely'),

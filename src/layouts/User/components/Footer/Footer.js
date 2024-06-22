@@ -11,17 +11,17 @@ import {
     WhatsappLogo,
 } from '@phosphor-icons/react';
 import classNames from 'classnames/bind';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import images from '~/assets/images';
 import Button from '~/components/Button';
 import H2Decoration from '~/components/H2Decoration';
 import Image from '~/components/Image';
 import routes from '~/config/routes';
-import styles from './Footer.module.scss';
-import { useEffect, useState } from 'react';
+import { formattedDay } from '~/utils/constants';
 import { findCompanyById, getBlogLimit } from '~/utils/httpRequest';
-import { formattedDate, formattedDay } from '~/utils/constants';
-import { useTranslation } from 'react-i18next';
+import styles from './Footer.module.scss';
 
 const cx = classNames.bind(styles);
 

@@ -1,5 +1,6 @@
 {
     "common": {
+        "selectCriteria": "Chọn Criteria",
         "here": "Tại đây",
         "thereAre": "Không có chuyến tham quan nào phù hợp với bộ lọc của bạn!. Xem tất cả",
         "sendNow": "Gửi ngay",

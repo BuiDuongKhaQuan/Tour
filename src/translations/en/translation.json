@@ -1,5 +1,6 @@
 {
     "common": {
+        "selectCriteria": "Select Criteria",
         "here": "Here",
         "thereAre": "There are no tours that match your filter!. See all",
         "sendNow": "Send Message Now",

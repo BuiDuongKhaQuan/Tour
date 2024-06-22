@@ -1,5 +1,6 @@
 {
     "common": {
+        "selectCriteria": "选择条件",
         "here": "这里",
         "thereAre": "没有符合您筛选条件的旅游项目！查看全部",
         "sendNow": "立即发送消息",
