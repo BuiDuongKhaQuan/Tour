@@ -185,19 +185,37 @@ export default function TourDetail({ create }) {
         setLoading(true);
         try {
             if (create) {
-                const data = new FormData();
-                for (const key in tour) {
-                    if (key !== 'images') {
-                        data.append(key, tour[key]);
+                console.log(tour);
+                if (
+                    tour.name &&
+                    tour.date &&
+                    tour.personQuantity &&
+                    tour.price &&
+                    tour.categoryId &&
+                    tour.status &&
+                    tour.destinationId &&
+                    tour.information
+                ) {
+                    const data = new FormData();
+                    for (const key in tour) {
+                        if (key !== 'images') {
+                            data.append(key, tour[key]);
+                        }
                     }
-                }
-                tour.images.forEach((img) => {
-                    data.append('images', img.file);
-                });
+                    tour.images.forEach((img) => {
+                        data.append('images', img.file);
+                    });
 
-                const response = await createTour(data);
-                navigate(routes.admin_tour);
-                showNotifications({ message: response.message });
+                    const response = await createTour(data);
+                    navigate(routes.admin_tour);
+                    showNotifications({ message: response.message });
+                } else {
+                    showNotifications({
+                        title: 'Submit Error',
+                        type: 'danger',
+                        message: 'Please fill in all required fields.',
+                    });
+                }
             } else {
                 const response = await updateTour(id, tour);
                 setTour(response.data);

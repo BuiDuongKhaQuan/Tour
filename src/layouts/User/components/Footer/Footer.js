@@ -21,12 +21,10 @@ import styles from './Footer.module.scss';
 import { useEffect, useState } from 'react';
 import { findCompanyById, getBlogLimit } from '~/utils/httpRequest';
 import { formattedDate, formattedDay } from '~/utils/constants';
-import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
 
 export default function Footer() {
-    const { t } = useTranslation();
     const [company, setCompany] = useState({});
     const [blogs, setBlogs] = useState([]);
 
@@ -60,20 +58,20 @@ export default function Footer() {
                         className={cx('offer_background')}
                         style={{ backgroundImage: `url(${images.subscribe_bg_1})` }}
                     >
-                        <h2>{t('common.travelSpecial')}</h2>
-                        <p>{t('common.signUp')}</p>
+                        <h2>Get Special Offers And More From Travon</h2>
+                        <p>Sign up now and get the best deals straight in your inbox!</p>
                         <form className={cx('newsletter_form')}>
                             <div className={cx('form_group')}>
                                 <input
                                     className={cx('form_control')}
                                     type="email"
-                                    placeholder={t('common.email')}
+                                    placeholder="Email Address"
                                     required=""
                                 />
                                 <EnvelopeSimple className={cx('form_icon')} color="#687179" weight="fill" />
                             </div>
                             <Button className={cx('form_btn')} large primary>
-                                {t('common.subcribe')}
+                                Subscribe
                             </Button>
                         </form>
                     </div>
@@ -107,32 +105,32 @@ export default function Footer() {
                     </div>
                 </div>
                 <div className={cx('link', 'p_15')}>
-                    <H2Decoration>{t('common.quickLinks')}</H2Decoration>
+                    <H2Decoration>Quick Links</H2Decoration>
                     <div className={cx('list')}>
                         <Link className={cx('_link')}>
                             <ArrowRight className={cx('arrow_icon')} size={20} weight="bold" />
-                            {t('common.aboutUs')}
+                            About Us
                         </Link>
                         <Link className={cx('_link')} to={routes.tour}>
                             <ArrowRight className={cx('arrow_icon')} size={20} weight="bold" />
-                            {t('common.tour')}
+                            Tour
                         </Link>
                         <Link className={cx('_link')} to={routes.destination}>
                             <ArrowRight className={cx('arrow_icon')} size={20} weight="bold" />
-                            {t('common.destination')}
+                            Destinations
                         </Link>
                         <Link className={cx('_link')} to={routes.blog}>
                             <ArrowRight className={cx('arrow_icon')} size={20} weight="bold" />
-                            {t('common.blog')}
+                            Blog
                         </Link>
                         <Link className={cx('_link')} to={routes.contact}>
                             <ArrowRight className={cx('arrow_icon')} size={20} weight="bold" />
-                            {t('common.contactUs')}
+                            Contact Us
                         </Link>
                     </div>
                 </div>
                 <div className={cx('contact', 'p_15')}>
-                    <H2Decoration>{t('common.contactUs')}</H2Decoration>
+                    <H2Decoration>Contact Us</H2Decoration>
                     <div className={cx('list')}>
                         <div className={cx('contact_item')}>
                             <span className={cx('item_icon')}>
@@ -155,7 +153,7 @@ export default function Footer() {
                     </div>
                 </div>
                 <div className={cx('recent', 'p_15')}>
-                    <H2Decoration>{t('common.recentPosts')}</H2Decoration>
+                    <H2Decoration>Recent Posts</H2Decoration>
                     <div className={cx('list')}>
                         {blogs.map((blog, index) => (
                             <div className={cx('recent_item')} key={index}>

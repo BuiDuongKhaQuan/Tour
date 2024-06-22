@@ -112,7 +112,15 @@ export default function BlogDetail({ create }) {
             const previewUrl = URL.createObjectURL(file);
             setImagePreview(previewUrl);
             if (create) {
-                setBlog({ ...blog, image: file });
+                if (blog.topic && blog.status && blog.createdAt && blog.image && blog.information) {
+                    setBlog({ ...blog, image: file });
+                } else {
+                    showNotifications({
+                        title: 'Submit Error',
+                        type: 'danger',
+                        message: 'Please fill in all required fields.',
+                    });
+                }
             } else {
                 handleUpdateImg(file);
             }

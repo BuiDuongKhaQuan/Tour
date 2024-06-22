@@ -63,7 +63,7 @@ export default function DealsDetail({ create }) {
         setLoading(true);
         try {
             if (create) {
-                await createDeals(deals);
+                await createDeals({ ...deals, expiryDate: formattedDateExpiration });
                 navigate(routes.admin_deals);
                 showNotifications({ message: 'Deals created successfully!' });
             } else {
