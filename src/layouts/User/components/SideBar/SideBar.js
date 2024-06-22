@@ -65,8 +65,10 @@ export default function SideBar({
     }, [formData, onFormDataChange]);
 
     useEffect(() => {
-        getTourData(formData.tourId);
-        getAllTicket();
+        if (!filterBar) {
+            getTourData(formData.tourId);
+            getAllTicket();
+        }
     }, [formData]);
 
     const getTourData = async (id) => {
@@ -77,6 +79,7 @@ export default function SideBar({
             console.error(error);
         }
     };
+
     const getAllTicket = async () => {
         try {
             const response = await getTickets();
@@ -229,19 +232,7 @@ export default function SideBar({
             {category && (
                 <>
                     {filterBar}
-                    {/* <div className={cx('tour_categories', 'background_item')}>
-                        <H2Decoration>Tour Categories</H2Decoration>
-                        {DATA_CATE.map((result, index) => (
-                            <Button
-                                className={cx('cate_btn')}
-                                to={result.to}
-                                rightIcon={<ArrowRight size={20} />}
-                                key={index}
-                            >
-                                {result.title}
-                            </Button>
-                        ))}
-                    </div> */}
+
                     <div className={cx('minute_deals', 'background_item')}>
                         <H2Decoration>{t('common.lastMinute')}</H2Decoration>
                         <div className={cx('deal_list')}>

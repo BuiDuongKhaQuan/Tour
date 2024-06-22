@@ -10,13 +10,14 @@ import { getCategories, getDestinations, searchTours } from '~/utils/httpRequest
 import LayoutWithSideBar from '../LayoutWithSideBar';
 import styles from './Tour.module.scss';
 import routes from '~/config/routes';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Link, useLocation } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
 export default function Tour() {
     const { t } = useTranslation();
+    const location = useLocation();
     const [tours, setTours] = useState([]);
     const [destinations, setDestinations] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -27,18 +28,19 @@ export default function Tour() {
 
     // Lấy danh sách destinations và categories khi component được mount
     useEffect(() => {
-        const getData = async () => {
-            try {
-                const response = await getDestinations();
-                const response1 = await getCategories();
-                setDestinations(response.data);
-                setCategories(response1.data);
-            } catch (error) {
-                console.log(error);
-            }
-        };
         getData();
-    }, []);
+    }, [location]);
+
+    const getData = async () => {
+        try {
+            const response = await getDestinations();
+            const response1 = await getCategories();
+            setDestinations(response.data);
+            setCategories(response1.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     // Lấy danh sách tour mỗi khi itemOffset hoặc filters thay đổi
     useEffect(() => {
@@ -46,14 +48,20 @@ export default function Tour() {
             try {
                 const response = await searchTours({ ...filters, offset: itemOffset, limit: 8 });
                 setTours(response.data);
+                console.log(response.data);
                 setToursSize(response.total);
                 console.log(response.data);
             } catch (error) {
                 console.log(error);
             }
         };
-        fetchTours();
-    }, [itemOffset, filters]);
+        const data = location.state;
+        if (data) {
+            setTours(data);
+        } else {
+            fetchTours();
+        }
+    }, [itemOffset, filters, location]);
 
     const pageCount = Math.ceil(toursSize / 8);
 

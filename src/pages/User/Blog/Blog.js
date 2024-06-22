@@ -1,7 +1,7 @@
 import { ArrowRight, Calendar, Tag, User } from '@phosphor-icons/react';
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Button from '~/components/Button';
 import Image from '~/components/Image';
 import Pagination from '~/components/Pagination';
@@ -16,7 +16,7 @@ export default function Blog() {
     const [blogs, setBlogs] = useState([]);
     const [blogsSize, setBlogsSize] = useState(0);
     const [itemOffset, setItemOffset] = useState(0);
-
+    const location = useLocation();
     // Lấy kích thước danh sách blog một lần khi component được mount
     useEffect(() => {
         const fetchBlogsSize = async () => {
@@ -27,8 +27,11 @@ export default function Blog() {
                 console.log(error);
             }
         };
-        fetchBlogsSize();
-    }, []);
+        const data = location.state;
+        if (!data) {
+            fetchBlogsSize();
+        }
+    }, [location]);
 
     // Lấy danh sách blog mỗi khi itemOffset thay đổi
     useEffect(() => {
@@ -41,8 +44,13 @@ export default function Blog() {
                 console.log(error);
             }
         };
-        fetchBlogs();
-    }, [itemOffset]);
+        const data = location.state;
+        if (data) {
+            setBlogs(data);
+        } else {
+            fetchBlogs();
+        }
+    }, [itemOffset, location]);
 
     const pageCount = Math.ceil(blogsSize / 5);
 
