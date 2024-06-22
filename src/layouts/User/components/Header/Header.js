@@ -62,6 +62,7 @@ function Header() {
             const response = await findCompanyById();
             sessionStorage.setItem('company', JSON.stringify(response.data));
             setCompany(response.data);
+            console.log(response);
         } catch (error) {
             console.log(error);
         }
