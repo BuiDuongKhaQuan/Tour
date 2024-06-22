@@ -9,10 +9,12 @@ import { formattedDate } from '~/utils/constants';
 import { getBlogLimit, getBlogSize } from '~/utils/httpRequest';
 import LayoutWithSideBar from '../LayoutWithSideBar';
 import styles from './Blog.module.scss';
+import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
 
 export default function Blog() {
+    const { t } = useTranslation();
     const [blogs, setBlogs] = useState([]);
     const [blogsSize, setBlogsSize] = useState(0);
     const [itemOffset, setItemOffset] = useState(0);
@@ -90,7 +92,7 @@ export default function Blog() {
                             large
                             rightIcon={<ArrowRight size={20} weight="bold" />}
                         >
-                            READ MODE
+                            {t('common.readMode')}
                         </Button>
                     </div>
                 </div>

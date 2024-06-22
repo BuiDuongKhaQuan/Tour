@@ -9,10 +9,12 @@ import TextArea from '~/components/TextArea';
 import { showNotifications } from '~/utils/constants';
 import { createContact } from '~/utils/httpRequest';
 import styles from './Contact.module.scss';
+import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
 
 export default function Contact() {
+    const { t } = useTranslation();
     const DATA_COMPANY = {
         phone: '0328216789',
         email: 'travel@gmail.com',
@@ -60,9 +62,9 @@ export default function Contact() {
                         <div className={cx('shape-img')}>
                             <img src={images.contact_shape} alt="shape" />
                         </div>
-                        <H2Decoration className={cx('h2_decor')}>Contact Info</H2Decoration>
+                        <H2Decoration className={cx('h2_decor')}>{t('common.contactInfo')}</H2Decoration>
                         <div className={cx('contact_item')}>
-                            <h2>Contact Number:</h2>
+                            <h2>{t('common.contactNumber')}</h2>
                             <div className={cx('item_wrapper')}>
                                 <span className={cx('icon')}>
                                     <Phone />
@@ -71,7 +73,7 @@ export default function Contact() {
                             </div>
                         </div>
                         <div className={cx('contact_item')}>
-                            <h2>Mail Address:</h2>
+                            <h2>{t('common.email')}</h2>
                             <div className={cx('item_wrapper')}>
                                 <span className={cx('icon')}>
                                     <EnvelopeSimple />
@@ -80,7 +82,7 @@ export default function Contact() {
                             </div>
                         </div>
                         <div className={cx('contact_item')}>
-                            <h2>Office Address:</h2>
+                            <h2>{t('common.officeAddress')}</h2>
                             <div className={cx('item_wrapper')}>
                                 <span className={cx('icon')}>
                                     <MapPin />
@@ -105,12 +107,12 @@ export default function Contact() {
                     </div>
                 </div>
                 <form className={cx('form')} onSubmit={handleSendMessage}>
-                    <h2>Make An Appointment</h2>
+                    <h2>{t('common.make')}</h2>
                     <div className={cx('input_list')}>
                         <Input
                             classNameInput={cx('input')}
                             rightIcon={<User size={20} weight="bold" />}
-                            placeholder={'Your Name'}
+                            placeholder={t('common.yourName')}
                             name="name"
                             value={formData.name}
                             onChange={handleChange}
@@ -118,7 +120,7 @@ export default function Contact() {
                         <Input
                             classNameInput={cx('input')}
                             rightIcon={<EnvelopeSimple size={20} weight="bold" />}
-                            placeholder={'Email Address'}
+                            placeholder={t('common.email')}
                             type="email"
                             name="email"
                             value={formData.email}
@@ -129,7 +131,7 @@ export default function Contact() {
                         <Input
                             classNameInput={cx('input')}
                             rightIcon={<Phone size={20} weight="bold" />}
-                            placeholder={'Phone Number'}
+                            placeholder={t('common.phoneNumber')}
                             type="number"
                             name="phone"
                             value={formData.phone}
@@ -138,7 +140,7 @@ export default function Contact() {
                         <Input
                             classNameInput={cx('input')}
                             rightIcon={<NewspaperClipping size={20} weight="bold" />}
-                            placeholder={'Query Topic'}
+                            placeholder={t('common.querryTopic')}
                             name="topic"
                             value={formData.topic}
                             onChange={handleChange}
@@ -146,13 +148,13 @@ export default function Contact() {
                     </div>
                     <TextArea
                         className={cx('text_area')}
-                        placeholder={'Your Message'}
+                        placeholder={t('common.yourMessage')}
                         name="message"
                         value={formData.message}
                         onChange={handleChange}
                     />
                     <Button primary large className={cx('btn')} type="submit">
-                        Send Message Now
+                        {t('common.sendNow')}
                     </Button>
                 </form>
             </div>

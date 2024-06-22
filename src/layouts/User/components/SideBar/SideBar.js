@@ -16,6 +16,7 @@ import { DATA_DEAL, getTodayDate, showNotifications } from '~/utils/constants';
 import { findTourById, getTickets } from '~/utils/httpRequest';
 import styles from './SideBar.module.scss';
 import CurrencyFormat from 'react-currency-format';
+import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
 
@@ -29,6 +30,7 @@ export default function SideBar({
     onFormDataChange,
     className,
 }) {
+    const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
     const user = JSON.parse(sessionStorage.getItem('user'));
@@ -232,7 +234,7 @@ export default function SideBar({
                     {filterBar}
 
                     <div className={cx('minute_deals', 'background_item')}>
-                        <H2Decoration>Last Minute Deals</H2Decoration>
+                        <H2Decoration>{t('common.lastMinute')}</H2Decoration>
                         <div className={cx('deal_list')}>
                             {DATA_DEAL.map((result, index) => (
                                 <div className={cx('deal_item')} key={index}>
@@ -249,7 +251,7 @@ export default function SideBar({
                                             <h2>{result.title}</h2>
                                         </Link>
                                         <span>
-                                            From <span className={cx('deal_price')}>{result.price}$</span>
+                                            {t('common.from')} <span className={cx('deal_price')}>{result.price}$</span>
                                         </span>
                                     </div>
                                 </div>
@@ -261,18 +263,19 @@ export default function SideBar({
                             <div className={cx('banner-logo')}>
                                 <img src={images.logo} alt="Travon" />
                             </div>
-                            <span className={cx('banner-subtitle')}>Happy Holiday</span>
-                            <h3 className={cx('banner-title')}>Adventure Ture</h3>
+                            <span className={cx('banner-subtitle')}>{t('common.happyHoliday')}</span>
+                            <h3 className={cx('banner-title')}>{t('common.adventureTure')}</h3>
                             <div className={cx('offer')}>
                                 <h6 className={cx('offer-title')}>
-                                    <span className={cx('text-theme')}>Travon</span> Special
+                                    <span className={cx('text-theme')}>{t('common.travelHouse')}</span>{' '}
+                                    {t('common.special')}
                                 </h6>
                                 <p className={cx('offer-text')}>
-                                    <span className={cx('text-theme')}>30% off</span> On All Booking
+                                    <span className={cx('text-theme')}>30% off</span> {t('common.onAll')}
                                 </p>
                             </div>
                             <Button to={routes.contact} className={cx('ot-btn')} large primary>
-                                Get A Quote
+                                {t('common.getVote')}
                             </Button>
                         </div>
                     </div>
