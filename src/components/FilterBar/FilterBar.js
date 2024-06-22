@@ -3,12 +3,10 @@ import styles from './FilterBar.module.scss';
 import classNames from 'classnames/bind';
 import H2Decoration from '../H2Decoration';
 import Button from '../Button';
-import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
 
 export default function FilterBar({ destinations, categories, onFilterChange }) {
-    const { t } = useTranslation();
     const [selectedDestinations, setSelectedDestinations] = useState([]);
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [hasDeal, setHasDeal] = useState(false);
@@ -22,10 +20,10 @@ export default function FilterBar({ destinations, categories, onFilterChange }) 
     };
     return (
         <div className={cx('background_item')}>
-            <H2Decoration>{t('common.tourFilter')}</H2Decoration>
+            <H2Decoration>Tour Filter</H2Decoration>
             <div className={cx('filter')}>
                 <div className={cx('filter-item')}>
-                    <span className={cx('filter-title')}>{t('common.destination')}</span>
+                    <span className={cx('filter-title')}>Destination</span>
                     {destinations.map((des, index) => (
                         <label className={cx('content')} key={index}>
                             <input
@@ -40,7 +38,7 @@ export default function FilterBar({ destinations, categories, onFilterChange }) 
                     ))}
                 </div>
                 <div className={cx('filter-item')}>
-                    <span className={cx('filter-title')}>{t('common.categories')}</span>
+                    <span className={cx('filter-title')}>Category</span>
                     {categories.map((cat, index) => (
                         <label className={cx('content')} key={index}>
                             <input
@@ -53,14 +51,14 @@ export default function FilterBar({ destinations, categories, onFilterChange }) 
                     ))}
                 </div>
                 <div className={cx('filter-item')}>
-                    <span className={cx('filter-title')}>{t('common.deals')}</span>
+                    <span className={cx('filter-title')}>Deals</span>
                     <label className={cx('content')}>
                         <input type="checkbox" onChange={() => setHasDeal(!hasDeal)} />
                         Has Deal
                     </label>
                 </div>
                 <Button primary small onClick={handleFilterChange}>
-                    {t('common.applyFilter')}
+                    Apply Filters
                 </Button>
             </div>
         </div>

@@ -10,13 +10,11 @@ import { getCategories, getDestinations, searchTours } from '~/utils/httpRequest
 import LayoutWithSideBar from '../LayoutWithSideBar';
 import styles from './Tour.module.scss';
 import routes from '~/config/routes';
-import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
 export default function Tour() {
-    const { t } = useTranslation();
     const location = useLocation();
     const [tours, setTours] = useState([]);
     const [destinations, setDestinations] = useState([]);
@@ -92,9 +90,9 @@ export default function Tour() {
         if (tours.length === 0) {
             return (
                 <div className={cx('no-tours')}>
-                    {t('common.thereAre')}{' '}
+                    Không có tour phù hợp với bô lọc của bạn!. Xem tất cả{' '}
                     <Link className={cx('link-tours')} to={routes.tour} onClick={resetFilters}>
-                        {t('common.here')}
+                        Tại đây
                     </Link>
                 </div>
             );
@@ -129,7 +127,7 @@ export default function Tour() {
                         }}
                     >
                         <Input
-                            placeholder={t('common.enterKey')}
+                            placeholder={'Enter Keyword'}
                             value={searchKeyword}
                             onChange={handleSearchInputChange}
                             button={

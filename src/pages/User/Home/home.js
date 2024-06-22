@@ -33,7 +33,6 @@ import {
 } from '~/utils/httpRequest';
 import routes from '~/config/routes';
 import Countdown from 'react-countdown';
-import { useTranslation } from 'react-i18next';
 import { formattedDate, showNotifications } from '~/utils/constants';
 import Input from '~/components/Input';
 import { MdOutlineTravelExplore } from 'react-icons/md';
@@ -43,7 +42,6 @@ import Search from '~/components/Search/Search';
 const cx = classNames.bind(styles);
 
 const Home = memo(() => {
-      const { t } = useTranslation();
     const DATA_SELECT = {
         id: 1,
         title: 'Select criteria',
@@ -64,32 +62,35 @@ const Home = memo(() => {
         ],
     };
 
-
     const DATA_SERVICE = {
-        content: t('common.completely'),
+        content:
+            'Completely maintain parallel e-business without magnetic relationships. Mesh seamless web-readiness rather.',
         data: [
-            { id: 1, img: images.feature_1_1, title: t('common.discount') },
-            { id: 2, img: images.feature_1_2, title: t('common.bestGuide') },
-            { id: 3, img: images.feature_1_3, title: t('common.support') },
-            { id: 4, img: images.feature_1_4, title: t('common.travelManagement') },
+            { id: 1, img: images.feature_1_1, title: 'A Lot of Discount' },
+            { id: 2, img: images.feature_1_2, title: 'Best Guide' },
+            { id: 3, img: images.feature_1_3, title: '24/7 Support' },
+            { id: 4, img: images.feature_1_4, title: 'Travel Management' },
         ],
     };
 
     const DATA_PROCESS = [
         {
-            title: t('common.find'),
+            title: 'Find Ans Enjoy A Trip That Fits Your Lifestyle With Your Friends',
             number: '01',
-            content: t('common.globally'),
+            content:
+                'Globally productize flexible potentialities via high-payoff markets. Proactively revolutionize parallel growth strategies.',
         },
         {
-            title: t('common.travel'),
+            title: 'Travel With More Confidence',
             number: '02',
-            content: t('common.globally'),
+            content:
+                'Globally productize flexible potentialities via high-payoff markets. Proactively revolutionize parallel growth strategies.',
         },
         {
-            title: t('common.seeWhat'),
+            title: 'See What You Really Get Form Us',
             number: '03',
-            content: t('common.globally'),
+            content:
+                'Globally productize flexible potentialities via high-payoff markets. Proactively revolutionize parallel growth strategies.',
         },
     ];
 
@@ -108,12 +109,14 @@ const Home = memo(() => {
         {
             name: 'Quan Bui',
             img: images.ceo,
-            content: t('common.corPorate'),
+            content:
+                'Corporate empowered eeamlessly e-enable highly efficient procedure after cross-media strategic theme areas. Enthusiastically formulate meta-services e-services. Quickly optimize future-proof markets through testing',
         },
         {
             name: 'Thai Tran',
             img: images.ceo_1,
-            content: t('common.theAdvance'),
+            content:
+                'The advance of technology is based on making it fit in so that you don"t really even notice it, so it"s part of everyday life.',
         },
     ];
     const [searchCriteria, setSearchCriteria] = useState(DATA_SELECT.items[0].value);
@@ -287,7 +290,7 @@ const Home = memo(() => {
                 </li>
                 <li>
                     <div className={cx('count_number')}>{hours}</div>
-                    <span>Hours</span>
+                    <span>Housr</span>
                 </li>
                 <li>
                     <div className={cx('count_number')}>{minutes}</div>
@@ -330,7 +333,7 @@ const Home = memo(() => {
                         <Star size={20} weight="fill" color="#3cb371" />
                     </div>
                     <h2>{result.name}</h2>
-                    <p>{t('common.ceo')}</p>
+                    <p>CEO of Travel</p>
                 </div>
             ))}
         </SliderCard>
@@ -386,12 +389,15 @@ const Home = memo(() => {
                 <div className={cx('img_hello')} style={{ backgroundImage: `url(${images.hero_bg_2_1})` }}></div>
                 <div className={cx('container')}>
                     <div className={cx('content')}>
-                        <SupTitle primary right title={t('common.enjoy')} />
-                        <h1 className={cx('hero_title')}>{t('common.plan')}</h1>
-                        <h1 className={cx('hero_title')}>{t('common.travelHouse')}</h1>
-                        <p className={cx('p_title')}>{t('common.weAlways')}</p>
+                        <SupTitle primary right title={'Enjoy Every Good Moment'} />
+                        <h1 className={cx('hero_title')}>Plan Your Trip With</h1>
+                        <h1 className={cx('hero_title')}>Travel House.</h1>
+                        <p className={cx('p_title')}>
+                            We always make our customer happy by providing as many choices possible for customers in
+                            traveling.
+                        </p>
                         <Button primary large>
-                            {t('common.getStarted')}
+                            GET STARTED
                         </Button>
                     </div>
                 </div>
@@ -422,43 +428,40 @@ const Home = memo(() => {
                 <ServiceItem data={DATA_SERVICE.data} content={DATA_SERVICE.content} />
             </div>
             <div className={cx('category')}>
-                <SupTitle left right primary small title={t('common.categories')} />
-                <h2>{t('common.browse')}</h2>
+                <SupTitle left right primary small title={'Categories'} />
+                <h2>Browse By Destination Category</h2>
                 <div className={cx('_row')}>{destinations && <Categories data={destinations} />}</div>
             </div>
             <div className={cx('aboutus')}>
                 <div className={cx('about_left')}>
                     <div className={cx('about_left_top')}>
-                        <SupTitle className={cx('suptitle-max')} right small primary title={t('common.aboutUs')} />
-                        <SupTitle
-                            className={cx('suptitle-1000px')}
-                            right
-                            left
-                            small
-                            primary
-                            title={t('common.aboutUs')}
-                        />
-                        <h2>{t('common.perfect')}</h2>
-                        <p>{t('common.progressively')}</p>
+                        <SupTitle className={cx('suptitle-max')} right small primary title={'About Us'} />
+                        <SupTitle className={cx('suptitle-1000px')} right left small primary title={'About Us'} />
+                        <h2>The Perfect Travel Place For You & Your Family</h2>
+                        <p>
+                            Progressively impact multidisciplinary leadership skills via e-business leadership skills.
+                            Holisticly repurpose multifunctional data before turnkey information. Globally restore
+                            client-focused potentialities before scalable core competencies.
+                        </p>
                     </div>
                     <div className={cx('about_left_bottom')}>
                         <div className={cx('left_bottom_item')}>
                             <h2>
                                 <CountUp end={25} duration={2} />+
                             </h2>
-                            <p>{t('common.year')}</p>
+                            <p>Years Of Experiences</p>
                         </div>
                         <div className={cx('left_bottom_item')}>
                             <h2>
                                 <CountUp end={15} duration={2} />+
                             </h2>
-                            <p>{t('common.year')}</p>
+                            <p>Years Of Experiences</p>
                         </div>
                         <div className={cx('left_bottom_item')}>
                             <h2>
                                 <CountUp end={35} duration={2} />+
                             </h2>
-                            <p>{t('common.year')}</p>
+                            <p>Years Of Experiences</p>
                         </div>
                     </div>
                 </div>
@@ -475,8 +478,8 @@ const Home = memo(() => {
                 </div>
             </div>
             <div className={cx('destination', 'category')}>
-                <SupTitle left right primary small title={t('common.topDestinations')} />
-                <h2>{t('common.popularDestinations')}</h2>
+                <SupTitle left right primary small title={'Top Destinations'} />
+                <h2>Popular Destinations</h2>
                 <div className={cx('_row')}>
                     {destinations && (
                         <SliderCard
@@ -501,15 +504,9 @@ const Home = memo(() => {
                 <div className={cx('offers_right')}>
                     <div className={cx('offers_header')}>
                         <div className={cx('header_title')}>
-                            <SupTitle className={cx('suptitle-max')} right small title={t('common.deals&offers')} />
-                            <SupTitle
-                                className={cx('suptitle-1000px')}
-                                right
-                                left
-                                small
-                                title={t('common.deals&offers')}
-                            />
-                            <h2>{t('common.lastMinuteAmazing')}</h2>
+                            <SupTitle className={cx('suptitle-max')} right small title={'Deals & Offers'} />
+                            <SupTitle className={cx('suptitle-1000px')} right left small title={'Deals & Offers'} />
+                            <h2>Last Minute Amazing Deals</h2>
                         </div>
                         <div className={cx('arrow_list')}>
                             <Button
@@ -532,8 +529,8 @@ const Home = memo(() => {
                 </div>
             </div>
             <div className={cx('map', 'destination', 'category')}>
-                <SupTitle left right primary small title={t('common.topDestinations')} />
-                <h2>{t('common.explore')}</h2>
+                <SupTitle left right primary small title={'Top Destinations'} />
+                <h2>Explore the World For Yourself</h2>
                 <div className={cx('map_row')}>
                     <div className={cx('process_list_wrap')}>
                         <ProcessItem data={DATA_PROCESS} />
@@ -550,11 +547,11 @@ const Home = memo(() => {
                 <div className={cx('featured_container')}>
                     <div className={cx('featured_row')}>
                         <div className={cx('title')}>
-                            <SupTitle primary right small title={t('common.featuredTours')} />
-                            <h2>{t('common.popular')}</h2>
+                            <SupTitle primary right small title={'Featured Tours'} />
+                            <h2>Most Popular Tours</h2>
                         </div>
                         <Button primary large onClick={() => navigate(routes.tour)} type="button">
-                            {t('common.viewAllTours')}
+                            VIEW ALL TOURS
                         </Button>
                     </div>
                     <div className={cx('featured_tour')}>{tours && <TourItem data={tours} />}</div>
@@ -564,8 +561,8 @@ const Home = memo(() => {
                 className={cx('team', 'destination', 'category')}
                 style={{ backgroundImage: `url(${images.bg_map_3})` }}
             >
-                <SupTitle left right primary small title={t('common.testimonials')} />
-                <h2>{t('common.whatOur')}</h2>
+                <SupTitle left right primary small title={'Testimonials'} />
+                <h2>What Our Customer Say</h2>
                 <div className={cx('team_box')}>
                     <div className={cx('team_box_arrow')}>
                         <Button onClick={previousSlide} circle leftIcon={<ArrowLeft fontSize={20} />} />
@@ -603,12 +600,12 @@ const Home = memo(() => {
                     <div className={cx('form_wrap')}>
                         <Image className={cx('form_img')} src={images.subscribe_1} alt={'Img subcribe'} />
                         <div className={cx('form_content')}>
-                            <h2>{t('common.travelSpecial')}</h2>
-                            <p>{t('common.signUp')}</p>
+                            <h2>Get Special Offers And More From Travon</h2>
+                            <p>Sign up now and get the best deals straight in your inbox!</p>
                             <form className={cx('form_input')}>
-                                <input placeholder={t('common.enterEmail')} className={cx('input_email')} />
+                                <input placeholder="Enter Email Address" className={cx('input_email')} />
                                 <Button primary large>
-                                    {t('common.subcribe')}
+                                    SUBCRIBE
                                 </Button>
                             </form>
                         </div>
@@ -618,11 +615,11 @@ const Home = memo(() => {
             <div className={cx('new')}>
                 <div className={cx('new_suptitle')}>
                     <div>
-                        <SupTitle right primary small title={t('common.news&updates')} />
-                        <h2>{t('common.ourLast')}</h2>
+                        <SupTitle right primary small title={'News & Updates'} />
+                        <h2>Our Latest News & Articles</h2>
                     </div>
                     <Button large primary type="button" onClick={() => navigate(routes.blog)}>
-                        {t('common.viewAllPost')}
+                        VIEW ALL POST
                     </Button>
                 </div>
                 <div className={cx('new_slider')}>

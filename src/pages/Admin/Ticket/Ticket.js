@@ -61,7 +61,7 @@ export default function Ticket() {
                 Cell: ({ row }) => {
                     let statusLabel;
                     switch (row.original.status) {
-                        case 0:
+                        case 2:
                             statusLabel = 'Not posted';
                             break;
                         case 1:
