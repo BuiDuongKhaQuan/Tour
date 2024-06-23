@@ -18,7 +18,7 @@ function DefaultLayout({ children }) {
     const getCompany = async () => {
         try {
             const response = await findCompanyById();
-            sessionStorage.setItem('company', JSON.stringify(response.data));
+            localStorage.setItem('company', JSON.stringify(response.data));
         } catch (error) {
             console.log(error);
         }

@@ -1,6 +1,6 @@
-import { Airplane, BellRinging, BookBookmark, House, MapPin, SignOut, UsersThree } from '@phosphor-icons/react';
+import { Airplane, BellRinging, BookBookmark, House, MapPin, UsersThree } from '@phosphor-icons/react';
 import classNames from 'classnames/bind';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import images from '~/assets/images';
 import Image from '~/components/Image';
 import styles from './Header.module.scss';
@@ -9,10 +9,15 @@ import { IoTicketOutline } from 'react-icons/io5';
 import { MdOutlineLocalOffer } from 'react-icons/md';
 import { FaRegBuilding } from 'react-icons/fa';
 import { FaAmazonPay } from 'react-icons/fa6';
+import Button from '~/components/Button';
+import { logout } from '~/utils/httpRequest';
+import { useAuth } from '~/hooks/useAuth';
 
 const cx = classNames.bind(styles);
 
 export default function Header() {
+    const { removeData } = useAuth();
+    const navigate = useNavigate();
     const MENU = [
         {
             title: 'Dashboard',
@@ -64,13 +69,16 @@ export default function Header() {
             icon: <IoTicketOutline />,
             to: routes.admin_ticket,
         },
-        {
-            title: 'Logout',
-            icon: <SignOut weight="bold" />,
-            to: '/logout',
-        },
     ];
-
+    const handleLogout = async () => {
+        try {
+            await logout();
+            await removeData();
+            navigate(routes.home);
+        } catch (error) {
+            console.log(error);
+        }
+    };
     return (
         <div className={cx('wrapper')}>
             <Image src={images.logo} width={'200px'} />
@@ -81,6 +89,9 @@ export default function Header() {
                         <h6>{result.title}</h6>
                     </NavLink>
                 ))}
+                <Button primary large onClick={handleLogout}>
+                    Logout
+                </Button>
             </div>
         </div>
     );

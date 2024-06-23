@@ -15,11 +15,7 @@ const cx = classNames.bind(styles);
 
 export default function Contact() {
     const { t } = useTranslation();
-    const DATA_COMPANY = {
-        phone: '0328216789',
-        email: 'travel@gmail.com',
-        address: '123 Main St',
-    };
+    const company = JSON.parse(localStorage.getItem('company'));
 
     const [formData, setFormData] = useState({
         name: '',
@@ -69,7 +65,7 @@ export default function Contact() {
                                 <span className={cx('icon')}>
                                     <Phone />
                                 </span>
-                                <span className={cx('text')}>{DATA_COMPANY.phone}</span>
+                                <span className={cx('text')}>{company?.phone}</span>
                             </div>
                         </div>
                         <div className={cx('contact_item')}>
@@ -78,7 +74,7 @@ export default function Contact() {
                                 <span className={cx('icon')}>
                                     <EnvelopeSimple />
                                 </span>
-                                <span className={cx('text')}>{DATA_COMPANY.email}</span>
+                                <span className={cx('text')}>{company?.email}</span>
                             </div>
                         </div>
                         <div className={cx('contact_item')}>
@@ -87,7 +83,7 @@ export default function Contact() {
                                 <span className={cx('icon')}>
                                     <MapPin />
                                 </span>
-                                <span className={cx('text')}>{DATA_COMPANY.address}</span>
+                                <span className={cx('text')}>{company?.address}</span>
                             </div>
                         </div>
                     </div>
