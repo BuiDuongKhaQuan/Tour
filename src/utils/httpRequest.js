@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const request = axios.create({
     baseURL: 'http://3.26.145.187:3001',
+    // baseURL: 'http://localhost:3001',
     withCredentials: true, // Bật gửi cookie kèm theo yêu cầu
 });
 
