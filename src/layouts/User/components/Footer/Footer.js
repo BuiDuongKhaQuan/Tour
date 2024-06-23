@@ -157,7 +157,7 @@ export default function Footer() {
                 <div className={cx('recent', 'p_15')}>
                     <H2Decoration>{t('common.recentPosts')}</H2Decoration>
                     <div className={cx('list')}>
-                        {blogs.map((blog, index) => (
+                        {blogs?.map((blog, index) => (
                             <div className={cx('recent_item')} key={index}>
                                 <div className={cx('post_img')}>
                                     <Image
