@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const request = axios.create({
     // baseURL: 'https://mytechjourney.id.vn',
-    baseURL: 'https://mytechjourney.id.vn:3001',
+    baseURL: 'http://localhost:3001',
     withCredentials: true, // Bật gửi cookie kèm theo yêu cầu
 });
 
