@@ -2,7 +2,7 @@
     "name": "tour-ui",
     "version": "0.1.0",
     "private": true,
-    "homepage": "https://buiduongkhaquan.github.io/BookTour",
+    "homepage": "",
     "dependencies": {
         "@emotion/react": "^11.11.4",
         "@emotion/styled": "^11.11.0",
@@ -54,8 +54,11 @@
         "yarn": "^1.22.22"
     },
     "devDependencies": {
+        "@babel/core": "^7.24.7",
         "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+        "@babel/preset-env": "^7.24.7",
         "@fortawesome/fontawesome-free": "^6.5.1",
+        "babel-jest": "^29.7.0",
         "babel-plugin-module-resolver": "^5.0.0",
         "customize-cra": "^1.0.0",
         "react-app-rewired": "^2.2.1",
@@ -67,7 +70,8 @@
         "test": "react-app-rewired test",
         "eject": "react-app-rewired eject",
         "predeploy": "npm run build",
-        "deploy": "gh-pages -d build"
+        "deploy": "gh-pages -d build",
+        "start:prod": "serve -s build"
     },
     "eslintConfig": {
         "extends": [

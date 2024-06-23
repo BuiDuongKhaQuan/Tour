@@ -1,27 +1,20 @@
+import { ArrowLeft, ArrowRight, ArrowUpRight, Calendar, MapPin, Star, Tag } from '@phosphor-icons/react';
 import classNames from 'classnames/bind';
-import styles from './Home.module.scss';
+import { memo, useEffect, useRef, useState } from 'react';
+import Countdown from 'react-countdown';
+import CountUp from 'react-countup';
+import { useTranslation } from 'react-i18next';
+import { MdOutlineTravelExplore } from 'react-icons/md';
+import { Link, useNavigate } from 'react-router-dom';
 import 'tippy.js/dist/tippy.css';
 import images from '~/assets/images';
-import Select from '~/components/Select';
 import Button from '~/components/Button';
-import CountUp from 'react-countup';
-import {
-    ArrowLeft,
-    ArrowRight,
-    ArrowUpRight,
-    Calendar,
-    MapPin,
-    CalendarBlank,
-    CurrencyDollarSimple,
-    PersonSimpleBike,
-    Star,
-    Tag,
-} from '@phosphor-icons/react';
-import SupTitle from '~/components/SupTitle';
-import SliderCard, { CardItem, TourCardItem } from '~/components/SliderCard';
-import { Link, useNavigate } from 'react-router-dom';
 import Image from '~/components/Image';
-import { memo, useEffect, useRef, useState } from 'react';
+import Search from '~/components/Search/Search';
+import SliderCard, { CardItem, TourCardItem } from '~/components/SliderCard';
+import SupTitle from '~/components/SupTitle';
+import routes from '~/config/routes';
+import { formattedDate, showNotifications } from '~/utils/constants';
 import {
     findTourByDeal,
     getBlogLimit,
@@ -31,14 +24,7 @@ import {
     searchDestination,
     searchTours,
 } from '~/utils/httpRequest';
-import routes from '~/config/routes';
-import Countdown from 'react-countdown';
-import { formattedDate, showNotifications } from '~/utils/constants';
-import Input from '~/components/Input';
-import { MdOutlineTravelExplore } from 'react-icons/md';
-import { debounce } from 'lodash'; // Import debounce từ thư viện lodash
-import Search from '~/components/Search/Search';
-import { useTranslation } from 'react-i18next';
+import styles from './Home.module.scss';
 
 const cx = classNames.bind(styles);
 
@@ -134,6 +120,7 @@ const Home = memo(() => {
         try {
             const response = await getToursLimit(0, 8);
             setTours(response.data);
+            console.log(response.data);
         } catch (error) {
             console.log(error);
         }
