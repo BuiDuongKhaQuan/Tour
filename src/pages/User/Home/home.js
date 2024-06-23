@@ -201,7 +201,7 @@ const Home = memo(() => {
     };
 
     const ServiceItem = ({ data, content }) =>
-        data.map((result, index) => (
+        data?.map((result, index) => (
             <div className={cx('container_service')} key={index}>
                 <div className={cx('img_service')}>
                     <img src={result.img} alt="Service" />
@@ -216,7 +216,7 @@ const Home = memo(() => {
         ));
 
     const ProcessItem = ({ data }) =>
-        data.map((reslut, index) => (
+        data?.map((reslut, index) => (
             <div className={cx('process-list')} key={index}>
                 <div className={cx('process-list__number')}>{reslut.number}</div>
                 <div className={cx('media-body')}>
@@ -227,7 +227,7 @@ const Home = memo(() => {
         ));
 
     const Dot = ({ data }) =>
-        data.map((reslut, index) => (
+        data?.map((reslut, index) => (
             <div className={cx('dot')} style={reslut.position} key={index}>
                 <a href="tour.html" className={cx('trips')}>
                     {reslut.trip}
@@ -237,14 +237,14 @@ const Home = memo(() => {
 
     const TourItem = ({ data }) => (
         <SliderCard slidesToShowOn1024={2} slidesToShow={4} slidesToShowOn1200={3} slidesToShowOn1450={4}>
-            {data.map((reslut, index) => (
+            {data?.map((reslut, index) => (
                 <TourCardItem data={reslut} homeTour key={index} />
             ))}
         </SliderCard>
     );
     const Categories = ({ data }) => (
         <SliderCard animation slidesToShow={6} slidesToShowOn770={2}>
-            {data.map((reslut, index) => (
+            {data?.map((reslut, index) => (
                 <CardItem categories data={reslut} window key={index} />
             ))}
         </SliderCard>
@@ -259,7 +259,7 @@ const Home = memo(() => {
             slidesToShowOn1200={2}
             slidesToShowOn1450={2}
         >
-            {data.map((reslut, index) => (
+            {data?.map((reslut, index) => (
                 <TourCardItem data={reslut} sellOff homeTour key={index} />
             ))}
         </SliderCard>
@@ -294,7 +294,7 @@ const Home = memo(() => {
             }}
             ref={sliderRef}
         >
-            {data.map((result, index) => (
+            {data?.map((result, index) => (
                 <div className={cx('team_box_account')} key={index}>
                     <Image
                         pointer
@@ -324,7 +324,7 @@ const Home = memo(() => {
 
     const NewItem = ({ data }) => (
         <SliderCard slidesToShow={3} slidesToShowOn1024={2} slidesToShowOn1200={2} slidesToShowOn1450={3}>
-            {data.map((result, index) => (
+            {data?.map((result, index) => (
                 <div className={cx('new_item')} key={index}>
                     {!!(index % 2) && (
                         <Image
