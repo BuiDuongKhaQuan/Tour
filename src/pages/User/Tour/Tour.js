@@ -89,7 +89,7 @@ export default function Tour() {
     };
 
     const TourContent = () => {
-        if (tours.length === 0) {
+        if (tours?.length === 0) {
             return (
                 <div className={cx('no-tours')}>
                     {t('common.thereAre')}{' '}

@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import classNames from 'classnames/bind';
-import styles from './DestinationDetail.module.scss';
-import Breadcumb from '~/components/Breadcumb';
 import { MapPin } from '@phosphor-icons/react';
-import images from '~/assets/images';
-import SliderCard, { TourCardItem } from '~/components/SliderCard';
+import classNames from 'classnames/bind';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import SliderCard, { TourCardItem } from '~/components/SliderCard';
 import { findAllTourByColumn, findDestinationById } from '~/utils/httpRequest';
+import styles from './DestinationDetail.module.scss';
 
 const cx = classNames.bind(styles);
 

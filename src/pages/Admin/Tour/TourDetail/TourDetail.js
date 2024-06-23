@@ -3,6 +3,7 @@ import { AirplaneTakeoff, Calendar, CurrencyCircleDollar, MapPin, UsersThree } f
 import classNames from 'classnames/bind';
 import React, { useEffect, useRef, useState } from 'react';
 import { FaRegSquarePlus } from 'react-icons/fa6';
+import { MdOutlineLocalOffer } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
 import Slider from 'react-slick';
 import Button from '~/components/Button';
@@ -21,13 +22,11 @@ import {
     deleteTour,
     findDealsByExpiry,
     findTourById,
-    getDeals,
     getDestinations,
     updateImgTour,
     updateTour,
 } from '~/utils/httpRequest';
 import styles from './TourDetail.module.scss';
-import { MdOutlineLocalOffer } from 'react-icons/md';
 
 const cx = classNames.bind(styles);
 
