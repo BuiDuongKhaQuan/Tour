@@ -127,3 +127,8 @@
 //         width: 50%;
 //     }
 // }
+@media (max-width: 570px) {
+    .tour_information {
+        min-width: 340px !important;
+    }
+}

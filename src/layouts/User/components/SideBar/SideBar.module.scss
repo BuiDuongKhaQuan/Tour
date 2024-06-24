@@ -200,3 +200,70 @@
         padding: 20px 10px !important;
     }
 }
+@media (max-width: 1200px) {
+    .minute_deals {
+        padding: 15px;
+
+        .deal_item {
+            max-width: 300px;
+        }
+    }
+}
+
+@media (max-width: 992px) {
+    .minute_deals {
+        padding: 10px;
+
+        .deal_item {
+            max-width: 250px;
+
+            .deal_img {
+                width: 75px;
+                height: 75px;
+            }
+
+            .deal_title {
+                h2 {
+                    font-size: 1.1em;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .minute_deals {
+        padding: 5px;
+
+        .deal_list {
+            flex-direction: column;
+            align-items: center;
+
+            .deal_item {
+                max-width: 100%;
+            }
+        }
+    }
+}
+
+@media (max-width: 576px) {
+    .minute_deals {
+        .deal_item {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+
+            .deal_img {
+                margin-right: 0 !important;
+            }
+
+            .deal_title {
+                text-align: left !important;
+                h2 {
+                    font-size: 1em !important;
+                    text-align: left !important;
+                }
+            }
+        }
+    }
+}

@@ -1,5 +1,6 @@
 .des_detail_container {
-    padding: 100px 85px;
+    padding-top: 40px;
+    padding-bottom: 40px;
 }
 .des_detail_top {
     padding: 0 15px;
@@ -22,7 +23,8 @@
     width: 100%;
 }
 
-.des_detail_top {
-}
-.tour_list {
+@media (max-width: 570px) {
+    .des_detail_container {
+        padding-top: 0 !important;
+    }
 }
