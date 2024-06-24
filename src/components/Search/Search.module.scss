@@ -26,4 +26,25 @@
         justify-content: space-between;
         align-items: center;
     }
+    .btn {
+        z-index: 0;
+    }
+}
+@media (max-width: 570px) {
+    .search {
+        margin-top: 100px;
+        .search_container {
+            margin: 0;
+            padding: 0 10px;
+        }
+        .search_box-select {
+            flex: 100% !important;
+        }
+    }
+    .tour_search {
+        flex-direction: column !important;
+        & > * {
+            width: 100% !important;
+        }
+    }
 }

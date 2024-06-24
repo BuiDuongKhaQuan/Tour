@@ -23,7 +23,7 @@ const Search = React.memo(({ handleSearchByCriteria, DATA_SELECT, setSearchCrite
                             value={keyword}
                             onChange={(e) => setKeyword(e.target.value)}
                         />
-                        <Button large primary type="submit">
+                        <Button large primary type="submit" className={cx('btn')}>
                             {t('common.search')}
                         </Button>
                     </form>
