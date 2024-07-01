@@ -63,12 +63,25 @@ export default function FormSubmit({ toggleModalLogin, setCloseModal }) {
         event.preventDefault();
         setIsLoading(true);
         try {
-            await register(name, email, password);
-            sessionStorage.setItem('email', email);
-            handleShowVerify();
+            if (!name || !email || !password) {
+                setError(true);
+                setMessage('Các trường không được để trống!');
+                setIsLoading(false);
+                return;
+            }
+            if (password.length < 8) {
+                setError(true);
+                setMessage('Mật khẩu phải từ 8 ký tự!');
+                setIsLoading(false);
+                return;
+            } else {
+                await register(name, email, password);
+                sessionStorage.setItem('email', email);
+                handleShowVerify();
+            }
         } catch (error) {
             setError(true);
-            setMessage(error.response.data.error);
+            setMessage(error.response.data.message);
         } finally {
             setIsLoading(false);
         }
@@ -106,7 +119,7 @@ export default function FormSubmit({ toggleModalLogin, setCloseModal }) {
         } catch (error) {
             setError(true);
             console.log('sjsss', error);
-            setMessage(error.response.data.error);
+            setMessage(error.response.data.message);
         } finally {
             setIsLoading(false);
         }
@@ -172,7 +185,7 @@ export default function FormSubmit({ toggleModalLogin, setCloseModal }) {
                 <div className={cx('register-form')}>
                     <h2>Register</h2>
                     <Button className={cx('btn-close')} onClick={toggleModalLogin} circle leftIcon={<X size={20} />} />
-                    <form className={cx('form')}>
+                    <form className={cx('form')} onSubmit={handleRigister}>
                         <label>Name</label>
                         <Input
                             type={'text'}
@@ -210,7 +223,7 @@ export default function FormSubmit({ toggleModalLogin, setCloseModal }) {
                             </span>
                         </div>
                         {message && <span className={cx('error', 'success')}>{message}</span>}
-                        <Button className={cx('submit-btn')} primary large onClick={handleRigister}>
+                        <Button className={cx('submit-btn')} primary large type="submit">
                             Register
                         </Button>
                     </form>

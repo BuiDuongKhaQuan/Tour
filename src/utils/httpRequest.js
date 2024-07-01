@@ -1,9 +1,8 @@
 import axios from 'axios';
 
 const request = axios.create({
-    baseURL: 'https://mytechjourney.id.vn/api',
-    // baseURL: 'http://localhost:3001/api',
-    withCredentials: true, // Bật gửi cookie kèm theo yêu cầu
+    baseURL: process.env.REACT_APP_BASE_URL,
+    withCredentials: true,
 });
 
 request.interceptors.request.use(
